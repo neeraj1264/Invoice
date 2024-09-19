@@ -1,0 +1,88 @@
+.catologue-header {
+  text-align: center;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 2px 2px black;
+}
+.catologue-input-fields {
+  margin: 1rem 0.4rem 0;
+  display: flex;
+  flex-direction: column;
+}
+.camera {
+  cursor: pointer;
+  border: 1px solid var(--bg);
+  width: fit-content;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-icon {
+  color: var(--bg);
+  font-size: 2rem;
+  padding-top: .5rem;
+}
+.img-text {
+  margin: 0;
+  text-align: center;
+  padding: 0.5rem;
+  color: var(--bg);
+  font-size: 0.8rem;
+}
+
+.image-container{
+display: flex;
+}
+/* Image preview container */
+.image-preview-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Image preview styling */
+.image-preview {
+    width: 4.5rem;
+    height: 4.5rem;
+    padding: 0px 1rem;
+}
+
+/* Remove X icon styling */
+.remove-icon {
+    position: absolute;
+    top: 2px;
+    right: 17px;
+    cursor: pointer;
+    color: var(--bg);
+    font-size: .6rem;
+    background: white;
+    border-radius: 1rem;
+    padding: .1rem;
+}
+input {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
+.price-mrp {
+  display: flex;
+  justify-content: space-between;
+}
+
+.save-button{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 1rem 1rem 0 0;
+  box-shadow: 2px 2px 2px 2px black;
+}
