@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts"; // Use named import
+import pdfFonts from "pdfmake/build/vfs_fonts"; // Default import
 import './Customer.css';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
