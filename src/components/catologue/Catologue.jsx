@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TbCameraPlus } from "react-icons/tb";
 import { FaTimes } from "react-icons/fa";
-import './catologue.css';
+import './Catologue.css';
 
 const Catalog = ({ setSelectedProducts }) => {
   const navigate = useNavigate();
