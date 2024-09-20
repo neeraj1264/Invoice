@@ -1,0 +1,16 @@
+.Customer-header{
+  text-align: center;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 2px 2px black;
+  margin-bottom: 1rem;
+}
+
+.Customer-header input{
+    width: 85%;
+    margin: 1rem;
+}

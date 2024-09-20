@@ -1,0 +1,59 @@
+.invoice-header {
+  text-align: center;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 2px 2px black;
+  margin-bottom: 1rem;
+}
+
+.main-box {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 1rem;
+}
+
+.sub-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-box h3 {
+  margin: 0;
+}
+
+.sub-box p {
+  margin: 0;
+}
+.add-btn{
+    margin-top: 1rem;
+    padding: .3rem 1rem;
+    background: var(--bg);
+    color: white;
+    font-weight: 800;
+}
+
+.quantity-btns{
+margin-top: 1rem;
+font-weight: 800;
+}
+
+.icons{
+background: var(--bg);
+    color: white;
+    padding-top: .3rem;
+}
+
+.done{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    color: var(--bg);
+    font-size: 1.5rem;
+    font-weight: 800;
+    border-radius: .7rem;
+    padding: 0 .8rem;
+}

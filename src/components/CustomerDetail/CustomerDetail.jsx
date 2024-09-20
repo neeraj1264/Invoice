@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import './Customer.css';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -143,32 +144,29 @@ Service Charge = ₹20.00
 
   return (
     <div>
-      <h1>Customer Details</h1>
+      <h1 className="Customer-header">Customer Details</h1>
       <div>
-        <label>Name:</label>
         <input
           type="text"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          placeholder="Enter customer name"
+          placeholder="Customer name..."
         />
       </div>
       <div>
-        <label>Phone:</label>
         <input
           type="text"
           value={customerPhone}
           onChange={(e) => setCustomerPhone(e.target.value)}
-          placeholder="Enter customer phone"
+          placeholder="customer phone..."
         />
       </div>
       <div>
-        <label>Address:</label>
         <input
           type="text"
           value={customerAddress}
           onChange={(e) => setCustomerAddress(e.target.value)}
-          placeholder="Enter customer address"
+          placeholder="Customer address..."
         />
       </div>
       <button onClick={handleSendClick}>Send</button>
