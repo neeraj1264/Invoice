@@ -1,4 +1,3 @@
-// Catalog.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TbCameraPlus } from "react-icons/tb";
@@ -23,7 +22,7 @@ const Catalog = ({ setSelectedProducts }) => {
     }));
   };
 
-  // Function to handle file input (for image)
+  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -31,24 +30,29 @@ const Catalog = ({ setSelectedProducts }) => {
       reader.onloadend = () => {
         setProduct((prev) => ({
           ...prev,
-          image: reader.result, // Store base64 image string
+          image: reader.result,
         }));
       };
-      reader.readAsDataURL(file); // Convert image to base64 string
+      reader.readAsDataURL(file);
     }
   };
 
-    // Function to remove the selected image
-    const removeImage = () => {
-      setProduct((prev) => ({
-        ...prev,
-        image: '',
-      }));
-    };
+  // Remove image
+  const removeImage = () => {
+    setProduct((prev) => ({
+      ...prev,
+      image: '',
+    }));
+  };
 
+  // Add product to localStorage
   const handleAddProduct = () => {
     if (product.name && product.price) {
-      setSelectedProducts((prev) => [...prev, product]);
+      const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+      const updatedProducts = [...storedProducts, product];
+      localStorage.setItem('products', JSON.stringify(updatedProducts));
+
+      // Reset form
       setProduct({
         name: '',
         price: '',
@@ -56,8 +60,10 @@ const Catalog = ({ setSelectedProducts }) => {
         size: '',
         image: '',
       });
+
+      alert("Product added!");
     } else {
-      alert('Please fill in all the fields');
+      alert("Please fill in required fields!");
     }
   };
 
@@ -69,8 +75,7 @@ const Catalog = ({ setSelectedProducts }) => {
     <div>
       <h1 className='catologue-header'>New Product</h1>
       <div className='catologue-input-fields'>
-             {/* Hidden file input */}
-             <input
+        <input
           type="file"
           accept="image/*"
           id="imageInput"
@@ -78,16 +83,13 @@ const Catalog = ({ setSelectedProducts }) => {
           onChange={handleImageChange}
         />
 
-        {/* Camera icon to trigger file input */}
         <div className='image-container'>
-        <div className="camera" onClick={() => document.getElementById('imageInput').click()}>
-        <TbCameraPlus className="camera-icon"/>
-          {/* <i className="fas fa-camera camera-icon"></i> */}
-          <p  className='img-text'>Add Image</p>
-        </div>
-        
-        {/* Image preview if an image is selected */}
-        {product.image && (
+          <div className="camera" onClick={() => document.getElementById('imageInput').click()}>
+            <TbCameraPlus className="camera-icon"/>
+            <p className='img-text'>Add Image</p>
+          </div>
+
+          {product.image && (
             <div className="image-preview-container">
               <img
                 src={product.image}
@@ -95,12 +97,11 @@ const Catalog = ({ setSelectedProducts }) => {
                 className="image-preview"
                 style={{ width: '4.5rem', height: '4.5rem', padding: '0 1rem' }}
               />
-              {/* X icon to remove image */}
               <FaTimes className="remove-icon" onClick={removeImage} />
             </div>
           )}
         </div>
-        
+
         <input
           type="text"
           name="name"
@@ -108,7 +109,6 @@ const Catalog = ({ setSelectedProducts }) => {
           value={product.name}
           onChange={handleInputChange}
         />
-        <div className='price-mrp'>
         <input
           type="number"
           name="price"
@@ -123,7 +123,6 @@ const Catalog = ({ setSelectedProducts }) => {
           value={product.mrp}
           onChange={handleInputChange}
         />
-        </div>
         <input
           type="text"
           name="size"
@@ -131,10 +130,8 @@ const Catalog = ({ setSelectedProducts }) => {
           value={product.size}
           onChange={handleInputChange}
         />
-
       </div>
       <button className="save-button" onClick={handleAddProduct}>Save</button>
-
 
       <button onClick={handleNavigateToInvoice}>Go to Invoice</button>
     </div>
