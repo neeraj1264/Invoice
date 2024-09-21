@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import './Customer.css';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// const pdfFonts = require('pdfmake/build/vfs_fonts');
-
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -11,8 +8,8 @@ const CustomerDetail = () => {
   const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [pdfMake, setPdfMake] = useState(null); // Store pdfMake in state
+  const navigate = useNavigate();
 
-  
   useEffect(() => {
     // Dynamically import pdfMake and vfs_fonts
     const loadPdfMake = async () => {
@@ -63,6 +60,11 @@ Service Charge = ₹20.00
   };
 
   const handleDownloadPDF = () => {
+    if (!pdfMake) {
+      alert("PDF generation tools are still loading, please try again.");
+      return;
+    }
+
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
     const itemTotal = selectedProducts.reduce(
