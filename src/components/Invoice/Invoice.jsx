@@ -7,6 +7,7 @@ import {
   FaPlusCircle,
   FaArrowRight,
   FaArrowLeft,
+  FaTimesCircle,
 } from "react-icons/fa";
 
 const Invoice = () => {
@@ -61,6 +62,25 @@ const Invoice = () => {
     ); // Save to localStorage
   };
 
+    // Function to remove a product from selected products and productsToSend
+    const handleRemoveProduct = (productName) => {
+      const updatedSelectedProducts = selectedProducts.filter(
+        (prod) => prod.name !== productName
+      );
+      const updatedProductsToSend = productsToSend.filter(
+        (prod) => prod.name !== productName
+      );
+  
+      setSelectedProducts(updatedSelectedProducts);
+      setProductsToSend(updatedProductsToSend);
+  
+      localStorage.setItem("products", JSON.stringify(updatedSelectedProducts)); // Update selected products in localStorage
+      localStorage.setItem(
+        "productsToSend",
+        JSON.stringify(updatedProductsToSend)
+      ); // Update productsToSend in localStorage
+    };
+
   // Function to calculate total price based on quantities
   const calculateTotalPrice = () => {
     return productsToSend.reduce((total, product) => {
@@ -112,7 +132,12 @@ const Invoice = () => {
                     ₹ {product.price}
                   </span>{" "}
                   {/* <del>₹{product.mrp}</del> */}
+<span   className="remove-btn"
+                  onClick={() => handleRemoveProduct(product.name)}> 
+                  <FaTimesCircle />
+                  </span>
                 </p>
+
               </div>
 
               {productsToSend.some((prod) => prod.name === product.name) ? (
