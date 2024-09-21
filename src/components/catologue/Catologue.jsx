@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TbCameraPlus } from "react-icons/tb";
-import { FaTimes } from "react-icons/fa";
-import './Catologue.css';
+import { FaTimes, FaArrowRight, FaArrowLeft , FaCheckCircle } from "react-icons/fa";
+import "./Catologue.css";
 
 const Catalog = ({ setSelectedProducts }) => {
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
+
   const [product, setProduct] = useState({
-    name: '',
-    price: '',
-    mrp: '',
-    size: '',
-    image: '',
+    name: "",
+    price: "",
+    mrp: "",
+    size: "",
+    image: "",
   });
 
   const handleInputChange = (e) => {
@@ -41,52 +43,65 @@ const Catalog = ({ setSelectedProducts }) => {
   const removeImage = () => {
     setProduct((prev) => ({
       ...prev,
-      image: '',
+      image: "",
     }));
   };
 
   // Add product to localStorage
   const handleAddProduct = () => {
     if (product.name && product.price) {
-      const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+      const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
       const updatedProducts = [...storedProducts, product];
-      localStorage.setItem('products', JSON.stringify(updatedProducts));
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
 
       // Reset form
       setProduct({
-        name: '',
-        price: '',
-        mrp: '',
-        size: '',
-        image: '',
+        name: "",
+        price: "",
+        mrp: "",
+        size: "",
+        image: "",
       });
 
-      alert("Product added!");
+      setShowPopup(true);
+
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+
     } else {
       alert("Please fill in required fields!");
     }
   };
 
   const handleNavigateToInvoice = () => {
-    navigate('/invoice');
+    navigate("/invoice");
+  };
+
+  const handleBack = () => {
+      navigate(-1);
   };
 
   return (
     <div>
-      <h1 className='catologue-header'>New Product</h1>
-      <div className='catologue-input-fields'>
+      <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/>
+      <h1 className="catologue-header"> New Product</h1>
+      <div className="catologue-input-fields">
         <input
           type="file"
           accept="image/*"
           id="imageInput"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleImageChange}
         />
 
-        <div className='image-container'>
-          <div className="camera" onClick={() => document.getElementById('imageInput').click()}>
-            <TbCameraPlus className="camera-icon"/>
-            <p className='img-text'>Add Image</p>
+        <div className="image-container">
+          <div
+            className="camera"
+            onClick={() => document.getElementById("imageInput").click()}
+          >
+            <TbCameraPlus className="camera-icon" />
+            <p className="img-text">Add Image</p>
           </div>
 
           {product.image && (
@@ -95,7 +110,7 @@ const Catalog = ({ setSelectedProducts }) => {
                 src={product.image}
                 alt="Preview"
                 className="image-preview"
-                style={{ width: '4.5rem', height: '4.5rem', padding: '0 1rem' }}
+                style={{ width: "4.5rem", height: "4.5rem", padding: "0 1rem" }}
               />
               <FaTimes className="remove-icon" onClick={removeImage} />
             </div>
@@ -131,9 +146,25 @@ const Catalog = ({ setSelectedProducts }) => {
           onChange={handleInputChange}
         />
       </div>
-      <button className="save-button" onClick={handleAddProduct}>Save</button>
+      <button className="save-button" onClick={handleAddProduct}>
+        Save
+      </button>
 
-      <button onClick={handleNavigateToInvoice}>Go to Invoice</button>
+  {/* Popup modal */}
+  {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <FaCheckCircle className="tick-icon" />
+            <h2>Success!</h2>
+            <p>Product Added Successfully</p>
+          </div>
+        </div>
+      )}
+
+      <button onClick={handleNavigateToInvoice} className="Invoice-btn">
+        Invoice
+        <FaArrowRight className="Invoice-arrow" />
+      </button>
     </div>
   );
 };

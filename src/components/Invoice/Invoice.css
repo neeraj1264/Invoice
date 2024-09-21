@@ -1,24 +1,47 @@
+.back-arrow {
+  position: fixed;
+  color: white;
+  font-size: 1.4rem;
+  top: 0.6rem;
+  left: 0.6rem;
+}
+
 .invoice-header {
   text-align: center;
   background: var(--bg);
   color: white;
   font-size: 1.4rem;
   margin: 0;
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   border-radius: 0 0 1rem 1rem;
-  box-shadow: 2px 2px 2px 2px black;
+  box-shadow: 2px 2px 6px 2px black;
   margin-bottom: 1rem;
+  position: fixed;
+  width: 100vw;
+  top: 0;
 }
 
 .main-box {
   display: flex;
   justify-content: space-between;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
+}
+
+.img-box {
+  width: 14vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sub-box {
   display: flex;
   flex-direction: column;
+  width: 55vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+
 }
 
 .sub-box h3 {
@@ -28,32 +51,48 @@
 .sub-box p {
   margin: 0;
 }
-.add-btn{
-    margin-top: 1rem;
-    padding: .3rem 1rem;
-    background: var(--bg);
-    color: white;
-    font-weight: 800;
+
+.btn-box {
+  width: 24vw;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
-.quantity-btns{
-margin-top: 1rem;
-font-weight: 800;
+.add-btn {
+  padding: 0.3rem 1rem;
+  background: var(--bg);
+  color: white;
+  font-weight: 800;
 }
 
-.icons{
-background: var(--bg);
-    color: white;
-    padding-top: .3rem;
+.quantity-btns {
+  /* margin-top: 1rem; */
+  font-weight: 800;
+  width: 24vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.done{
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    color: var(--bg);
-    font-size: 1.5rem;
-    font-weight: 800;
-    border-radius: .7rem;
-    padding: 0 .8rem;
+.icons {
+  background: var(--bg);
+  color: white;
+  padding-top: 0.3rem;
+}
+
+.done {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 0.7rem;
+}
+
+.Invoice-arrow {
+  font-size: 1rem;
+  margin-left: 0.4rem;
 }

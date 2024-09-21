@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './Customer.css';
+import { FaArrowLeft , FaArrowRight} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // import pdfMake from 'pdfmake/build/pdfmake';
 // const pdfFonts = require('pdfmake/build/vfs_fonts');
 
@@ -11,6 +13,7 @@ const CustomerDetail = () => {
   const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [pdfMake, setPdfMake] = useState(null); // Store pdfMake in state
+  const navigate = useNavigate(); // For navigation
 
   
   useEffect(() => {
@@ -63,6 +66,10 @@ Service Charge = ₹20.00
   };
 
   const handleDownloadPDF = () => {
+    if (!pdfMake) {
+      alert("PDF generation tools comming soon");
+      return;
+    }
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
     const itemTotal = selectedProducts.reduce(
@@ -73,7 +80,7 @@ Service Charge = ₹20.00
     const tableBody = [
       ["Product Name", "Quantity", "Price", "Total"],
       ...selectedProducts.map((product) => [
-        product.name,
+        product.size ? `${product.name} (${product.size})` : product.name,
         product.quantity || 1,
         `₹${product.price}`,
         `₹${(product.price * (product.quantity || 1)).toFixed(2)}`,
@@ -155,10 +162,14 @@ Service Charge = ₹20.00
     pdfDocGenerator.download("invoice.pdf");
   };
 
+  const handleBack = () => {
+    navigate(-1);
+};
   return (
     <div>
+      <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/>
       <h1 className="Customer-header">Customer Details</h1>
-      <div>
+      <div className="cust-inputs">
         <input
           type="text"
           value={customerName}
@@ -166,7 +177,7 @@ Service Charge = ₹20.00
           placeholder="Customer name..."
         />
       </div>
-      <div>
+      <div className="cust-inputs">
         <input
           type="text"
           value={customerPhone}
@@ -174,7 +185,7 @@ Service Charge = ₹20.00
           placeholder="customer phone..."
         />
       </div>
-      <div>
+      <div className="cust-inputs">
         <input
           type="text"
           value={customerAddress}
@@ -182,7 +193,7 @@ Service Charge = ₹20.00
           placeholder="Customer address..."
         />
       </div>
-      <button onClick={handleSendClick}>Send</button>
+      <button onClick={handleSendClick} className="done">Send <FaArrowRight className="Invoice-arrow" /></button>
 
       {/* Modal Popup */}
       {showPopup && (

@@ -1,3 +1,10 @@
+.back-arrow{
+    position: fixed;
+    color: white;
+    font-size: 1.4rem;
+    top: .6rem;
+    left: .6rem;
+}
 .catologue-header {
   text-align: center;
   background: var(--bg);
@@ -6,7 +13,7 @@
   margin: 0;
   padding: 0.5rem;
   border-radius: 0 0 1rem 1rem;
-  box-shadow: 2px 2px 2px 2px black;
+  box-shadow: 2px 2px 6px 2px black;
 }
 .catologue-input-fields {
   margin: 1rem 0.4rem 0;
@@ -74,15 +81,66 @@ input {
 }
 
 .save-button{
-    position: fixed;
     bottom: 0;
-    width: 100%;
     text-align: center;
-  background: var(--bg);
+    background: var(--bg);
+    color: white;
+    font-size: 1.4rem;
+    margin: .5rem 0 0 1rem;
+    padding: 0.5rem;
+    border-radius: .5rem;
+    box-shadow: 2px 2px 2px 2px black
+}
+.Invoice-btn{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--bg);
+    color: white;
+    font-size: 1.4rem;
+    padding: .2rem .8rem;
+    border-radius: .7rem;
+}
+.Invoice-arrow {
+font-size: 1rem;
+    margin-left: .4rem;
+}
+
+// ---------------------------success popup ------------------------------------
+
+.trigger-btn {
+  background-color: #28a745;
   color: white;
-  font-size: 1.4rem;
-  margin: 0;
-  padding: 0.5rem;
-  border-radius: 1rem 1rem 0 0;
-  box-shadow: 2px 2px 2px 2px black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tick-icon {
+  color: #28a745;
+  font-size: 50px;
+  margin-bottom: 10px;
 }
