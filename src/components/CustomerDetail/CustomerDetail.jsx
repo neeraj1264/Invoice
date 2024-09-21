@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import './Customer.css';
+// import pdfMake from 'pdfmake/build/pdfmake';
+// const pdfFonts = require('pdfmake/build/vfs_fonts');
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -13,6 +13,18 @@ const CustomerDetail = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
+    // Dynamically import pdfMake and vfs_fonts when the component mounts
+    useEffect(() => {
+      const loadPdfMake = async () => {
+        const pdfMakeModule = await import('pdfmake/build/pdfmake');
+        const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+        pdfMakeModule.default.vfs = pdfFontsModule.default.pdfMake.vfs;
+        window.pdfMake = pdfMakeModule.default; // Store pdfMake globally if needed
+      };
+  
+      loadPdfMake();
+    }, []);
+  
   const handleSendToWhatsApp = () => {
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;

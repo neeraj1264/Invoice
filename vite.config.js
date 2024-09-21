@@ -1,14 +1,7 @@
-import { defineConfig } from 'vite';
 import commonjs from '@rollup/plugin-commonjs';
 
-export default defineConfig({
+export default {
   plugins: [
-    commonjs(), // Ensures commonjs modules like pdfMake are bundled properly
+    commonjs(),  // Ensure compatibility with CommonJS modules
   ],
-  build: {
-    sourcemap: true, // Useful for debugging the production build
-    rollupOptions: {
-      external: ['pdfmake'], // Optionally specify external libraries if needed
-    },
-  },
-});
+};
