@@ -1,7 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import commonjs from '@rollup/plugin-commonjs';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  plugins: [
+    commonjs(), // Ensures commonjs modules like pdfMake are bundled properly
+  ],
+  build: {
+    sourcemap: true, // Useful for debugging the production build
+    rollupOptions: {
+      external: ['pdfmake'], // Optionally specify external libraries if needed
+    },
+  },
+});
