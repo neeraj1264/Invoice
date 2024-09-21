@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+// import * as pdfMake from 'pdfmake/build/pdfmake';
+// import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import './Customer.css';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -13,6 +13,17 @@ const CustomerDetail = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const loadPdfMake = async () => {
+      const pdfMakeModule = await import('pdfmake/build/pdfmake');
+      const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+      pdfMakeModule.vfs = pdfFontsModule.pdfMake.vfs;
+    };
+  
+    loadPdfMake();
+  }, []);
+
+  
   const handleSendToWhatsApp = () => {
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
