@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import './Customer.css';
 import { FaArrowLeft , FaArrowRight} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import pdfMake from 'pdfmake/build/pdfmake';
-// const pdfFonts = require('pdfmake/build/vfs_fonts');
-
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -67,100 +65,62 @@ Service Charge = ₹20.00
 
   const handleDownloadPDF = () => {
     if (!pdfMake) {
-      alert("PDF generation tools comming soon");
+      alert("PDF generation tools coming soon");
       return;
     }
+  
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
     const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
     const itemTotal = selectedProducts.reduce(
       (sum, product) => sum + product.price * (product.quantity || 1),
       0
     );
+  
+    const content = `
+    <h1 class="header">Foodies Hub</h1>
+  <p class="headerr">Pehowa, Haryana, 136128</p>
+  <p class="headerr">Phone Number - +91 70158-23645</p>
+  <h3 class="subheader">Invoice Details</h3>
+  <p class="customerinfo">Customer Name   -  ${customerName}</p>
+  <p class="customerinfo">Address         -  ${customerAddress}</p>
+  <p class="customerinfo">Phone Number    -  ${customerPhone}</p>
 
-    const tableBody = [
-      ["Product Name", "Quantity", "Price", "Total"],
-      ...selectedProducts.map((product) => [
-        product.size ? `${product.name} (${product.size})` : product.name,
-        product.quantity || 1,
-        `₹${product.price}`,
-        `₹${(product.price * (product.quantity || 1)).toFixed(2)}`,
-      ]),
-    ];
-
-    const docDefinition = {
-      content: [
-        { text: "Foodies Hub", style: "header" },
-        { text: `Pehowa, Haryana, 136128`, style: "headerr" },
-        { text: `Phone Number - +91 70158-23645`, style: "headerr" },
-        {
-          canvas: [{ type: "line", x1: 0, y1: 10, x2: 515, y2: 10, lineWidth: 2 }],
-          margin: [0, 20],
-        },
-        { text: "Invoice Details", style: "subheader" },
-        { text: `Customer Name   -     ${customerName}`, style: "customerInfo" },
-        { text: `Address                 -     ${customerAddress}`, style: "customerInfo" },
-        { text: `Phone Number     -     ${customerPhone}`, style: "customerInfoWithSpace" },
-        {
-          table: {
-            widths: ["*", "auto", "auto", "auto"],
-            headerRows: 1,
-            body: tableBody,
-          },
-          style: "tableStyle",
-        },
-        { text: `Item Total:          ₹ ${itemTotal.toFixed(2)}`, style: "total" },
-        { text: `Service Charge:   ₹ 20.00`, style: "totall" },
-        { text: `Total Amount:    ₹ ${totalAmount.toFixed(2)}`, style: "totall" },
-      ],
-      styles: {
-        header: {
-          fontSize: 35,
-          bold: true,
-          alignment: "center",
-          margin: [0, 0, 0, 10],
-        },
-        headerr: {
-          fontSize: 25,
-          alignment: "center",
-          margin: [0, 0, 0, 10],
-        },
-        subheader: {
-          fontSize: 25,
-          bold: true,
-          alignment: "center",
-          margin: [0, 10, 0, 5],
-        },
-        total: {
-          fontSize: 25,
-          bold: true,
-          alignment: "right",
-          margin: [0, 60, 0, 0],
-        },
-        totall: {
-          fontSize: 25,
-          bold: true,
-          alignment: "right",
-          margin: [0, 10, 0, 0],
-        },
-        tableStyle: {
-          fontSize: 15,
-        },
-        customerInfo: {
-          fontSize: 20,
-          alignment: "left",
-          margin: [0, 10, 0, 0],
-        },
-        customerInfoWithSpace: {
-          fontSize: 20,
-          alignment: "left",
-          margin: [0, 10, 0, 20],
-        },
-      },
-    };
-
-    const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-    pdfDocGenerator.download("invoice.pdf");
+      <table border="1" style="width: 100%; text-align: center;">
+        <thead>
+          <tr><th>Product Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          ${selectedProducts
+            .map(
+              (product) => `
+              <tr>
+                <td>${product.size ? `${product.name} (${product.size})` : product.name}</td>
+                <td>${product.quantity || 1}</td>
+                <td>₹${product.price}</td>
+                <td>₹${(product.price * (product.quantity || 1)).toFixed(2)}</td>
+              </tr>`
+            )
+            .join('')}
+        </tbody>
+      </table>
+      <p class="total">Item Total: ₹${itemTotal.toFixed(2)}</p>
+      <p class="totall">Service Charge: ₹20.00</p>
+      <p class="totall">Total Amount: ₹${totalAmount.toFixed(2)}</p>
+    `;
+  
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    document.body.appendChild(tempDiv); // Append to body
+  
+    html2canvas(tempDiv).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 10, 10, 190, 250);
+      pdf.save('invoice.pdf');
+      document.body.removeChild(tempDiv); // Clean up
+    });
   };
+  
 
   const handleBack = () => {
     navigate(-1);
