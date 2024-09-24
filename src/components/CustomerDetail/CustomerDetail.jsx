@@ -58,9 +58,21 @@ Service Charge = ₹20.00
     setShowPopup(false);
   };
 
-  const nsvigate =()=>{
-    navigate("/invoice-display");
-  }
+  const handleNavigateToInvoice = () => {
+    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
+
+    navigate("/invoice-display", {
+      state: {
+        customerName,
+        customerPhone,
+        customerAddress,
+        selectedProducts,
+        totalAmount
+      }
+    });
+  };
+
   return (
     <div>
       <FaArrowLeft className="back-arrow" onClick={handleBack} />
@@ -100,7 +112,7 @@ Service Charge = ₹20.00
             <button onClick={handleSendToWhatsApp} style={styles.popupButton}>
               Send to WhatsApp
             </button>
-            <button onClick={nsvigate} style={styles.popupButton}>
+            <button onClick={handleNavigateToInvoice} style={styles.popupButton}>
               Download invoice
             </button>
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
