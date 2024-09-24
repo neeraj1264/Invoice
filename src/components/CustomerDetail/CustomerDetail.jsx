@@ -3,7 +3,6 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./Customer.css";
 import InvoiceDisplay from "./InvoiceDisplay"; // Import the new component
-import { handleScreenshot } from "./InvoiceDisplay";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -12,12 +11,12 @@ const CustomerDetail = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const handleDownloadPDF = () => {
-    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
+  // const handleDownloadPDF = () => {
+  //   const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+  //   const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
 
-    navigate("/invoice-display", { state: { customerName, customerPhone, customerAddress, selectedProducts, totalAmount } });
-  };
+  //   navigate("/invoice-display", { state: { customerName, customerPhone, customerAddress, selectedProducts, totalAmount } });
+  // };
 
   const handleSendToWhatsApp = () => {
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
@@ -59,6 +58,9 @@ Service Charge = ₹20.00
     setShowPopup(false);
   };
 
+  const nsvigate =()=>{
+    navigate("/invoice-display");
+  }
   return (
     <div>
       <FaArrowLeft className="back-arrow" onClick={handleBack} />
@@ -98,7 +100,7 @@ Service Charge = ₹20.00
             <button onClick={handleSendToWhatsApp} style={styles.popupButton}>
               Send to WhatsApp
             </button>
-            <button onClick={InvoiceDisplay} style={styles.popupButton}>
+            <button onClick={nsvigate} style={styles.popupButton}>
               Download invoice
             </button>
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
