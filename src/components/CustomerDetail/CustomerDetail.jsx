@@ -1,31 +1,23 @@
-import React, { useState, useEffect } from "react";
-import './Customer.css';
-import { FaArrowLeft , FaArrowRight} from "react-icons/fa";
+import React, { useState } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import "./Customer.css";
+import InvoiceDisplay from "./InvoiceDisplay"; // Import the new component
+import { handleScreenshot } from "./InvoiceDisplay";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [pdfMake, setPdfMake] = useState(null); // Store pdfMake in state
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate();
 
-  
-  useEffect(() => {
-    // Dynamically import pdfMake and vfs_fonts
-    const loadPdfMake = async () => {
-      const pdfMakeModule = await import('pdfmake/build/pdfmake');
-      const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
-      pdfMakeModule.default.vfs = pdfFontsModule.default.pdfMake.vfs;
+  const handleDownloadPDF = () => {
+    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
 
-      setPdfMake(pdfMakeModule.default); // Store the imported pdfMake module in state
-    };
-
-    loadPdfMake();
-  }, []);
+    navigate("/invoice-display", { state: { customerName, customerPhone, customerAddress, selectedProducts, totalAmount } });
+  };
 
   const handleSendToWhatsApp = () => {
     const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
@@ -54,6 +46,10 @@ Service Charge = ₹20.00
     const phoneNumber = customerPhone;
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
+  
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   const handleSendClick = () => {
     setShowPopup(true);
@@ -63,71 +59,9 @@ Service Charge = ₹20.00
     setShowPopup(false);
   };
 
-  const handleDownloadPDF = () => {
-    if (!pdfMake) {
-      alert("PDF generation tools coming soon");
-      return;
-    }
-  
-    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
-    const itemTotal = selectedProducts.reduce(
-      (sum, product) => sum + product.price * (product.quantity || 1),
-      0
-    );
-  
-    const content = `
-    <h1 class="header">Foodies Hub</h1>
-  <p class="headerr">Pehowa, Haryana, 136128</p>
-  <p class="headerr">Phone Number - +91 70158-23645</p>
-  <h3 class="subheader">Invoice Details</h3>
-  <p class="customerinfo">Customer Name   -  ${customerName}</p>
-  <p class="customerinfo">Address         -  ${customerAddress}</p>
-  <p class="customerinfo">Phone Number    -  ${customerPhone}</p>
-
-      <table border="1" style="width: 100%; text-align: center;">
-        <thead>
-          <tr><th>Product Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
-        </thead>
-        <tbody>
-          ${selectedProducts
-            .map(
-              (product) => `
-              <tr>
-                <td>${product.size ? `${product.name} (${product.size})` : product.name}</td>
-                <td>${product.quantity || 1}</td>
-                <td>₹${product.price}</td>
-                <td>₹${(product.price * (product.quantity || 1)).toFixed(2)}</td>
-              </tr>`
-            )
-            .join('')}
-        </tbody>
-      </table>
-      <p class="total">Item Total: ₹${itemTotal.toFixed(2)}</p>
-      <p class="totall">Service Charge: ₹20.00</p>
-      <p class="totall">Total Amount: ₹${totalAmount.toFixed(2)}</p>
-    `;
-  
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
-    document.body.appendChild(tempDiv); // Append to body
-  
-    html2canvas(tempDiv).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 10, 10, 190, 250);
-      pdf.save('invoice.pdf');
-      document.body.removeChild(tempDiv); // Clean up
-    });
-  };
-  
-
-  const handleBack = () => {
-    navigate(-1);
-};
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/>
+      <FaArrowLeft className="back-arrow" onClick={handleBack} />
       <h1 className="Customer-header">Customer Details</h1>
       <div className="cust-inputs">
         <input
@@ -142,7 +76,7 @@ Service Charge = ₹20.00
           type="text"
           value={customerPhone}
           onChange={(e) => setCustomerPhone(e.target.value)}
-          placeholder="customer phone..."
+          placeholder="Customer phone..."
         />
       </div>
       <div className="cust-inputs">
@@ -155,6 +89,7 @@ Service Charge = ₹20.00
       </div>
       <button onClick={handleSendClick} className="done">Send <FaArrowRight className="Invoice-arrow" /></button>
 
+      
       {/* Modal Popup */}
       {showPopup && (
         <div style={styles.popupOverlay}>
@@ -163,8 +98,8 @@ Service Charge = ₹20.00
             <button onClick={handleSendToWhatsApp} style={styles.popupButton}>
               Send to WhatsApp
             </button>
-            <button onClick={handleDownloadPDF} style={styles.popupButton}>
-              Download PDF
+            <button onClick={InvoiceDisplay} style={styles.popupButton}>
+              Download invoice
             </button>
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
               Cancel
@@ -176,7 +111,6 @@ Service Charge = ₹20.00
   );
 };
 
-// Simple inline styles for modal and buttons
 const styles = {
   popupOverlay: {
     position: "fixed",

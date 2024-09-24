@@ -1,0 +1,52 @@
+.invoice-content{
+padding: 1rem;
+}
+.invoice-content img{
+height: 3rem;
+width: 3rem;
+display: flex;
+margin: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Ensures borders collapse */
+  margin-top: 10px; /* Top margin similar to 'margin: [0, 10, 0, 0]' */
+}
+
+th, td {
+  border: 1px solid black; /* Add border to cells */
+  padding: 8px; /* Padding for table cells */
+  text-align: center; /* Center align for both headers and content */
+}
+
+td{
+text-align: left;
+}
+th {
+  background-color: #f2f2f2; /* Optional: Add background color to header */
+}
+
+td:first-child {
+  width: 100%; /* Corresponds to '*' in widths */
+}
+
+td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+  width: auto; /* Corresponds to 'auto' in widths */
+}
+
+{{/* .download-button{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    } */}}
+    .total{
+    margin-top: 2rem;
+    font-size: 20px;
+  font-weight: bold;
+  text-align: left;
+    }
+    .total p{
+    margin: 0;
+    text-align: right;
+    }
