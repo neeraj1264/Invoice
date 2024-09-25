@@ -90,6 +90,12 @@ const Invoice = () => {
 
   // Navigate to the customer details page
   const handleDone = () => {
+
+    if (productsToSend.length === 0) {
+      alert("Please add at least one product before proceeding.");
+      return; // Prevent navigation if no products are selected
+    }
+    
     // Store the selected products and total amount in localStorage before navigating
     localStorage.setItem("selectedProducts", JSON.stringify(productsToSend));
     localStorage.setItem("totalAmount", calculateTotalPrice());
@@ -102,7 +108,7 @@ const Invoice = () => {
 
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={() => handleBack()} />
+      <FaArrowLeft className="back-arrow" onClick={handleBack} />
       <h1 className="invoice-header">Invoice Page</h1>
       <div style={{marginTop: '3rem'}}>
       {selectedProducts.length > 0 ? (

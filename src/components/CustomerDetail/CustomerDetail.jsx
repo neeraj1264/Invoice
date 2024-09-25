@@ -1,27 +1,31 @@
-import React, { useState } from "react";
+// CustomerDetail.js
+import React, { useState, useEffect, useRef } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { handleScreenshot } from "./utils"; // Import the function
 import "./Customer.css";
-import InvoiceDisplay from "./InvoiceDisplay"; // Import the new component
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const invoiceRef = useRef(); // Reference to the hidden invoice content
   const navigate = useNavigate();
 
-  // const handleDownloadPDF = () => {
-  //   const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-  //   const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
+  useEffect(() => {
+    // Load selected products and total amount from localStorage
+    const storedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+    const storedAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
 
-  //   navigate("/invoice-display", { state: { customerName, customerPhone, customerAddress, selectedProducts, totalAmount } });
-  // };
+    setSelectedProducts(storedProducts);
+    setTotalAmount(storedAmount);
+  }, []);
 
   const handleSendToWhatsApp = () => {
-    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
-
     const productDetails = selectedProducts
       .map(
         (product) =>
@@ -31,21 +35,14 @@ const CustomerDetail = () => {
 
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    const message = encodeURIComponent(`
-Order      : *${orderId}*
-Phone     : *${customerPhone}*
-Name      : *${customerName}*
-Amount   : *₹${totalAmount}*
-Address  : *${customerAddress}*\n
-----------item----------\n
-${productDetails}
-Service Charge = ₹20.00
-    `);
+    const message = encodeURIComponent(
+      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${totalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\nService Charge = ₹20.00`
+    );
 
     const phoneNumber = customerPhone;
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
-  
+
   const handleBack = () => {
     navigate(-1);
   };
@@ -58,19 +55,13 @@ Service Charge = ₹20.00
     setShowPopup(false);
   };
 
-  const handleNavigateToInvoice = () => {
-    const selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-    const totalAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
-
-    navigate("/invoice-display", {
-      state: {
-        customerName,
-        customerPhone,
-        customerAddress,
-        selectedProducts,
-        totalAmount
-      }
-    });
+  const handleDownloadInvoiceScreenshot = () => {
+    // Show the hidden invoice, take the screenshot, and then hide it again
+    invoiceRef.current.style.display = "block";
+    setTimeout(() => {
+      handleScreenshot("invoice")
+        invoiceRef.current.style.display = "none";
+    }, 500); // Adjust delay as needed
   };
 
   return (
@@ -101,9 +92,51 @@ Service Charge = ₹20.00
           placeholder="Customer address..."
         />
       </div>
-      <button onClick={handleSendClick} className="done">Send <FaArrowRight className="Invoice-arrow" /></button>
 
-      
+      {/* Hidden Invoice Content */}
+      <div className="invoice-content" id="invoice"  ref={invoiceRef}   style={{ display: "none" }} >
+      <img src="logo.png" alt="Logo" width={100} />
+      <h1 style={{textAlign: "center" , margin: 0 , fontSize: "1.4rem" }}>Foodies Hub</h1>
+      <p style={{textAlign: "center" , margin: 0 , fontSize: "1rem" }}>Pehowa, Haryana, 136128</p>
+      <p style={{textAlign: "center" , margin: 0 , fontSize: "1rem" }}>Phone Number - +91 70158-23645</p>
+      <hr />
+      <h2  style={{textAlign: "center" , margin: 0}}>Invoice Details</h2>
+      <div className="customer-info">
+      <p style={{marginLeft: ".8rem"}}>Customer Name &nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;{customerName ? customerName : "Guest Customer"}</p>
+      <p style={{marginLeft: ".8rem"}}>Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress ? customerAddress : "...."}</p>
+      <p style={{marginLeft: ".8rem"}}>Phone Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;{customerPhone ? customerPhone : "...."}</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style={{textAlign: "left"}}>Product Name</th>
+            <th style={{textAlign: "left"}}>Quantity</th>
+            <th style={{textAlign: "left"}}>Price</th>
+            <th style={{textAlign: "left"}}>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedProducts.map((product, index) => (
+            <tr key={index}>
+              <td>{product.size ? `${product.name} (${product.size})` : product.name}</td>
+              <td style={{textAlign: "Center"}}>{product.quantity || 1}</td>
+              <td>₹{product.price}</td>
+              <td>₹{(product.price * (product.quantity || 1)).toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="total">
+      <p>Item Total: ₹{selectedProducts.reduce((sum, product) => sum + product.price * (product.quantity || 1), 0).toFixed(2)}</p>
+      <p>Service Charge: &nbsp;₹20.00</p>
+      <p>Total Amount:&nbsp; ₹{totalAmount.toFixed(2)}</p>
+      </div>
+    </div>
+
+      <button onClick={handleSendClick} className="done">
+        Send <FaArrowRight className="Invoice-arrow" />
+      </button>
+
       {/* Modal Popup */}
       {showPopup && (
         <div style={styles.popupOverlay}>
@@ -112,8 +145,8 @@ Service Charge = ₹20.00
             <button onClick={handleSendToWhatsApp} style={styles.popupButton}>
               Send to WhatsApp
             </button>
-            <button onClick={handleNavigateToInvoice} style={styles.popupButton}>
-              Download invoice
+            <button onClick={handleDownloadInvoiceScreenshot} style={styles.popupButton}>
+              Download Invoice
             </button>
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
               Cancel

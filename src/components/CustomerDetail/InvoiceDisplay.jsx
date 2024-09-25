@@ -24,7 +24,7 @@ const InvoiceDisplay = () => {
   };
 
   return (
-    <div className="invoice-content" id="invoice">
+    <div className="invoice-content" id="invoice"  ref={invoiceRef}   style={{ display: "none" }} >
       <img src="logo.png" alt="Logo" width={100} />
       <h1 style={{textAlign: "center" , margin: 0 , fontSize: "1.4rem" }}>Foodies Hub</h1>
       <p style={{textAlign: "center" , margin: 0 , fontSize: "1rem" }}>Pehowa, Haryana, 136128</p>
@@ -61,9 +61,6 @@ const InvoiceDisplay = () => {
       <p>Service Charge: &nbsp;₹20.00</p>
       <p>Total Amount:&nbsp; ₹{totalAmount.toFixed(2)}</p>
       </div>
-      <button onClick={handleScreenshot} className="download-button">
-        Download Invoice
-      </button>
     </div>
   );
 };

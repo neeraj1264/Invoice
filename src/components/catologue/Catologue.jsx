@@ -84,7 +84,7 @@ const Catalog = ({ setSelectedProducts }) => {
 
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/>
+      {/* <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/> */}
       <h1 className="catologue-header"> New Product</h1>
       <div className="catologue-input-fields">
         <input
