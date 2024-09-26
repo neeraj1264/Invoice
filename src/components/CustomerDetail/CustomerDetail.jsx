@@ -58,10 +58,10 @@ const CustomerDetail = () => {
   const handleDownloadInvoiceScreenshot = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
-    // setTimeout(() => {
-    //   handleScreenshot("invoice")
-    //     invoiceRef.current.style.display = "none";
-    // }, 100); 
+    setTimeout(() => {
+      handleScreenshot("invoice")
+        invoiceRef.current.style.display = "none";
+    }, 100); 
   };
 
   return (
