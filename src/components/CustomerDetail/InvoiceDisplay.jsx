@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
-import logoBase64 from "./logo";
 import "./InvoiceDisplay.css";
 
 const InvoiceDisplay = () => {

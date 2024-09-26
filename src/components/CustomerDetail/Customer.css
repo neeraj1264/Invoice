@@ -1,12 +1,12 @@
-.back-arrow{
-    position: fixed;
-    color: white;
-    font-size: 1.4rem;
-    top: .6rem;
-    left: .6rem;
+.back-arrow {
+  position: fixed;
+  color: white;
+  font-size: 1.4rem;
+  top: 0.6rem;
+  left: 0.6rem;
 }
 
-.Customer-header{
+.Customer-header {
   text-align: center;
   background: var(--bg);
   color: white;
@@ -18,25 +18,59 @@
   margin-bottom: 1rem;
 }
 
-.cust-inputs input{
-width: 80vw;
-margin: .5rem;
-padding: .5rem;
+.cust-inputs input {
+  width: 80vw;
+  margin: 0.5rem;
+  padding: 0.5rem;
 }
 
-.done{
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    background: var(--bg);
-    color: white;
-    font-size: 1.4rem;
-    padding: .2rem .8rem;
-    border-radius: .7rem;
+.done {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 0.7rem;
 }
 
 .Invoice-arrow {
-font-size: 1rem;
- margin-left: .4rem;
+  font-size: 1rem;
+  margin-left: 0.4rem;
 }
 
+.productname th {
+  text-align: left;
+  font-size: 1rem;
+}
+.productdetail td {
+  text-align: left;
+  font-size: 0.9rem;
+}
+.total {
+  margin-top: 2rem;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: left;
+}
+.total p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.total span {
+  text-align: left;
+  width: 20%;
+}
+.totalAmount {
+  font-size: 1rem;
+  font-weight: 900;
+  background: black;
+  color: white;
+  width: fit-content;
+  margin: auto;
+  padding: 0.4rem;
+  border-radius: 1rem;
+  margin-top: 1rem;
+}

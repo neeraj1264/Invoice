@@ -58,10 +58,10 @@ const CustomerDetail = () => {
   const handleDownloadInvoiceScreenshot = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
-    setTimeout(() => {
-      handleScreenshot("invoice")
-        invoiceRef.current.style.display = "none";
-    }, 500); // Adjust delay as needed
+    // setTimeout(() => {
+    //   handleScreenshot("invoice")
+    //     invoiceRef.current.style.display = "none";
+    // }, 100); 
   };
 
   return (
@@ -108,16 +108,16 @@ const CustomerDetail = () => {
       </div>
       <table>
         <thead>
-          <tr>
-            <th style={{textAlign: "left"}}>Product Name</th>
-            <th style={{textAlign: "left"}}>Quantity</th>
-            <th style={{textAlign: "left"}}>Price</th>
-            <th style={{textAlign: "left"}}>Total</th>
+          <tr className="productname">
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
           {selectedProducts.map((product, index) => (
-            <tr key={index}>
+            <tr key={index} className="productdetail">
               <td>{product.size ? `${product.name} (${product.size})` : product.name}</td>
               <td style={{textAlign: "Center"}}>{product.quantity || 1}</td>
               <td>₹{product.price}</td>
@@ -127,10 +127,11 @@ const CustomerDetail = () => {
         </tbody>
       </table>
       <div className="total">
-      <p>Item Total: ₹{selectedProducts.reduce((sum, product) => sum + product.price * (product.quantity || 1), 0).toFixed(2)}</p>
-      <p>Service Charge: &nbsp;₹20.00</p>
-      <p>Total Amount:&nbsp; ₹{totalAmount.toFixed(2)}</p>
+      <p>Item Total: <span>₹{selectedProducts.reduce((sum, product) => sum + product.price * (product.quantity || 1), 0).toFixed(2)}</span></p>
+      <p>Service Charge: <span>₹20.00</span></p>
+     
       </div>
+      <p className="totalAmount">Total Amount&nbsp;₹{totalAmount}/-</p>
     </div>
 
       <button onClick={handleSendClick} className="done">
