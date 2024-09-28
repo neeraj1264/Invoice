@@ -5,7 +5,8 @@ import Catologue from "./components/catologue/Catologue";
 import Invoice from "./components/Invoice/Invoice";
 import "./App.css";
 import CustomerDetail from "./components/CustomerDetail/CustomerDetail";
-import InvoiceDisplay from "./components/CustomerDetail/InvoiceDisplay";
+
+
 const App = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -36,7 +37,6 @@ const App = () => {
           element={<Invoice selectedProducts={selectedProducts} />}
         />
         <Route path="/customer-detail" element={<CustomerDetail />} />
-        <Route path="/invoice-display" element={<InvoiceDisplay />} />
 
       </Routes>
     </Router>

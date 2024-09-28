@@ -103,8 +103,9 @@ const CustomerDetail = () => {
       <h2  style={{textAlign: "center" , margin: 0}}>Invoice Details</h2>
       <div className="customer-info">
       <p style={{marginLeft: ".8rem"}}>Customer Name &nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;{customerName ? customerName : "Guest Customer"}</p>
-      <p style={{marginLeft: ".8rem"}}>Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress ? customerAddress : "...."}</p>
       <p style={{marginLeft: ".8rem"}}>Phone Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;{customerPhone ? customerPhone : "...."}</p>
+      <p style={{marginLeft: ".8rem"}}>Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress ? customerAddress : "...."}</p>
+
       </div>
       <table>
         <thead>

@@ -13,7 +13,18 @@ import {
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productsToSend, setProductsToSend] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const navigate = useNavigate(); // For navigation
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+   // Filter products based on the search query
+   const filteredProducts = selectedProducts.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Load products from localStorage on component mount
   useEffect(() => {
@@ -95,7 +106,7 @@ const Invoice = () => {
       alert("Please add at least one product before proceeding.");
       return; // Prevent navigation if no products are selected
     }
-    
+
     // Store the selected products and total amount in localStorage before navigating
     localStorage.setItem("selectedProducts", JSON.stringify(productsToSend));
     localStorage.setItem("totalAmount", calculateTotalPrice());
@@ -110,9 +121,27 @@ const Invoice = () => {
     <div>
       <FaArrowLeft className="back-arrow" onClick={handleBack} />
       <h1 className="invoice-header">Invoice Page</h1>
-      <div style={{marginTop: '3rem'}}>
-      {selectedProducts.length > 0 ? (
-        selectedProducts.map((product, index) => (
+
+         {/* Add a search input to filter products */}
+         <input
+        style={{  
+                margin: "4rem 0 1rem .5rem" , 
+                width: "90%",
+              }}
+        type="text"
+        value={searchQuery}
+        onChange={handleSearchChange}
+        placeholder="Search products..."
+        className="search-input"
+      />
+
+      <div 
+      style={{
+        marginBottom: "3rem"
+      }}
+      >
+      {filteredProducts.length > 0 ? (
+        filteredProducts.map((product, index) => (
           <div key={index}>
             <div className="main-box">
               <div className="img-box">
