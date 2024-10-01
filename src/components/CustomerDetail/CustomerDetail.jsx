@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { handleScreenshot } from "./utils"; // Import the function
+import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
+import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -55,13 +56,22 @@ const CustomerDetail = () => {
     setShowPopup(false);
   };
 
-  const handleDownloadInvoiceScreenshot = () => {
+  const handlePngDownload = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
     setTimeout(() => {
       handleScreenshot("invoice")
         invoiceRef.current.style.display = "none";
-    }, 100); 
+    }, 10); 
+  };
+
+  const handlePdfDownload = () => {
+    // Show the hidden invoice, take the screenshot, and then hide it again
+    invoiceRef.current.style.display = "block";
+    setTimeout(() => {
+      handleScreenshotAsPDF("invoice")
+        invoiceRef.current.style.display = "none";
+    }, 10); 
   };
 
   return (
@@ -96,15 +106,15 @@ const CustomerDetail = () => {
       {/* Hidden Invoice Content */}
       <div className="invoice-content" id="invoice"  ref={invoiceRef}   style={{ display: "none" }} >
       <img src="logo.png" alt="Logo" width={100} />
-      <h1 style={{textAlign: "center" , margin: 0 , fontSize: "1.4rem" }}>Foodies Hub</h1>
-      <p style={{textAlign: "center" , margin: 0 , fontSize: "1rem" }}>Pehowa, Haryana, 136128</p>
-      <p style={{textAlign: "center" , margin: 0 , fontSize: "1rem" }}>Phone Number - +91 70158-23645</p>
+      <h1 style={{textAlign: "center" , margin: 0 , fontSize: "25px" }}>Foodies Hub</h1>
+      <p style={{textAlign: "center" , margin: 0 , fontSize: "15px" }}>Pehowa, Haryana, 136128</p>
+      <p style={{textAlign: "center" , margin: 0 , fontSize: "15px" }}>Phone Number - +91 70158-23645</p>
       <hr />
-      <h2  style={{textAlign: "center" , margin: 0}}>Invoice Details</h2>
+      <h2  style={{textAlign: "center" , margin: 0 , fontSize: "20px" }}>Invoice Details</h2>
       <div className="customer-info">
-      <p style={{marginLeft: ".8rem"}}>Customer Name &nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;{customerName ? customerName : "Guest Customer"}</p>
-      <p style={{marginLeft: ".8rem"}}>Phone Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;{customerPhone ? customerPhone : "...."}</p>
-      <p style={{marginLeft: ".8rem"}}>Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress ? customerAddress : "...."}</p>
+      <p style={{fontSize: "15px"}}>Customer Name &nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;{customerName ? customerName : "Guest Customer"}</p>
+      <p style={{fontSize: "15px"}}>Phone Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;{customerPhone ? customerPhone : "...."}</p>
+      <p style={{fontSize: "15px"}}>Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress ? customerAddress : "...."}</p>
 
       </div>
       <table>
@@ -121,8 +131,8 @@ const CustomerDetail = () => {
             <tr key={index} className="productdetail">
               <td>{product.size ? `${product.name} (${product.size})` : product.name}</td>
               <td style={{textAlign: "Center"}}>{product.quantity || 1}</td>
-              <td>₹{product.price}</td>
-              <td>₹{(product.price * (product.quantity || 1)).toFixed(2)}</td>
+              <td style={{textAlign: "Center"}}>₹{product.price}</td>
+              <td style={{textAlign: "Center"}}>₹{(product.price * (product.quantity || 1))}</td>
             </tr>
           ))}
         </tbody>
@@ -132,7 +142,7 @@ const CustomerDetail = () => {
       <p>Service Charge: <span>₹20.00</span></p>
      
       </div>
-      <p className="totalAmount">Total Amount&nbsp;₹{totalAmount}/-</p>
+      <p className="totalAmount">Net Total &nbsp;₹{totalAmount}.00/-</p>
     </div>
 
       <button onClick={handleSendClick} className="done">
@@ -147,9 +157,12 @@ const CustomerDetail = () => {
             <button onClick={handleSendToWhatsApp} style={styles.popupButton}>
               Send to WhatsApp
             </button>
-            <button onClick={handleDownloadInvoiceScreenshot} style={styles.popupButton}>
+            <button onClick={handlePngDownload} style={styles.popupButton}>
               Download Invoice
             </button>
+            <button onClick={handlePdfDownload} style={styles.popupButton}>
+        Download as PDF
+      </button>
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
               Cancel
             </button>
