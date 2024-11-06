@@ -16,6 +16,21 @@ const Invoice = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const navigate = useNavigate(); // For navigation
 
+  const [showRemoveBtn, setShowRemoveBtn] = useState(false);
+  let pressTimer;
+
+  const handlePressStart = () => {
+    // Set a timeout to show the remove button after 1 second (1000 ms)
+    pressTimer = setTimeout(() => {
+      setShowRemoveBtn(true);
+    }, 1000);
+  };
+
+  const handlePressEnd = () => {
+    // Clear the timeout if the user releases the press before 1 second
+    clearTimeout(pressTimer);
+  };
+
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -123,21 +138,21 @@ const Invoice = () => {
       <h1 className="invoice-header">Invoice Page</h1>
 
          {/* Add a search input to filter products */}
-         <input
+         <input 
         style={{  
-                margin: "4rem 0 1rem .5rem" , 
+                margin: "-3.2rem 0 1rem .5rem" , 
                 width: "90%",
               }}
         type="text"
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Search products..."
-        className="search-input"
+        className="search-input "
       />
 
       <div 
       style={{
-        marginBottom: "3rem"
+        margin: "6rem 0 3rem 0"
       }}
       >
       {filteredProducts.length > 0 ? (
@@ -156,22 +171,30 @@ const Invoice = () => {
                 )}
               </div>
 
-              <div className="sub-box">
+              <div className="sub-box"
+               onMouseDown={handlePressStart} // For desktops
+               onMouseUp={handlePressEnd} // For desktops
+               onTouchStart={handlePressStart} // For touch devices
+               onTouchEnd={handlePressEnd} // For touch devices
+              >
                 <h3>
-                  {product.name} ~ {product.size}
+                {product.name} {product.size ? `~ ${product.size}` : ""}
                 </h3>
                 {/* Show base price in invoice */}
                 <p style={{ color: "grey", fontWeight: 700 }}>
                   Price:{" "}
                   <span style={{ color: "black", fontWeight: 800 }}>
                     ₹ {product.price}
-                  </span>{" "}
-                  {/* <del>₹{product.mrp}</del> */}
-<span   className="remove-btn"
-                  onClick={() => handleRemoveProduct(product.name)}> 
-                  <FaTimesCircle />
                   </span>
-                </p>
+                  {showRemoveBtn && ( // Show remove button only if showRemoveBtn is true
+          <span
+            className="remove-btn"
+            onClick={() => handleRemoveProduct(product.name)}
+          >
+            <FaTimesCircle />
+          </span>
+        )}
+      </p>
 
               </div>
 

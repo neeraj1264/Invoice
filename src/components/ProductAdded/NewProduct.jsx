@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbCameraPlus } from "react-icons/tb";
 import { FaTimes, FaArrowRight, FaArrowLeft , FaCheckCircle } from "react-icons/fa";
-import "./Catologue.css";
+import "./NewProduct.css";
 
-const Catalog = ({ setSelectedProducts }) => {
+const NewProduct = ({ setSelectedProducts }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
 
@@ -67,7 +67,7 @@ const Catalog = ({ setSelectedProducts }) => {
 
     setTimeout(() => {
       setShowPopup(false);
-    }, 2000);
+    }, 500);
 
     } else {
       alert("Please fill in required fields!");
@@ -169,4 +169,4 @@ const Catalog = ({ setSelectedProducts }) => {
   );
 };
 
-export default Catalog;
+export default NewProduct;

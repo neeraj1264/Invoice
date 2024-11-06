@@ -1,10 +1,10 @@
 // App.js
 import React, { useState , useEffect} from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Catologue from "./components/catologue/Catologue";
 import Invoice from "./components/Invoice/Invoice";
 import "./App.css";
 import CustomerDetail from "./components/CustomerDetail/CustomerDetail";
+import NewProduct from "./components/ProductAdded/NewProduct";
 
 
 const App = () => {
@@ -30,7 +30,7 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={<Catologue setSelectedProducts={setSelectedProducts} />}
+          element={<NewProduct setSelectedProducts={setSelectedProducts} />}
         />
         <Route
           path="/invoice"
