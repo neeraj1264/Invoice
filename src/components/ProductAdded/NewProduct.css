@@ -106,8 +106,6 @@ font-size: 1rem;
     margin-left: .4rem;
 }
 
-// ---------------------------success popup ------------------------------------
-
 .trigger-btn {
   background-color: #28a745;
   color: white;
@@ -144,3 +142,5 @@ font-size: 1rem;
   font-size: 50px;
   margin-bottom: 10px;
 }
+
+

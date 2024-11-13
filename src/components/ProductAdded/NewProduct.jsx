@@ -1,8 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbCameraPlus } from "react-icons/tb";
-import { FaTimes, FaArrowRight, FaArrowLeft , FaCheckCircle } from "react-icons/fa";
+import {
+  FaTimes,
+  FaArrowRight,
+  FaArrowLeft,
+  FaCheckCircle,
+} from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./NewProduct.css";
+
+const toastOptions = {
+  position: "bottom-right",
+  autoClose: 2000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+};
 
 const NewProduct = ({ setSelectedProducts }) => {
   const navigate = useNavigate();
@@ -48,30 +63,78 @@ const NewProduct = ({ setSelectedProducts }) => {
   };
 
   // Add product to localStorage
+
+  // const handleAddProduct = () => {
+  //   if (product.name && product.price) {
+  //     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+  //     const updatedProducts = [...storedProducts, product];
+  //     localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+  //     // Reset form
+  //     setProduct({
+  //       name: "",
+  //       price: "",
+  //       mrp: "",
+  //       size: "",
+  //       image: "",
+  //     });
+
+  //     setShowPopup(true);
+
+  //   setTimeout(() => {
+  //     setShowPopup(false);
+  //   }, 500);
+
+  //   } else {
+  //     alert("Please fill in required fields!");
+  //   }
+  // };
+
   const handleAddProduct = () => {
-    if (product.name && product.price) {
-      const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-      const updatedProducts = [...storedProducts, product];
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
+    if (!product.name || !product.price) {
+      // toast.error(``, {
+      //   className: "toast-error",
+      //   icon: "⚠️",
+      // });
+      toast.error("Please fill in the required fields!", toastOptions);
 
-      // Reset form
-      setProduct({
-        name: "",
-        price: "",
-        mrp: "",
-        size: "",
-        image: "",
-      });
+      return;
+    }
 
-      setShowPopup(true);
+    // Get the stored products from localStorage
+    const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
 
+    // Check if the product already exists based on name, price, and size
+    const isProductExist = storedProducts.some(
+      (prod) =>
+        prod.name.toLowerCase() === product.name.toLowerCase() &&
+        prod.price === product.price &&
+        prod.size.toLowerCase() === product.size.toLowerCase()
+    );
+
+    if (isProductExist) {
+      // Show error toast if the product already exists
+      toast.error("This product is already exist!", toastOptions);
+      return;
+    }
+
+    // Add the new product to the stored products list
+    const updatedProducts = [...storedProducts, product];
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+    // Reset form
+    setProduct({
+      name: "",
+      price: "",
+      mrp: "",
+      size: "",
+      image: "",
+    });
+
+    setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
-    }, 500);
-
-    } else {
-      alert("Please fill in required fields!");
-    }
+    }, 1000);
   };
 
   const handleNavigateToInvoice = () => {
@@ -79,11 +142,23 @@ const NewProduct = ({ setSelectedProducts }) => {
   };
 
   const handleBack = () => {
-      navigate(-1);
+    navigate(-1);
   };
 
   return (
     <div>
+      <ToastContainer
+        className="custom-toast-container"
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {/* <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/> */}
       <h1 className="catologue-header"> New Product</h1>
       <div className="catologue-input-fields">
@@ -150,8 +225,8 @@ const NewProduct = ({ setSelectedProducts }) => {
         Save
       </button>
 
-  {/* Popup modal */}
-  {showPopup && (
+      {/* Popup modal */}
+      {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
             <FaCheckCircle className="tick-icon" />
