@@ -68,58 +68,61 @@ const Invoice = () => {
 
   // Function to handle adding a product
   const handleAddToWhatsApp = (product) => {
-    const updatedProductsToSend = [
-      ...productsToSend,
-      { ...product, quantity: 1 },
-    ];
-    setProductsToSend(updatedProductsToSend);
-    localStorage.setItem(
-      "productsToSend",
-      JSON.stringify(updatedProductsToSend)
-    ); // Save to localStorage
-  };
+    // Check if the product with the same name and price already exists
+    const exists = productsToSend.some(
+      (prod) => prod.name === product.name && prod.price === product.price
+    );
+  
+    if (!exists) {
+      const updatedProductsToSend = [
+        ...productsToSend,
+        { ...product, quantity: 1 },
+      ];
+      setProductsToSend(updatedProductsToSend);
+      localStorage.setItem(
+        "productsToSend",
+        JSON.stringify(updatedProductsToSend)
+      ); // Save to localStorage
+    }
+  };  
 
   // Function to handle quantity changes
-  const handleQuantityChange = (productName, delta) => {
+  const handleQuantityChange = (productName, productPrice, delta) => {
     const updatedProductsToSend = productsToSend
       .map((prod) => {
-        if (prod.name === productName) {
+        if (prod.name === productName && prod.price === productPrice) {
           const newQuantity = prod.quantity + delta;
           if (newQuantity < 1) {
-            // Remove the product if quantity goes below 1
-            return null;
+            return null; // Remove the product if quantity goes below 1
           }
           return { ...prod, quantity: newQuantity };
         }
         return prod;
       })
       .filter(Boolean); // Remove any null values
-
+  
     setProductsToSend(updatedProductsToSend);
-    localStorage.setItem(
-      "productsToSend",
-      JSON.stringify(updatedProductsToSend)
-    ); // Save to localStorage
+    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
   };
+  
+  
 
   // Function to remove a product from selected products and productsToSend
-  const handleRemoveProduct = (productName) => {
+  const handleRemoveProduct = (productName, productPrice) => {
     const updatedSelectedProducts = selectedProducts.filter(
-      (prod) => prod.name !== productName
+      (prod) => !(prod.name === productName && prod.price === productPrice)
     );
     const updatedProductsToSend = productsToSend.filter(
-      (prod) => prod.name !== productName
+      (prod) => !(prod.name === productName && prod.price === productPrice)
     );
-
+  
     setSelectedProducts(updatedSelectedProducts);
     setProductsToSend(updatedProductsToSend);
-
-    localStorage.setItem("products", JSON.stringify(updatedSelectedProducts)); // Update selected products in localStorage
-    localStorage.setItem(
-      "productsToSend",
-      JSON.stringify(updatedProductsToSend)
-    ); // Update productsToSend in localStorage
+  
+    localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
+    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
   };
+  
 
   // Function to calculate total price based on quantities
   const calculateTotalPrice = () => {
@@ -210,7 +213,7 @@ const Invoice = () => {
                       {showRemoveBtn && (
                         <span
                           className="remove-btn"
-                          onClick={() => handleRemoveProduct(product.name)}
+                          onClick={() => handleRemoveProduct(product.name, product.price)}
                         >
                           <FaTimesCircle />
                         </span>
@@ -218,38 +221,45 @@ const Invoice = () => {
                     </p>
                   </div>
   
-                  {productsToSend.some((prod) => prod.name === product.name) ? (
-                    <div className="quantity-btns">
-                      <button
-                        className="icons"
-                        onClick={() => handleQuantityChange(product.name, -1)}
-                      >
-                        <FaMinusCircle />
-                      </button>
-                      <span style={{ margin: "0 .4rem" }}>
-                        {
-                          productsToSend.find(
-                            (prod) => prod.name === product.name
-                          )?.quantity || 1
-                        }
-                      </span>
-                      <button
-                        className="icons"
-                        onClick={() => handleQuantityChange(product.name, 1)}
-                      >
-                        <FaPlusCircle />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="btn-box">
-                      <button
-                        onClick={() => handleAddToWhatsApp(product)}
-                        className="add-btn"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  )}
+                  {productsToSend.some(
+  (prod) => prod.name === product.name && prod.price === product.price
+) ? (
+  <div className="quantity-btns">
+    <button
+      className="icons"
+      onClick={() =>
+        handleQuantityChange(product.name, product.price, -1)
+      }
+    >
+      <FaMinusCircle />
+    </button>
+    <span style={{ margin: "0 .4rem" }}>
+      {
+        productsToSend.find(
+          (prod) => prod.name === product.name && prod.price === product.price
+        )?.quantity || 1
+      }
+    </span>
+    <button
+      className="icons"
+      onClick={() =>
+        handleQuantityChange(product.name, product.price, 1)
+      }
+    >
+      <FaPlusCircle />
+    </button>
+  </div>
+) : (
+  <div className="btn-box">
+    <button
+      onClick={() => handleAddToWhatsApp(product)}
+      className="add-btn"
+    >
+      Add
+    </button>
+  </div>
+)}
+
                 </div>
               
               ))}
