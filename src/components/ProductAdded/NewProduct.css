@@ -80,6 +80,11 @@ input {
   justify-content: space-between;
 }
 
+.dropdown{
+  padding: .5rem .3rem;
+  margin: .5rem 0;
+  color: grey;
+}
 .save-button{
     bottom: 0;
     text-align: center;

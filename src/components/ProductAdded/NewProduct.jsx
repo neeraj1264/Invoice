@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { TbCameraPlus } from "react-icons/tb";
 import {
@@ -29,7 +29,33 @@ const NewProduct = ({ setSelectedProducts }) => {
     mrp: "",
     size: "",
     image: "",
+    category: "",
   });
+
+  const [categories, setCategories] = useState([]);
+
+  const [newCategory, setNewCategory] = useState("");
+    
+  useEffect(() => {
+    const savedCategories = JSON.parse(localStorage.getItem("categories"));
+    if (savedCategories) {
+      setCategories(savedCategories);
+    }
+  }, []);
+
+     // Handle adding a new category
+  const handleAddCategory = (e) => {
+    if (e.key === "Enter" && newCategory.trim()) {
+      // Check if the category already exists
+      const newCategoryTrimmed = newCategory.trim();
+      if (!categories.includes(newCategoryTrimmed)) {
+        const updatedCategories = [...categories, newCategoryTrimmed];
+        setCategories(updatedCategories);
+        localStorage.setItem("categories", JSON.stringify(updatedCategories)); // Save updated categories to localStorage
+      }
+      setNewCategory(""); // Clear the input field
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,40 +88,8 @@ const NewProduct = ({ setSelectedProducts }) => {
     }));
   };
 
-  // Add product to localStorage
-
-  // const handleAddProduct = () => {
-  //   if (product.name && product.price) {
-  //     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-  //     const updatedProducts = [...storedProducts, product];
-  //     localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-  //     // Reset form
-  //     setProduct({
-  //       name: "",
-  //       price: "",
-  //       mrp: "",
-  //       size: "",
-  //       image: "",
-  //     });
-
-  //     setShowPopup(true);
-
-  //   setTimeout(() => {
-  //     setShowPopup(false);
-  //   }, 500);
-
-  //   } else {
-  //     alert("Please fill in required fields!");
-  //   }
-  // };
-
   const handleAddProduct = () => {
-    if (!product.name || !product.price) {
-      // toast.error(``, {
-      //   className: "toast-error",
-      //   icon: "⚠️",
-      // });
+    if (!product.name || !product.price || !product.category) {
       toast.error("Please fill in the required fields!", toastOptions);
 
       return;
@@ -129,6 +123,7 @@ const NewProduct = ({ setSelectedProducts }) => {
       mrp: "",
       size: "",
       image: "",
+      category: "",
     });
 
     setShowPopup(true);
@@ -220,6 +215,34 @@ const NewProduct = ({ setSelectedProducts }) => {
           value={product.size}
           onChange={handleInputChange}
         />
+        {/* Dropdown for selecting category */}
+        <div 
+        style={{display: "flex" , justifyContent: "space-between"}}
+        >
+        <select
+        name="category"
+        className="dropdown"
+        value={product.category}
+        onChange={handleInputChange}
+      >
+        <option value="">Select Category*</option>
+        {categories.map((category, index) => (
+          <option key={index} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+
+        {/* Input for adding a new category */}
+        <input
+        type="text"
+        placeholder="Add new category"
+        value={newCategory}
+        onChange={(e) => setNewCategory(e.target.value)}
+        onKeyDown={handleAddCategory}
+        className="add-category-input"
+      />
+      </div>
       </div>
       <button className="save-button" onClick={handleAddProduct}>
         Save
