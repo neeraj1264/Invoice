@@ -282,7 +282,7 @@ const Invoice = () => {
 
 <div className="invoice-btn">
 
-      <button onClick={()=>navigate("/")}>
+      <button onClick={()=>navigate("/NewProduct")}>
         + Product
       </button>
 
