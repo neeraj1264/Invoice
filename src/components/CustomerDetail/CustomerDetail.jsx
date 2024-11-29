@@ -181,8 +181,8 @@ td:nth-child(4) {
     `);
     newWindow.document.close();
     newWindow.focus();
-    // newWindow.print();
-    // newWindow.close(); 
+    newWindow.print();
+    newWindow.close(); 
   };
 
   return (
