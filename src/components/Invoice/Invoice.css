@@ -1,7 +1,7 @@
 .back-arrow {
   position: fixed;
   color: white;
-  font-size: 1.4rem;
+  font-size: 1rem;
   top: 0.6rem;
   left: 0.6rem;
   z-index: 1;
@@ -11,7 +11,7 @@
   text-align: center;
   background: var(--bg);
   color: white;
-  font-size: 1.4rem;
+  font-size: 1rem;
   margin: 0;
   padding: 0.5rem 0;
   border-radius: 0 0 1rem 1rem;
@@ -33,6 +33,7 @@
   margin: auto;
   padding: .3rem 1rem;
   border-radius: .5rem;
+  font-size: 1rem;
 }
 .main-box {
   display: flex;
@@ -74,9 +75,10 @@
 
 .add-btn {
   padding: 0.3rem 1rem;
-  background: var(--bg);
-  color: white;
+  background: white;
+  color: var(--bg);
   font-weight: 800;
+  border-color: var(--bg);
 }
 
 .quantity-btns {
@@ -89,12 +91,13 @@
 }
 
 .icons {
-  background: var(--bg);
-  color: white;
+  background: white;
+  color: var(--bg);
   padding-top: 0.3rem;
+  border-color: var(--bg);
 }
 
-.done {
+/* .done {
   position: fixed;
   bottom: 1rem;
   right: 1rem;
@@ -103,10 +106,28 @@
   font-size: 1.4rem;
   padding: 0.2rem 0.8rem;
   border-radius: 0.7rem;
+} */
+
+.invoice-btn {
+  position: fixed;
+  bottom: 1rem;
+  display: flex;
+  justify-content: space-between; /* This will align the buttons to the left and right */
+  width: calc(100% - 2rem); /* Adjust width to account for left and right padding */
+  padding: 0 1rem;
+}
+
+.invoice-btn button {
+  background: var(--bg);
+  color: white;
+  font-size: 1rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 0.7rem;
+  border-color: var(--bg) ;
 }
 
 .Invoice-arrow {
-  font-size: 1rem;
+  font-size: .8rem !important;
   margin-left: 0.4rem;
 }
 

@@ -37,23 +37,22 @@ const Invoice = () => {
   };
 
   const filteredProducts = selectedProducts
-  .filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .reduce((acc, product) => {
-    const category = product.category || "Others";
+    .filter((product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .reduce((acc, product) => {
+      const category = product.category || "Others";
 
-    // Ensure the category key exists in the accumulator
-    if (!acc[category]) {
-      acc[category] = [];
-    }
+      // Ensure the category key exists in the accumulator
+      if (!acc[category]) {
+        acc[category] = [];
+      }
 
-    // Add the product to the correct category group
-    acc[category].push(product);
+      // Add the product to the correct category group
+      acc[category].push(product);
 
-    return acc;
-  }, {});
-
+      return acc;
+    }, {});
 
   // Load products from localStorage on component mount
   useEffect(() => {
@@ -72,7 +71,7 @@ const Invoice = () => {
     const exists = productsToSend.some(
       (prod) => prod.name === product.name && prod.price === product.price
     );
-  
+
     if (!exists) {
       const updatedProductsToSend = [
         ...productsToSend,
@@ -84,7 +83,7 @@ const Invoice = () => {
         JSON.stringify(updatedProductsToSend)
       ); // Save to localStorage
     }
-  };  
+  };
 
   // Function to handle quantity changes
   const handleQuantityChange = (productName, productPrice, delta) => {
@@ -100,12 +99,13 @@ const Invoice = () => {
         return prod;
       })
       .filter(Boolean); // Remove any null values
-  
+
     setProductsToSend(updatedProductsToSend);
-    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
+    localStorage.setItem(
+      "productsToSend",
+      JSON.stringify(updatedProductsToSend)
+    );
   };
-  
-  
 
   // Function to remove a product from selected products and productsToSend
   const handleRemoveProduct = (productName, productPrice) => {
@@ -115,14 +115,16 @@ const Invoice = () => {
     const updatedProductsToSend = productsToSend.filter(
       (prod) => !(prod.name === productName && prod.price === productPrice)
     );
-  
+
     setSelectedProducts(updatedSelectedProducts);
     setProductsToSend(updatedProductsToSend);
-  
+
     localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
-    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
+    localStorage.setItem(
+      "productsToSend",
+      JSON.stringify(updatedProductsToSend)
+    );
   };
-  
 
   // Function to calculate total price based on quantities
   const calculateTotalPrice = () => {
@@ -144,21 +146,22 @@ const Invoice = () => {
     navigate("/customer-detail"); // Navigate to customer detail page
   };
 
+
   const handleBack = () => {
     navigate(-1);
   };
-  
+
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
     console.log("Loaded products:", products); // Debug log
     setSelectedProducts(products);
   }, []);
-  
+
   return (
     <div>
       <FaArrowLeft className="back-arrow" onClick={handleBack} />
       <h1 className="invoice-header">Invoice Page</h1>
-  
+
       {/* Add a search input to filter products */}
       <div>
         <input
@@ -173,112 +176,125 @@ const Invoice = () => {
           className="search-input"
         />
       </div>
-  
+
       <div style={{ margin: "6rem 0 3rem 0" }}>
         {Object.keys(filteredProducts).length > 0 ? (
-         Object.keys(filteredProducts)
-         .sort((a, b) => a.localeCompare(b)) // Sort category names alphabetically
-         .map((category, index) => (       
-            <React.Fragment key={index}>
-              <h2 className="category">{category}</h2>
-              {filteredProducts[category].map((product, idx) => (
-                <div key={idx} className="main-box">
-                  <div className="img-box">
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        style={{ width: "3rem", height: "3rem" }}
-                      />
+          Object.keys(filteredProducts)
+            .sort((a, b) => a.localeCompare(b)) // Sort category names alphabetically
+            .map((category, index) => (
+              <React.Fragment key={index}>
+                <h2 className="category">{category}</h2>
+                {filteredProducts[category].map((product, idx) => (
+                  <div key={idx} className="main-box">
+                    <div className="img-box">
+                      {product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          style={{ width: "3rem", height: "3rem" }}
+                        />
+                      ) : (
+                        <FaImage style={{ width: "3rem", height: "3rem" }} />
+                      )}
+                    </div>
+
+                    <div
+                      className="sub-box"
+                      onMouseDown={handlePressStart}
+                      onMouseUp={handlePressEnd}
+                      onTouchStart={handlePressStart}
+                      onTouchEnd={handlePressEnd}
+                    >
+                      <h3>
+                        {product.name} {product.size ? `~ ${product.size}` : ""}
+                      </h3>
+                      <p style={{ color: "grey", fontWeight: 700 }}>
+                        Price:{" "}
+                        <span style={{ color: "black", fontWeight: 800 }}>
+                          ₹ {product.price}
+                        </span>
+                        {showRemoveBtn && (
+                          <span
+                            className="remove-btn"
+                            onClick={() =>
+                              handleRemoveProduct(product.name, product.price)
+                            }
+                          >
+                            <FaTimesCircle />
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    {productsToSend.some(
+                      (prod) =>
+                        prod.name === product.name &&
+                        prod.price === product.price
+                    ) ? (
+                      <div className="quantity-btns">
+                        <button
+                          className="icons"
+                          onClick={() =>
+                            handleQuantityChange(
+                              product.name,
+                              product.price,
+                              -1
+                            )
+                          }
+                        >
+                          <FaMinusCircle />
+                        </button>
+                        <span style={{ margin: "0 .4rem" , color: "var(--bg)"}}>
+                          {productsToSend.find(
+                            (prod) =>
+                              prod.name === product.name &&
+                              prod.price === product.price
+                          )?.quantity || 1}
+                        </span>
+                        <button
+                          className="icons"
+                          onClick={() =>
+                            handleQuantityChange(product.name, product.price, 1)
+                          }
+                        >
+                          <FaPlusCircle />
+                        </button>
+                      </div>
                     ) : (
-                      <FaImage style={{ width: "3rem", height: "3rem" }} />
+                      <div className="btn-box">
+                        <button
+                          onClick={() => handleAddToWhatsApp(product)}
+                          className="add-btn"
+                        >
+                          Add
+                        </button>
+                      </div>
                     )}
                   </div>
-  
-                  <div
-                    className="sub-box"
-                    onMouseDown={handlePressStart}
-                    onMouseUp={handlePressEnd}
-                    onTouchStart={handlePressStart}
-                    onTouchEnd={handlePressEnd}
-                  >
-                    <h3>
-                      {product.name} {product.size ? `~ ${product.size}` : ""}
-                    </h3>
-                    <p style={{ color: "grey", fontWeight: 700 }}>
-                      Price:{" "}
-                      <span style={{ color: "black", fontWeight: 800 }}>
-                        ₹ {product.price}
-                      </span>
-                      {showRemoveBtn && (
-                        <span
-                          className="remove-btn"
-                          onClick={() => handleRemoveProduct(product.name, product.price)}
-                        >
-                          <FaTimesCircle />
-                        </span>
-                      )}
-                    </p>
-                  </div>
-  
-                  {productsToSend.some(
-  (prod) => prod.name === product.name && prod.price === product.price
-) ? (
-  <div className="quantity-btns">
-    <button
-      className="icons"
-      onClick={() =>
-        handleQuantityChange(product.name, product.price, -1)
-      }
-    >
-      <FaMinusCircle />
-    </button>
-    <span style={{ margin: "0 .4rem" }}>
-      {
-        productsToSend.find(
-          (prod) => prod.name === product.name && prod.price === product.price
-        )?.quantity || 1
-      }
-    </span>
-    <button
-      className="icons"
-      onClick={() =>
-        handleQuantityChange(product.name, product.price, 1)
-      }
-    >
-      <FaPlusCircle />
-    </button>
-  </div>
-) : (
-  <div className="btn-box">
-    <button
-      onClick={() => handleAddToWhatsApp(product)}
-      className="add-btn"
-    >
-      Add
-    </button>
-  </div>
-)}
-
-                </div>
-              
-              ))}
-               <hr />
-            </React.Fragment>
-          ))
+                ))}
+                <hr />
+              </React.Fragment>
+            ))
         ) : (
           <p>No products selected</p>
         )}
       </div>
-  
-      {/* Display the total price */}
-      <button onClick={handleDone} className="done">
+
+<div className="invoice-btn">
+
+      <button onClick={()=>navigate("/")}>
+        + Product
+      </button>
+
+      <button onClick={handleDone}>
         Next
         <FaArrowRight className="Invoice-arrow" />
       </button>
+
+</div>
+   
     </div>
   );
-  
 };
 
 export default Invoice;
