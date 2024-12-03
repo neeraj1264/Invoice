@@ -9,7 +9,7 @@
   text-align: center;
   background: var(--bg);
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   margin: 0;
   padding: 0.5rem;
   border-radius: 0 0 1rem 1rem;
@@ -91,7 +91,7 @@ input {
   left: 1rem;
   background: var(--bg);
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   padding: .2rem .8rem;
   border-radius: .7rem;
 }
@@ -101,7 +101,7 @@ input {
     right: 1rem;
     background: var(--bg);
     color: white;
-    font-size: 1rem;
+    font-size: 1.4rem;
     padding: .2rem .8rem;
     border-radius: .7rem;
 }

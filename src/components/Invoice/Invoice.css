@@ -1,7 +1,7 @@
 .back-arrow {
   position: fixed;
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   top: 0.6rem;
   left: 0.6rem;
   z-index: 1;
@@ -11,7 +11,7 @@
   text-align: center;
   background: var(--bg);
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   margin: 0;
   padding: 0.5rem 0;
   border-radius: 0 0 1rem 1rem;
@@ -25,7 +25,7 @@
 .searchbar{
   position: fixed;
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   top: .6rem;
   right: .6rem;
 }
@@ -161,7 +161,7 @@ margin: 3rem 0;
 .invoice-btn button {
   background: var(--bg);
   color: white;
-  font-size: 1rem;
+  font-size: 1.4rem;
   padding: 0.2rem 0.8rem;
   border-radius: 0.7rem;
   border-color: var(--bg) ;

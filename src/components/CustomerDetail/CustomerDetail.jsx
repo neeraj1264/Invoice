@@ -359,7 +359,7 @@ const styles = {
     marginTop: "10px",
     backgroundColor: "red",
     color: "#fff",
-    padding: "10px",
+    padding: "5px 10px",
     borderRadius: "5px",
     cursor: "pointer",
   },
