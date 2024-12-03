@@ -8,7 +8,9 @@ import {
   FaArrowRight,
   FaArrowLeft,
   FaTimesCircle,
+  FaSearch,
 } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
 
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -18,6 +20,19 @@ const Invoice = () => {
 
   const [showRemoveBtn, setShowRemoveBtn] = useState(false);
   let pressTimer;
+
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearchClick = () => {
+    setIsSearching(true);
+    document.querySelector(".main").style.margin = "4rem 0";
+  };
+
+  const handleBackClick = () => {
+    setIsSearching(false);
+    document.querySelector(".main").style.margin = "3rem 0";
+
+  };
 
   const handlePressStart = () => {
     // Set a timeout to show the remove button after 1 second (1000 ms)
@@ -153,31 +168,40 @@ const Invoice = () => {
 
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
-    console.log("Loaded products:", products); // Debug log
+    // console.log("Loaded products:", products); // Debug log
     setSelectedProducts(products);
   }, []);
 
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={handleBack} />
-      <h1 className="invoice-header">Invoice Page</h1>
 
-      {/* Add a search input to filter products */}
-      <div>
+      <div className="header">
+        {!isSearching ? (
+          <>
+            <FaArrowLeft className="back-arrow" onClick={handleBack} />
+            <h1 className="invoice-header">Invoice Page</h1>
+            <FaSearch className="searchbar" onClick={handleSearchClick} />
+          </>
+        ) : (
+          <div className="search-bar">
         <input
-          style={{
-            margin: "-3.2rem 0 1rem .5rem",
-            width: "90%",
-          }}
+         style={{border: "none"}}
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Search products..."
           className="search-input"
         />
+ <IoMdCloseCircle className="searchX" onClick={handleBackClick}/>
+
+      </div>
+        )}
       </div>
 
-      <div style={{ margin: "6rem 0 3rem 0" }}>
+      {/* Add a search input to filter products */}
+
+
+      <div className="main">
         {Object.keys(filteredProducts).length > 0 ? (
           Object.keys(filteredProducts)
             .sort((a, b) => a.localeCompare(b)) // Sort category names alphabetically
@@ -205,7 +229,7 @@ const Invoice = () => {
                       onTouchStart={handlePressStart}
                       onTouchEnd={handlePressEnd}
                     >
-                      <h3>
+                      <h3 className="p-name">
                         {product.name} {product.size ? `~ ${product.size}` : ""}
                       </h3>
                       <p style={{ color: "grey", fontWeight: 700 }}>
@@ -244,7 +268,7 @@ const Invoice = () => {
                         >
                           <FaMinusCircle />
                         </button>
-                        <span style={{ margin: "0 .4rem" , color: "var(--bg)"}}>
+                        <span style={{ margin: "0 .4rem"}}>
                           {productsToSend.find(
                             (prod) =>
                               prod.name === product.name &&
