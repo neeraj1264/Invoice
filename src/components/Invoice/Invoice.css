@@ -50,7 +50,7 @@
     width: 80vw;
 }
 .searchX{
-  position: fixed;
+  position: relative;
   color: var(--bg);
   font-size: 1.7rem;
   top: 0.65rem;
