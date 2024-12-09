@@ -62,10 +62,10 @@ const CustomerDetail = () => {
   const handlePngDownload = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
-    setTimeout(() => {
-      handleScreenshot("invoice");
-      invoiceRef.current.style.display = "none";
-    }, 10);
+    // setTimeout(() => {
+    //   handleScreenshot("invoice");
+    //   invoiceRef.current.style.display = "none";
+    // }, 10);
   };
 
   const handlePdfDownload = () => {
@@ -182,7 +182,7 @@ td:nth-child(4) {
     newWindow.document.close();
     newWindow.focus();
     newWindow.print();
-    newWindow.close(); 
+    newWindow.close();
   };
 
   return (
@@ -213,10 +213,7 @@ td:nth-child(4) {
           placeholder="Customer address..."
         />
       </div>
-
       {/* Hidden Invoice Content */}
-
-      
       <div
         className="invoice-content"
         id="invoice"
@@ -238,8 +235,33 @@ td:nth-child(4) {
           Invoice Details
         </h2>
         <div className="customer-info">
+          {/* Bill No and Date */}
           <p style={{ fontSize: "15px" }}>
-            Customer Name &nbsp;&nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;&nbsp;
+            Bill
+            No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {`#${Math.floor(1000 + Math.random() * 9000)}`}{" "}
+            {/* Random 6-digit bill number */}
+          </p>
+          <p style={{ fontSize: "15px" }}>
+            Created
+            On&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }) +
+              " " +
+              new Date().toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true, // Enables 12-hour format
+              })}
+          </p>
+
+          <p style={{ fontSize: "15px" }}>
+            Customer Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             {customerName ? customerName : "Guest Customer"}
           </p>
           <p style={{ fontSize: "15px" }}>
@@ -300,7 +322,6 @@ td:nth-child(4) {
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
       </button>
-
       ;{/* Modal Popup */}
       {showPopup && (
         <div style={styles.popupOverlay}>
