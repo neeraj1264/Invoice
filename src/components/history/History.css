@@ -1,0 +1,67 @@
+.history-container {
+  font-family: Arial, sans-serif;
+}
+.back-arrow {
+  position: fixed;
+  color: white;
+  font-size: 1.4rem !important;
+  top: 0.6rem;
+  left: 0.6rem;
+}
+
+.history-header {
+  text-align: center;
+  background: var(--bg);
+  color: white;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 6px 2px black;
+  margin-bottom: 1rem;
+}
+
+h1, h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.details-table,
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.details-table th,
+.details-table td,
+.products-table th,
+.products-table td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 0.8rem;
+}
+
+.details-table th,
+.products-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.details-table td {
+  background-color: #f9f9f9;
+}
+
+.products-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.products-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50;
+}

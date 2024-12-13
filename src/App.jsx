@@ -5,6 +5,7 @@ import Invoice from "./components/Invoice/Invoice";
 import "./App.css";
 import CustomerDetail from "./components/CustomerDetail/CustomerDetail";
 import NewProduct from "./components/ProductAdded/NewProduct";
+import History from "./components/history/History";
 
 
 const App = () => {
@@ -39,6 +40,8 @@ const App = () => {
           element={<Invoice selectedProducts={selectedProducts} />}
         />
         <Route path="/customer-detail" element={<CustomerDetail />} />
+        <Route path="/history" element={<History />} />
+
 
       </Routes>
     </Router>
