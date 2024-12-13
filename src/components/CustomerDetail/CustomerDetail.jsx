@@ -268,11 +268,9 @@ td:nth-child(4) {
 
   return (
     <div>
-      <Header
-        headerName="Customer Details"
-        onSearch={(query) => setSearchQuery(query)}
-      />
-      <div className="cust-inputs" style={{ marginTop: "4rem" }}>
+     <FaArrowLeft className="back-arrow" onClick={handleBack} />
+     <h1 className="Customer-header">Customer Details</h1>
+      <div className="cust-inputs" >
         <input
           type="text"
           value={customerName}
