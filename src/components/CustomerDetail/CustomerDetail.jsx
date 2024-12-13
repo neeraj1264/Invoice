@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
+import Header from "../header/Header";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -77,10 +78,15 @@ const CustomerDetail = () => {
     }, 10);
   };
 
-  const handlePrintKOT = () => {
-    const kotContent = document.getElementById("invoice").innerHTML; // Fetch KOT content
-    const newWindow = window.open("", "", "width=600,height=400"); // Open a new window
-    newWindow.document.write(`
+  const DesktopPrint = () => {
+    const image = new Image();
+    image.src = "/logo.png"; // Use an absolute path
+
+    image.onload = () => {
+      // Proceed with printing after the image is fully loaded
+      const kotContent = document.getElementById("invoice").innerHTML; // Fetch KOT content
+      const newWindow = window.open("", "", "width=600,height=400"); // Open a new window
+      newWindow.document.write(`
       <html>
         <head>
           <title>KOT</title>
@@ -179,17 +185,94 @@ td:nth-child(4) {
         </body>
       </html>
     `);
-    newWindow.document.close();
-    newWindow.focus();
-    newWindow.print();
-    newWindow.close();
+      newWindow.document.close();
+      newWindow.focus();
+      newWindow.print();
+      newWindow.close();
+    };
+    image.onerror = () => {
+      console.error("Image failed to load.");
+    };
+  };
+
+  const MobilePrint = () => {
+    const image = new Image();
+    image.src = "/logo.png"; // Use an absolute path
+
+    image.onload = () => {
+      // Proceed with printing after the image is fully loaded
+
+      const kotContent = document.getElementById("mobileinvoice").innerHTML; // Fetch KOT content
+      const newWindow = window.open("", "", "width=600,height=400"); // Open a new window
+      newWindow.document.write(`
+      <html>
+        <head>
+          <title>KOT</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              font-size: 12px; /* Adjust font size for 58mm printers */
+              margin: 0;
+              padding: 0;
+              width: 48mm; /* Limit width to fit within 58mm printer */
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            th, td {
+              border: 1px solid black;
+              padding: 4px;
+              text-align: left;
+              font-size: 10px; /* Smaller font for compact printing */
+            }
+            .total {
+              font-size: 13px;
+              text-align: left;
+              margin-top: 4px;
+            }
+              .totalAmount{
+              font-size: 15px;
+              font-weight: 800;
+              border: 2px dashed;
+              }
+              .thanku{
+              text-align: center;
+              font-size: 15px;
+              }
+             .logo {
+               display: flex;
+               margin: auto;
+                    }
+            .logo img {
+              width: 40px; /* Adjust logo size */
+              height: auto;
+            }
+          </style>
+        </head>
+        <body>
+          ${kotContent}
+          <div class="thanku">Thank You!</div>
+        </body>
+      </html>
+    `);
+      newWindow.document.close();
+      newWindow.focus();
+      newWindow.print();
+      newWindow.close();
+    };
+    image.onerror = () => {
+      console.error("Image failed to load.");
+    };
   };
 
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={handleBack} />
-      <h1 className="Customer-header">Customer Details</h1>
-      <div className="cust-inputs">
+      <Header
+        headerName="Customer Details"
+        onSearch={(query) => setSearchQuery(query)}
+      />
+      <div className="cust-inputs" style={{ marginTop: "4rem" }}>
         <input
           type="text"
           value={customerName}
@@ -220,7 +303,7 @@ td:nth-child(4) {
         ref={invoiceRef}
         style={{ display: "none" }}
       >
-        <img src="logo.png" alt="Logo" width={100} className="logo" />
+        <img src="/logo.png" alt="Logo" width={100} className="logo" />
         <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
           Foodies Hub
         </h1>
@@ -319,6 +402,108 @@ td:nth-child(4) {
         </div>
         <p className="totalAmount">Net Total &nbsp;₹{totalAmount}.00/-</p>
       </div>
+      {/* mobile print content */}
+      <div
+        className="invoice-content"
+        id="mobileinvoice"
+        ref={invoiceRef}
+        style={{ display: "none" }}
+      >
+        <img src="/logo.png" alt="Logo" width={100} className="logo" />
+        <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
+          Foodies Hub
+        </h1>
+        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
+          Pehowa, Haryana, 136128
+        </p>
+        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
+          Phone Number - +91 70158-23645
+        </p>
+        <hr />
+        <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
+          Invoice Details
+        </h2>
+        <div className="customer-info">
+          {/* Bill No and Date */}
+          <p style={{ fontSize: "15px" }}>
+            Bill No&nbsp;&nbsp;-&nbsp;&nbsp;
+            {`#${Math.floor(1000 + Math.random() * 9000)}`}{" "}
+            {/* Random 6-digit bill number */}
+          </p>
+          <p style={{ fontSize: "15px" }}>
+            Created On&nbsp;
+            {new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }) +
+              " " +
+              new Date().toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true, // Enables 12-hour format
+              })}
+          </p>
+
+          <p style={{ fontSize: "15px" }}>
+            Customer Name &nbsp;- &nbsp;
+            {customerName ? customerName : "Guest Customer"}
+          </p>
+          <p style={{ fontSize: "15px" }}>
+            Phone Number &nbsp;- &nbsp;{customerPhone ? customerPhone : "...."}
+          </p>
+          <p style={{ fontSize: "15px" }}>
+            Address&nbsp;-&nbsp;
+            {customerAddress ? customerAddress : "...."}
+          </p>
+        </div>
+        <table>
+          <thead>
+            <tr className="productname">
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedProducts.map((product, index) => (
+              <tr key={index} className="productdetail">
+                <td>
+                  {product.size
+                    ? `${product.name} (${product.size})`
+                    : product.name}
+                </td>
+                <td style={{ textAlign: "Center" }}>{product.quantity || 1}</td>
+                <td style={{ textAlign: "Center" }}>₹{product.price}</td>
+                <td style={{ textAlign: "Center" }}>
+                  ₹{product.price * (product.quantity || 1)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="total">
+          <p>
+            Item Total:{" "}
+            <span>
+              ₹
+              {selectedProducts
+                .reduce(
+                  (sum, product) =>
+                    sum + product.price * (product.quantity || 1),
+                  0
+                )
+                .toFixed(2)}
+            </span>
+          </p>
+          <p>
+            Service Charge: <span>₹20.00</span>
+          </p>
+        </div>
+        <p className="totalAmount">Net Total &nbsp;₹{totalAmount}.00/-</p>
+      </div>
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
       </button>
@@ -336,8 +521,11 @@ td:nth-child(4) {
             <button onClick={handlePdfDownload} style={styles.popupButton}>
               Download as PDF
             </button>
-            <button onClick={handlePrintKOT} style={styles.popupButton}>
-              Download KOT
+            <button onClick={DesktopPrint} style={styles.popupButton}>
+              Desktop Print
+            </button>
+            <button onClick={MobilePrint} style={styles.popupButton}>
+              Mobile Print
             </button>
 
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>

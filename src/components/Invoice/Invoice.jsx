@@ -6,11 +6,13 @@ import {
   FaMinusCircle,
   FaPlusCircle,
   FaArrowRight,
-  FaArrowLeft,
+  FaBars,
   FaTimesCircle,
   FaSearch,
 } from "react-icons/fa";
+// import { AiOutlineBars } from "react-icons/ai";
 import { IoMdCloseCircle } from "react-icons/io";
+import Header from "../header/Header";
 
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -22,10 +24,11 @@ const Invoice = () => {
   let pressTimer;
 
   const [isSearching, setIsSearching] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearchClick = () => {
     setIsSearching(true);
-    document.querySelector(".main").style.margin = "4rem 0";
+    // document.querySelector(".main").style.margin = "4rem 0";
   };
 
   const handleBackClick = () => {
@@ -172,31 +175,14 @@ const Invoice = () => {
     setSelectedProducts(products);
   }, []);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);  
+  };
+
   return (
     <div>
 
-      <div className="header">
-        {!isSearching ? (
-          <>
-            <FaArrowLeft className="back-arrow" onClick={handleBack} />
-            <h1 className="invoice-header">Invoice Page</h1>
-            <FaSearch className="searchbar" onClick={handleSearchClick} />
-          </>
-        ) : (
-          <div className="search-bar">
-        <input
-         style={{border: "none"}}
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search products..."
-          className="search-input"
-        />
- <IoMdCloseCircle className="searchX" onClick={handleBackClick}/>
-
-      </div>
-        )}
-      </div>
+<Header headerName="Invoice" onSearch={(query) => setSearchQuery(query)} />
 
       {/* Add a search input to filter products */}
 
@@ -234,7 +220,7 @@ const Invoice = () => {
                       </h3>
                       <p style={{ color: "grey", fontWeight: 700 }}>
                         Price:{" "}
-                        <span style={{ color: "black", fontWeight: 800 }}>
+                        <span style={{ color: "black", fontWeight: 800 ,     fontFamily: "Noto Sans Roboto Arial"}}>
                           ₹ {product.price}
                         </span>
                         {showRemoveBtn && (

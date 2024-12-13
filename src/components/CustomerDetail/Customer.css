@@ -1,12 +1,12 @@
-.back-arrow {
+{{/* .back-arrow {
   position: fixed;
   color: white;
   font-size: 1.4rem !important;
   top: 0.6rem;
   left: 0.6rem;
-}
+} */}}
 
-.Customer-header {
+{{/* .Customer-header {
   text-align: center;
   background: var(--bg);
   color: white;
@@ -16,7 +16,7 @@
   border-radius: 0 0 1rem 1rem;
   box-shadow: 2px 2px 6px 2px black;
   margin-bottom: 1rem;
-}
+} */}}
 
 .cust-inputs input {
   width: 80vw;
