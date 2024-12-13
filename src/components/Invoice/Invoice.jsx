@@ -17,25 +17,13 @@ import Header from "../header/Header";
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productsToSend, setProductsToSend] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [Search, setSearch] = useState(""); // State for search query
   const navigate = useNavigate(); // For navigation
 
   const [showRemoveBtn, setShowRemoveBtn] = useState(false);
   let pressTimer;
 
-  const [isSearching, setIsSearching] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleSearchClick = () => {
-    setIsSearching(true);
-    // document.querySelector(".main").style.margin = "4rem 0";
-  };
-
-  const handleBackClick = () => {
-    setIsSearching(false);
-    document.querySelector(".main").style.margin = "3rem 0";
-
-  };
 
   const handlePressStart = () => {
     // Set a timeout to show the remove button after 1 second (1000 ms)
@@ -49,14 +37,10 @@ const Invoice = () => {
     clearTimeout(pressTimer);
   };
 
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
 
   const filteredProducts = selectedProducts
     .filter((product) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      product.name.toLowerCase().includes(Search.toLowerCase())
     )
     .reduce((acc, product) => {
       const category = product.category || "Others";
@@ -164,25 +148,16 @@ const Invoice = () => {
     navigate("/customer-detail"); // Navigate to customer detail page
   };
 
-
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
     // console.log("Loaded products:", products); // Debug log
     setSelectedProducts(products);
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);  
-  };
-
   return (
     <div>
 
-<Header headerName="Invoice" onSearch={(query) => setSearchQuery(query)} />
+<Header headerName="Invoice" setSearch={setSearch} />
 
       {/* Add a search input to filter products */}
 
