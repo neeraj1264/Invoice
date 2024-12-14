@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import "./Header.css";
+import { Link , useNavigate } from "react-router-dom";
 
 const Header = ({ headerName, setSearch }) => {
   const handleSearchChange = (event) => {
     setSearch(event.target.value); // Update local query state
   };
+    const navigate = useNavigate();
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar fixed-top">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
+        <Link className="navbar-brand" href="#">
           {headerName}
-        </a>
+        </Link>
         <div className="search-container">
           <input
             className="form-control me-2"
@@ -36,18 +38,18 @@ const Header = ({ headerName, setSearch }) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a
+              <Link
                 className="nav-link active custom-text"
                 aria-current="page"
                 href="#"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link custom-text" href="#">
-                Link
-              </a>
+              <Link className="nav-link custom-text" to="/history">
+                Order History
+              </Link>
             </li>
           </ul>
         </div>

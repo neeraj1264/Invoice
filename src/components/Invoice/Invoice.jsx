@@ -23,8 +23,6 @@ const Invoice = () => {
   const [showRemoveBtn, setShowRemoveBtn] = useState(false);
   let pressTimer;
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const handlePressStart = () => {
     // Set a timeout to show the remove button after 1 second (1000 ms)
     pressTimer = setTimeout(() => {
@@ -36,7 +34,6 @@ const Invoice = () => {
     // Clear the timeout if the user releases the press before 1 second
     clearTimeout(pressTimer);
   };
-
 
   const filteredProducts = selectedProducts
     .filter((product) =>
@@ -128,26 +125,42 @@ const Invoice = () => {
     );
   };
 
-  // Function to calculate total price based on quantities
-  const calculateTotalPrice = () => {
-    return productsToSend.reduce((total, product) => {
-      return total + product.price * product.quantity;
-    }, 20); // Assuming a base fee of ₹20
-  };
-
   // Navigate to the customer details page
   const handleDone = () => {
     if (productsToSend.length === 0) {
       alert("Please add at least one product before proceeding.");
       return; // Prevent navigation if no products are selected
     }
-
-    // Store the selected products and total amount in localStorage before navigating
-    localStorage.setItem("selectedProducts", JSON.stringify(productsToSend));
-    localStorage.setItem("totalAmount", calculateTotalPrice());
+  
+    // Generate a unique identifier for the order
+    const orderId = `order_${Date.now()}`;
+  
+    // Create an order object
+    const order = {
+      id: orderId,
+      products: productsToSend,
+      totalAmount: calculateTotalPrice(productsToSend),
+      timestamp: new Date().toISOString(), 
+    };
+  
+    // Retrieve existing orders from localStorage
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+  
+    // Add the new order to the list of orders
+    const updatedOrders = [...existingOrders, order];
+  
+    // Store the updated orders list in localStorage
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+  
     navigate("/customer-detail"); // Navigate to customer detail page
   };
-
+  
+  // Helper function to calculate total price
+  const calculateTotalPrice = (products = []) => {
+    return products.reduce((total, product) => total + product.price * product.quantity, 0);
+  };
+  
+  
   useEffect(() => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
     // console.log("Loaded products:", products); // Debug log
