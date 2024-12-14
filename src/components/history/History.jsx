@@ -30,9 +30,15 @@ const formatDate = (isoString) => {
   const diffTime = currentDate - orderDate; // Difference in milliseconds
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert ms to days
 
+  // Get the hours and minutes in 12-hour format with AM/PM
   const hours = orderDate.getHours();
   const minutes = orderDate.getMinutes();
-  const formattedTime = `${hours > 9 ? hours : '0' + hours}:${minutes > 9 ? minutes : '0' + minutes}`;
+  const isPM = hours >= 12; // Check if it's PM
+  const formattedHours = hours % 12 || 12; // Convert hours to 12-hour format (12-hour clock)
+  const formattedMinutes = minutes > 9 ? minutes : '0' + minutes;
+  const period = isPM ? "PM" : "AM"; // AM or PM period
+
+  const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`; // Time in 12-hour format
 
   if (diffDays === 0) {
     return `Today at ${formattedTime}`; // If the order was today
@@ -45,6 +51,7 @@ const formatDate = (isoString) => {
     return `${orderDate.toLocaleDateString(undefined, options)} at ${formattedTime}`; // If the order was older than a week, return the full date with time
   }
 };
+
 
 
   return (
