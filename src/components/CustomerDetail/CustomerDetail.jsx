@@ -6,14 +6,16 @@ import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
+import { getTotalAmountFromOrders } from "../Utils/getTotalAmountFromOrders";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [productsToSend, setproductsToSend] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [orders, setOrders] = useState([]);
 
   const invoiceRef = useRef(); // Reference to the hidden invoice content
   const navigate = useNavigate();
@@ -21,18 +23,26 @@ const CustomerDetail = () => {
   useEffect(() => {
     // Load selected products and total amount from localStorage
     const storedProducts =
-      JSON.parse(localStorage.getItem("selectedProducts")) || [];
+      JSON.parse(localStorage.getItem("productsToSend")) || [];
     const storedAmount = parseFloat(localStorage.getItem("totalAmount")) || 0;
+    const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    setOrders(savedOrders);
 
-    setSelectedProducts(storedProducts);
+    setproductsToSend(storedProducts);
     setTotalAmount(storedAmount);
   }, []);
 
   const handleSendToWhatsApp = () => {
-    const productDetails = selectedProducts
+    // Assuming you want to use the latest order's totalAmount
+    const latestOrder = orders.length > 0 ? orders[orders.length - 1] : null;
+
+    // Use the totalAmount from the latest order, fallback to the existing state value
+    const orderTotalAmount = (latestOrder?.totalAmount || totalAmount) + 20; // Adding ₹20
+
+    const productDetails = productsToSend
       .map(
         (product) =>
-          `${product.quantity || 1}.0 x ${product.name}  ${product.size} = ₹${
+          `${product.quantity || 1}.0 x ${product.name} ${product.size} = ₹${
             product.price * (product.quantity || 1)
           }`
       )
@@ -41,7 +51,7 @@ const CustomerDetail = () => {
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const message = encodeURIComponent(
-      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${totalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\nService Charge = ₹20.00`
+      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${orderTotalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\nService Charge = ₹20.00`
     );
 
     const phoneNumber = customerPhone;
@@ -63,10 +73,10 @@ const CustomerDetail = () => {
   const handlePngDownload = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
-    setTimeout(() => {
-      handleScreenshot("invoice");
-      invoiceRef.current.style.display = "none";
-    }, 10);
+    // setTimeout(() => {
+    //   handleScreenshot("invoice");
+    //   invoiceRef.current.style.display = "none";
+    // }, 10);
   };
 
   const handlePdfDownload = () => {
@@ -268,9 +278,9 @@ td:nth-child(4) {
 
   return (
     <div>
-     <FaArrowLeft className="back-arrow" onClick={handleBack} />
-     <h1 className="Customer-header">Customer Details</h1>
-      <div className="cust-inputs" >
+      <FaArrowLeft className="back-arrow" onClick={handleBack} />
+      <h1 className="Customer-header">Customer Details</h1>
+      <div className="cust-inputs">
         <input
           type="text"
           value={customerName}
@@ -364,7 +374,7 @@ td:nth-child(4) {
             </tr>
           </thead>
           <tbody>
-            {selectedProducts.map((product, index) => (
+            {productsToSend.map((product, index) => (
               <tr key={index} className="productdetail">
                 <td>
                   {product.size
@@ -385,7 +395,7 @@ td:nth-child(4) {
             Item Total:{" "}
             <span>
               ₹
-              {selectedProducts
+              {productsToSend
                 .reduce(
                   (sum, product) =>
                     sum + product.price * (product.quantity || 1),
@@ -398,7 +408,16 @@ td:nth-child(4) {
             Service Charge: <span>₹20.00</span>
           </p>
         </div>
-        <p className="totalAmount">Net Total &nbsp;₹{totalAmount}.00/-</p>
+        <p className="totalAmount">
+        NetTotal: ₹
+          {(
+            productsToSend.reduce(
+              (sum, product) => sum + product.price * (product.quantity || 1),
+              0
+            ) + 20
+          ) // Adding ₹20 service charge
+            .toFixed(2)}
+        </p>{" "}
       </div>
       {/* mobile print content */}
       <div
@@ -466,7 +485,7 @@ td:nth-child(4) {
             </tr>
           </thead>
           <tbody>
-            {selectedProducts.map((product, index) => (
+            {productsToSend.map((product, index) => (
               <tr key={index} className="productdetail">
                 <td>
                   {product.size
@@ -487,7 +506,7 @@ td:nth-child(4) {
             Item Total:{" "}
             <span>
               ₹
-              {selectedProducts
+              {productsToSend
                 .reduce(
                   (sum, product) =>
                     sum + product.price * (product.quantity || 1),
@@ -500,7 +519,16 @@ td:nth-child(4) {
             Service Charge: <span>₹20.00</span>
           </p>
         </div>
-        <p className="totalAmount">Net Total &nbsp;₹{totalAmount}.00/-</p>
+        <p className="totalAmount">
+        NetTotal: ₹
+          {(
+            productsToSend.reduce(
+              (sum, product) => sum + product.price * (product.quantity || 1),
+              0
+            ) + 20
+          ) // Adding ₹20 service charge
+            .toFixed(2)}
+        </p>{" "}
       </div>
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
