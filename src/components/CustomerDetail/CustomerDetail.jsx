@@ -278,7 +278,7 @@ td:nth-child(4) {
 
   return (
     <div>
-      <FaArrowLeft className="back-arrow" onClick={handleBack} />
+      <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
       <h1 className="Customer-header">Customer Details</h1>
       <div className="cust-inputs">
         <input
