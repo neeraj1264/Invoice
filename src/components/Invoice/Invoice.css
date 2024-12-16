@@ -133,8 +133,13 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
-
+.customise-text {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.7rem;
+}
 .add-btn {
   padding: 0.2rem 0.5rem;
   background: white;
@@ -206,4 +211,14 @@
   /* border: navajowhite; */
   /* position: absolute; */
   width: fit-content;
+}
+.close-icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #000;
+  transition: color 0.2s ease;
+}
+
+.close-icon:hover {
+  color: red;
 }

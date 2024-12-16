@@ -350,24 +350,30 @@ const Invoice = () => {
                       onTouchEnd={handlePressEnd}
                     >
                       <h3 className="p-name">
-                        {product.name} {product.size ? `~ ${product.size}` : ""}
+                        {product.name}
+                        {product.varieties &&
+                        Array.isArray(product.varieties) &&
+                        product.varieties[0]?.size
+                          ? ` (${product.varieties[0].size})`
+                          : ""}
                       </h3>
                       <p style={{ color: "grey", fontWeight: 700 }}>
-  Price:{" "}
-  <span
-    style={{
-      color: "black",
-      fontWeight: 800,
-      fontFamily: "Noto Sans Roboto Arial",
-    }}
-  >
-    ₹{" "}
-    {product.price
-      ? product.price // Use product price if it exists
-      : product.varieties.length > 0
-      ? product.varieties[0].price // Fallback to first variety price
-      : "N/A"} {/* Handle case when neither price nor varieties are available */}
-  </span>
+                        Price:{" "}
+                        <span
+                          style={{
+                            color: "black",
+                            fontWeight: 800,
+                            fontFamily: "Noto Sans Roboto Arial",
+                          }}
+                        >
+                          ₹{" "}
+                          {product.price
+                            ? product.price // Use product price if it exists
+                            : product.varieties.length > 0
+                            ? product.varieties[0].price // Fallback to first variety price
+                            : "N/A"}{" "}
+                          {/* Handle case when neither price nor varieties are available */}
+                        </span>
                         {showRemoveBtn && (
                           <span
                             className="remove-btn"
@@ -423,6 +429,9 @@ const Invoice = () => {
                         >
                           Add
                         </button>
+                        {product.varieties?.length > 0 && (
+                          <span className="customise-text">Customise</span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -446,6 +455,12 @@ const Invoice = () => {
       {showPopup && currentProduct && currentProduct.varieties?.length > 0 && (
         <div className="popup-overlay">
           <div className="popup-content">
+            {/* Close Button */}
+            <FaTimesCircle
+              className="close-icon"
+              onClick={() => setShowPopup(false)} // Close the popup when clicked
+              style={{ cursor: "pointer" }}
+            />
             <h3>Select Varieties for {currentProduct.name}</h3>
             {currentProduct.varieties.map((variety, index) => (
               <div
