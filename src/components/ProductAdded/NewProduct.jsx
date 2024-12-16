@@ -1,12 +1,7 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbCameraPlus } from "react-icons/tb";
-import {
-  FaTimes,
-  FaArrowRight,
-  FaArrowLeft,
-  FaCheckCircle,
-} from "react-icons/fa";
+import { FaTimes, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./NewProduct.css";
@@ -25,17 +20,17 @@ const NewProduct = ({ setSelectedProducts }) => {
 
   const [product, setProduct] = useState({
     name: "",
-    price: "",
-    mrp: "",
-    size: "",
+    price:"",
     image: "",
     category: "",
+    varieties: [], // Stores size and price combinations
   });
 
   const [categories, setCategories] = useState([]);
-
   const [newCategory, setNewCategory] = useState("");
-    
+  const [productVariety, setProductVariety] = useState({ size: "", price: "" });
+  const [isWithVariety, setIsWithVariety] = useState(false); // Toggle for variety
+
   useEffect(() => {
     const savedCategories = JSON.parse(localStorage.getItem("categories"));
     if (savedCategories) {
@@ -43,17 +38,15 @@ const NewProduct = ({ setSelectedProducts }) => {
     }
   }, []);
 
-     // Handle adding a new category
   const handleAddCategory = (e) => {
     if (e.key === "Enter" && newCategory.trim()) {
-      // Check if the category already exists
       const newCategoryTrimmed = newCategory.trim();
       if (!categories.includes(newCategoryTrimmed)) {
         const updatedCategories = [...categories, newCategoryTrimmed];
         setCategories(updatedCategories);
-        localStorage.setItem("categories", JSON.stringify(updatedCategories)); // Save updated categories to localStorage
+        localStorage.setItem("categories", JSON.stringify(updatedCategories));
       }
-      setNewCategory(""); // Clear the input field
+      setNewCategory("");
     }
   };
 
@@ -65,7 +58,6 @@ const NewProduct = ({ setSelectedProducts }) => {
     }));
   };
 
-  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -80,7 +72,6 @@ const NewProduct = ({ setSelectedProducts }) => {
     }
   };
 
-  // Remove image
   const removeImage = () => {
     setProduct((prev) => ({
       ...prev,
@@ -88,74 +79,79 @@ const NewProduct = ({ setSelectedProducts }) => {
     }));
   };
 
-  const handleAddProduct = () => {
-    if (!product.name || !product.price || !product.category) {
-      toast.error("Please fill in the required fields!", toastOptions);
-
+  const handleAddVariety = () => {
+    if (!productVariety.size || !productVariety.price) {
+      toast.error("Please fill in size and price!", toastOptions);
       return;
     }
+    const updatedVarieties = [...product.varieties, productVariety];
+    setProduct((prev) => ({
+      ...prev,
+      varieties: updatedVarieties,
+    }));
+    setProductVariety({ size: "", price: "" });
+  };
 
-    // Get the stored products from localStorage
+  const handleAddProduct = () => {
+    // Check for name field (always required)
+    if (!product.name) {
+      toast.error("Please fill in the product name!", toastOptions);
+      return;
+    }
+  
+    // When "Add Varieties" is checked
+    if (isWithVariety) {
+      if (product.varieties.length === 0) {
+        toast.error("Please add at least one variety!", toastOptions);
+        return;
+      }
+    } else {
+      // When "Add Varieties" is NOT checked, validate the price field
+      if (!product.price) {
+        toast.error("Please fill in the product price!", toastOptions);
+        return;
+      }
+    }
+  
+    // Check if the product already exists in the same category
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-
-    // Check if the product already exists based on name, price, and size
     const isProductExist = storedProducts.some(
       (prod) =>
         prod.name.toLowerCase() === product.name.toLowerCase() &&
-        prod.price === product.price &&
-        prod.size.toLowerCase() === product.size.toLowerCase()
+        prod.category.toLowerCase() === product.category.toLowerCase()
     );
-
+  
     if (isProductExist) {
-      // Show error toast if the product already exists
-      toast.error("This product is already exist!", toastOptions);
+      toast.error("This product already exists!", toastOptions);
       return;
     }
-
-    // Add the new product to the stored products list
+  
+    // Save the product to localStorage
     const updatedProducts = [...storedProducts, product];
     localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-    // Reset form
+  
+    // Reset the form fields
     setProduct({
       name: "",
       price: "",
-      mrp: "",
-      size: "",
       image: "",
       category: "",
+      varieties: [],
     });
-
+  
     setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 1000);
+    setTimeout(() => setShowPopup(false), 1000);
   };
+  
 
   const handleNavigateToInvoice = () => {
     navigate("/invoice");
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
     <div>
-      <ToastContainer
-        className="custom-toast-container"
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      {/* <FaArrowLeft className="back-arrow" onClick={()=> handleBack()}/> */}
-      <h1 className="catologue-header"> New Product</h1>
+      <ToastContainer />
+      <h1 className="catologue-header">New Product</h1>
       <div className="catologue-input-fields">
         <input
           type="file"
@@ -194,61 +190,100 @@ const NewProduct = ({ setSelectedProducts }) => {
           value={product.name}
           onChange={handleInputChange}
         />
-        <input
-          type="number"
-          name="price"
-          placeholder="₹ Sale price*"
-          value={product.price}
-          onChange={handleInputChange}
-        />
-        <input
-          type="number"
-          name="mrp"
-          placeholder="₹ MRP"
-          value={product.mrp}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="size"
-          placeholder="Size"
-          value={product.size}
-          onChange={handleInputChange}
-        />
-        {/* Dropdown for selecting category */}
-        <div 
-        style={{display: "flex" , justifyContent: "space-between"}}
-        >
-        <select
-        name="category"
-        className="dropdown"
-        value={product.category}
-        onChange={handleInputChange}
-      >
-        <option value="">Select Category*</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
 
-        {/* Input for adding a new category */}
-        <input
-        type="text"
-        placeholder="Add new category"
-        value={newCategory}
-        onChange={(e) => setNewCategory(e.target.value)}
-        onKeyDown={handleAddCategory}
-        className="add-category-input"
-      />
-      </div>
+       {!isWithVariety && (
+    <input
+      type="number"
+      name="price"
+      placeholder="₹ price"
+      value={product.price}
+      onChange={handleInputChange}
+    />
+  )}
+
+        {/* Toggle to enable or disable varieties */}
+        <div className="toggle-variety">
+          <label>
+            <input
+              type="checkbox"
+              checked={isWithVariety}
+              onChange={(e) => {
+                const isChecked = e.target.checked;
+                setIsWithVariety(isChecked);
+        
+                // Clear price if Add Varieties is checked
+                if (isChecked) {
+                  setProduct((prev) => ({
+                    ...prev,
+                    price: "",
+                  }));
+                }
+              }}
+        
+            />
+            Add Varieties
+          </label>
+        </div>
+
+        {isWithVariety && (
+          <div className="varieties-container">
+            <input
+              type="text"
+              placeholder="Size (e.g., 1L, 2L)"
+              value={productVariety.size}
+              onChange={(e) =>
+                setProductVariety((prev) => ({ ...prev, size: e.target.value }))
+              }
+            />
+            <input
+              type="number"
+              placeholder="Price (₹)"
+              value={productVariety.price}
+              onChange={(e) =>
+                setProductVariety((prev) => ({ ...prev, price: e.target.value }))
+              }
+            />
+            <button onClick={handleAddVariety}>Add Variety</button>
+          </div>
+        )}
+
+        <ul>
+          {product.varieties.map((variety, index) => (
+            <li key={index}>
+              {variety.size} - ₹{variety.price}
+            </li>
+          ))}
+        </ul>
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <select
+            name="category"
+            className="dropdown"
+            value={product.category}
+            onChange={handleInputChange}
+          >
+            <option value="">Select Category*</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            placeholder="Add new category"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            onKeyDown={handleAddCategory}
+            className="add-category-input"
+          />
+        </div>
       </div>
       <button className="save-button" onClick={handleAddProduct}>
         Save
       </button>
 
-      {/* Popup modal */}
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content">

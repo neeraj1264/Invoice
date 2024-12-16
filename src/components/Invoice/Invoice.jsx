@@ -18,6 +18,10 @@ const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productsToSend, setProductsToSend] = useState([]);
   const [Search, setSearch] = useState(""); // State for search query
+  const [showPopup, setShowPopup] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [selectedVariety, setSelectedVariety] = useState([]);
+
   const navigate = useNavigate(); // For navigation
 
   const [showRemoveBtn, setShowRemoveBtn] = useState(false);
@@ -58,30 +62,178 @@ const Invoice = () => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
     setSelectedProducts(products);
 
-    // Load productsToSend from localStorage if any exist
     const storedProductsToSend =
       JSON.parse(localStorage.getItem("productsToSend")) || [];
     setProductsToSend(storedProductsToSend);
+
+    // const storedSelectedVariety =
+    //   JSON.parse(localStorage.getItem("selectedVariety")) || [];
+    // setSelectedVariety(storedSelectedVariety);
   }, []);
 
-  // Function to handle adding a product
-  const handleAddToWhatsApp = (product) => {
-    // Check if the product with the same name and price already exists
-    const exists = productsToSend.some(
-      (prod) => prod.name === product.name && prod.price === product.price
-    );
+  const handleOpenPopup = (product) => {
+    if (product.varieties && product.varieties.length > 0) {
+      setCurrentProduct(product);
+      setShowPopup(true);
+    } else {
+      handleAddToWhatsApp(product); // Directly add product if no varieties
+    }
+  };
 
-    if (!exists) {
-      const updatedProductsToSend = [
-        ...productsToSend,
-        { ...product, quantity: 1 },
-      ];
-      setProductsToSend(updatedProductsToSend);
+  const handleVarietyQuantityChange = (variety, delta) => {
+    setSelectedVariety((prev) => {
+      let updatedVarieties = prev.map((selected) =>
+        selected.size === variety.size && selected.price === variety.price
+          ? { ...selected, quantity: selected.quantity + delta }
+          : selected
+      );
+
+      // Remove variety if the quantity becomes less than 1
+      updatedVarieties = updatedVarieties.filter(
+        (selected) => selected.quantity > 0
+      );
+
+      // Save updated selectedVariety to localStorage
+      // localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
+
+      // Update productsToSend based on the updated selectedVarieties
+      setProductsToSend((prevProducts) => {
+        const updatedProducts = prevProducts
+          .map((prod) => {
+            if (
+              prod.name === currentProduct.name &&
+              prod.size === variety.size &&
+              prod.price === variety.price
+            ) {
+              const newQuantity = prod.quantity + delta;
+
+              // If quantity becomes less than 1, remove it
+              if (newQuantity < 1) {
+                return null; // Mark for removal
+              }
+              return { ...prod, quantity: newQuantity };
+            }
+            return prod;
+          })
+          .filter((prod) => prod !== null); // Remove null entries
+
+        // Update localStorage with the updated productsToSend
+        localStorage.setItem("productsToSend", JSON.stringify(updatedProducts));
+        return updatedProducts;
+      });
+
+      return updatedVarieties;
+    });
+  };
+
+  const handleVarietyChange = (variety, isChecked) => {
+    setSelectedVariety((prev) => {
+      let updatedVarieties;
+      if (isChecked) {
+        updatedVarieties = [
+          ...prev,
+          { ...variety, quantity: 1 }, // Default quantity for each selected variety
+        ];
+      } else {
+        updatedVarieties = prev.filter(
+          (selected) =>
+            !(
+              selected.size === variety.size && selected.price === variety.price
+            )
+        );
+      }
+
+      // Save updated selectedVariety to localStorage
+      localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
+
+      return updatedVarieties;
+    });
+  };
+
+  const handleAddToWhatsApp = (product, selectedVarieties = []) => {
+    // Handle products with no varieties
+    if (selectedVarieties.length === 0) {
+      const exists = productsToSend.some(
+        (prod) =>
+          prod.name === product.name &&
+          prod.price === product.price &&
+          prod.size === product.size
+      );
+
+      if (!exists) {
+        // Add the product if it doesn't already exist
+        setProductsToSend((prev) => {
+          const updatedProducts = [...prev, { ...product, quantity: 1 }];
+          // Update localStorage after setting the state
+          localStorage.setItem(
+            "productsToSend",
+            JSON.stringify(updatedProducts)
+          );
+          return updatedProducts;
+        });
+      } else {
+        // Update quantity if the product already exists
+        setProductsToSend((prev) => {
+          const updatedProducts = prev.map((prod) =>
+            prod.name === product.name &&
+            prod.price === product.price &&
+            prod.size === product.size
+              ? { ...prod, quantity: prod.quantity + 1 }
+              : prod
+          );
+          // Update localStorage after setting the state
+          localStorage.setItem(
+            "productsToSend",
+            JSON.stringify(updatedProducts)
+          );
+          return updatedProducts;
+        });
+      }
+      return;
+    }
+
+    // Handle products with selected varieties
+    const newProducts = selectedVarieties.map((variety) => ({
+      ...product,
+      ...variety,
+      quantity: variety.quantity || 1, // Default quantity for each variety
+    }));
+
+    setProductsToSend((prev) => {
+      let updatedProductsToSend = [...prev];
+
+      newProducts.forEach((newProduct) => {
+        const exists = updatedProductsToSend.some(
+          (prod) =>
+            prod.name === newProduct.name &&
+            prod.price === newProduct.price &&
+            prod.size === newProduct.size
+        );
+
+        if (!exists) {
+          updatedProductsToSend.push(newProduct);
+        } else {
+          updatedProductsToSend = updatedProductsToSend.map((prod) =>
+            prod.name === newProduct.name &&
+            prod.price === newProduct.price &&
+            prod.size === newProduct.size
+              ? { ...prod, quantity: prod.quantity + 1 }
+              : prod
+          );
+        }
+      });
+
+      // Update localStorage after state update
       localStorage.setItem(
         "productsToSend",
         JSON.stringify(updatedProductsToSend)
-      ); // Save to localStorage
-    }
+      );
+
+      return updatedProductsToSend;
+    });
+
+    setShowPopup(false); // Close popup
+    setSelectedVariety([]); // Reset selected varieties
   };
 
   // Function to handle quantity changes
@@ -131,49 +283,43 @@ const Invoice = () => {
       alert("Please add at least one product before proceeding.");
       return; // Prevent navigation if no products are selected
     }
-  
+
     // Generate a unique identifier for the order
     const orderId = `order_${Date.now()}`;
-  
+
     // Create an order object
     const order = {
       id: orderId,
       products: productsToSend,
       totalAmount: calculateTotalPrice(productsToSend),
-      timestamp: new Date().toISOString(), 
+      timestamp: new Date().toISOString(),
     };
-  
+
     // Retrieve existing orders from localStorage
     const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-  
+
     // Add the new order to the list of orders
     const updatedOrders = [...existingOrders, order];
-  
+
     // Store the updated orders list in localStorage
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
-  
+
     navigate("/customer-detail"); // Navigate to customer detail page
   };
-  
+
   // Helper function to calculate total price
   const calculateTotalPrice = (products = []) => {
-    return products.reduce((total, product) => total + product.price * product.quantity, 0);
+    return products.reduce(
+      (total, product) => total + product.price * product.quantity,
+      0
+    );
   };
-  
-  
-  useEffect(() => {
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    // console.log("Loaded products:", products); // Debug log
-    setSelectedProducts(products);
-  }, []);
 
   return (
     <div>
-
-<Header headerName="Invoice" setSearch={setSearch} />
+      <Header headerName="Invoice" setSearch={setSearch} />
 
       {/* Add a search input to filter products */}
-
 
       <div className="main">
         {Object.keys(filteredProducts).length > 0 ? (
@@ -207,10 +353,21 @@ const Invoice = () => {
                         {product.name} {product.size ? `~ ${product.size}` : ""}
                       </h3>
                       <p style={{ color: "grey", fontWeight: 700 }}>
-                        Price:{" "}
-                        <span style={{ color: "black", fontWeight: 800 ,     fontFamily: "Noto Sans Roboto Arial"}}>
-                          ₹ {product.price}
-                        </span>
+  Price:{" "}
+  <span
+    style={{
+      color: "black",
+      fontWeight: 800,
+      fontFamily: "Noto Sans Roboto Arial",
+    }}
+  >
+    ₹{" "}
+    {product.price
+      ? product.price // Use product price if it exists
+      : product.varieties.length > 0
+      ? product.varieties[0].price // Fallback to first variety price
+      : "N/A"} {/* Handle case when neither price nor varieties are available */}
+  </span>
                         {showRemoveBtn && (
                           <span
                             className="remove-btn"
@@ -242,7 +399,7 @@ const Invoice = () => {
                         >
                           <FaMinusCircle />
                         </button>
-                        <span style={{ margin: "0 .4rem"}}>
+                        <span style={{ margin: "0 .4rem" }}>
                           {productsToSend.find(
                             (prod) =>
                               prod.name === product.name &&
@@ -261,7 +418,7 @@ const Invoice = () => {
                     ) : (
                       <div className="btn-box">
                         <button
-                          onClick={() => handleAddToWhatsApp(product)}
+                          onClick={() => handleOpenPopup(product)}
                           className="add-btn"
                         >
                           Add
@@ -278,19 +435,94 @@ const Invoice = () => {
         )}
       </div>
 
-<div className="invoice-btn">
+      <div className="invoice-btn">
+        <button onClick={() => navigate("/NewProduct")}>+ Product</button>
 
-      <button onClick={()=>navigate("/NewProduct")}>
-        + Product
-      </button>
+        <button onClick={handleDone}>
+          Next
+          <FaArrowRight className="Invoice-arrow" />
+        </button>
+      </div>
+      {showPopup && currentProduct && currentProduct.varieties?.length > 0 && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h3>Select Varieties for {currentProduct.name}</h3>
+            {currentProduct.varieties.map((variety, index) => (
+              <div
+                key={index}
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <label>
+                  <input
+                    type="checkbox"
+                    name="variety"
+                    value={index}
+                    checked={selectedVariety.some(
+                      (v) =>
+                        v.size === variety.size && v.price === variety.price
+                    )}
+                    onChange={(e) =>
+                      handleVarietyChange(variety, e.target.checked)
+                    }
+                  />
+                  {variety.size} ~ ₹ {variety.price}
+                </label>
 
-      <button onClick={handleDone}>
-        Next
-        <FaArrowRight className="Invoice-arrow" />
-      </button>
-
-</div>
-   
+                {/* Render Quantity Buttons for checked varieties */}
+                {selectedVariety.some(
+                  (v) => v.size === variety.size && v.price === variety.price
+                ) && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <button
+                      onClick={() => handleVarietyQuantityChange(variety, -1)}
+                      disabled={variety.quantity <= 1}
+                    >
+                      <FaMinusCircle />
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      value={
+                        selectedVariety.find(
+                          (v) =>
+                            v.size === variety.size && v.price === variety.price
+                        )?.quantity || 1
+                      }
+                      onChange={(e) => {
+                        const quantity = parseInt(e.target.value, 10);
+                        handleVarietyQuantityChange(
+                          variety,
+                          quantity - variety.quantity
+                        );
+                      }}
+                    />
+                    <button
+                      onClick={() => handleVarietyQuantityChange(variety, 1)}
+                    >
+                      <FaPlusCircle />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+            <button
+              onClick={() =>
+                handleAddToWhatsApp(currentProduct, selectedVariety)
+              }
+              disabled={selectedVariety?.length === 0}
+              className="save-btn"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
