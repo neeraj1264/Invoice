@@ -6,13 +6,11 @@ import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 // import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerAddress, setCustomerAddress] = useState(""); 
   const [showPopup, setShowPopup] = useState(false);
   const [productsToSend, setproductsToSend] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -281,12 +279,12 @@ td:nth-child(4) {
         />
       </div>
       <div className="cust-inputs">
-         <PhoneInput
-      country={"in"} // Default country
-      value={customerPhone}
-      onChange={(customerPhone) => setCustomerPhone(customerPhone)}
-      placeholder="Customer phone..." 
-    />
+        <input
+          type="text"
+          value={customerPhone}
+          onChange={(e) => setCustomerPhone(e.target.value)}
+          placeholder="Customer phone..."
+        />
       </div>
       <div className="cust-inputs">
         <input
