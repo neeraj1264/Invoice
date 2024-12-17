@@ -18,10 +18,18 @@
   margin-bottom: 1rem;
 }
 
-.cust-inputs input {
+.cust-inputs input{
   width: 90vw;
   margin: 0.5rem;
   padding: 0.5rem;
+  box-sizing: border-box; /* Ensure consistent sizing */
+}
+
+.cust-inputs .react-tel-input .form-control{
+  width: 90vw;
+  margin: 0.5rem;
+  border: 1px solid grey;
+  box-sizing: border-box; /* Ensure consistent sizing */
 }
 
 .done {
@@ -113,9 +121,3 @@ td:first-child {
 td:nth-child(2), td:nth-child(3), td:nth-child(4) {
   width: auto; /* Corresponds to 'auto' in widths */
 }
-
-{{/* .download-button{
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    } */}}

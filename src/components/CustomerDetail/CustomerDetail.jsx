@@ -6,6 +6,8 @@ import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 // import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -279,12 +281,12 @@ td:nth-child(4) {
         />
       </div>
       <div className="cust-inputs">
-        <input
-          type="text"
-          value={customerPhone}
-          onChange={(e) => setCustomerPhone(e.target.value)}
-          placeholder="Customer phone..."
-        />
+         <PhoneInput
+      country={"in"} // Default country
+      value={customerPhone}
+      onChange={(customerPhone) => setCustomerPhone(customerPhone)}
+      placeholder="Customer phone..."
+    />
       </div>
       <div className="cust-inputs">
         <input
