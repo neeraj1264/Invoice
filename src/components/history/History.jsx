@@ -14,28 +14,44 @@ const History = () => {
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
     setOrders(savedOrders);
-
+  
     const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-    const todayOrders = savedOrders.filter((order) => {
+    today.setHours(0, 0, 0, 0); // Start of today at midnight
+  
+    // Calculate start and end time for the selected day
+    const daysAgo = getDaysAgo(filter);
+    const startOfSelectedDay = new Date(today);
+    startOfSelectedDay.setDate(today.getDate() - daysAgo);
+  
+    const endOfSelectedDay = new Date(startOfSelectedDay);
+    endOfSelectedDay.setHours(23, 59, 59, 999);
+  
+    // Filter orders for the selected day
+    const dayOrders = savedOrders.filter((order) => {
       const orderDate = new Date(order.timestamp);
-      return orderDate >= startOfToday;
+      return orderDate >= startOfSelectedDay && orderDate <= endOfSelectedDay;
     });
+    // console.log("Start of selected day:", startOfSelectedDay);
+    // console.log("End of selected day:", endOfSelectedDay);
 
-    const previousOrders = savedOrders.filter((order) => {
-      const orderDate = new Date(order.timestamp);
-      return orderDate < startOfToday;
-    });
-
-    setFilteredOrders(filter === "Today" ? todayOrders : previousOrders);
-
-    const total = (filter === "Today" ? todayOrders : previousOrders).reduce(
-      (sum, order) => sum + order.totalAmount,
-      0
-    );
+    setFilteredOrders(dayOrders);
+  
+    // Calculate grand total for the day
+    const total = dayOrders.reduce((sum, order) => sum + order.totalAmount, 0);
     setGrandTotal(total);
-  }, [filter]);
+  }, [filter]);  
+
+    // Helper to get "days ago" count
+    const getDaysAgo = (filterValue) => {
+      switch (filterValue) {
+        case "Today":
+          return 0;
+        case "Yesterday":
+          return 1;
+        default:
+          return parseInt(filterValue.split(" ")[0]); // Extract '2' from '2 days ago'
+      }
+    };
 
   const handleBack = () => {
     navigate(-1);
@@ -43,29 +59,16 @@ const History = () => {
 
   const formatDate = (isoString) => {
     const orderDate = new Date(isoString);
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    const day = orderDate.getDate();
+    const month = orderDate.toLocaleString("default", { month: "short" });
+    const year = orderDate.getFullYear();
+    const hours = orderDate.getHours() % 12 || 12;
+    const minutes = orderDate.getMinutes().toString().padStart(2, "0");
+    const period = orderDate.getHours() >= 12 ? "PM" : "AM";
 
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const startOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
-
-    const hours = orderDate.getHours();
-    const minutes = orderDate.getMinutes();
-    const isPM = hours >= 12;
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes > 9 ? minutes : `0${minutes}`;
-    const period = isPM ? "PM" : "AM";
-    const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
-
-    if (orderDate >= startOfToday) {
-      return `Today at ${formattedTime}`;
-    } else if (orderDate >= startOfYesterday && orderDate < startOfToday) {
-      return `Yesterday at ${formattedTime}`;
-    } else {
-      return `${formattedTime}`;
-    }
+    return `${month} ${day}, ${year} - ${hours}:${minutes} ${period}`;
   };
+  
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -83,7 +86,12 @@ const History = () => {
         <div className="filter-container">
           <select id="filter" value={filter} onChange={handleFilterChange} style={{ borderRadius: "1rem" }}>
             <option value="Today">Today</option>
-            <option value="Previous">Previous</option>
+            <option value="Yesterday">Yesterday</option>
+            {[...Array(5)].map((_, i) => (
+              <option key={i} value={`${i + 2} days ago`}>
+                {i + 2} days ago
+              </option>
+            ))}
           </select>
         </div>
       </div>

@@ -4,9 +4,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
-import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
+// import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
-import { getTotalAmountFromOrders } from "../Utils/getTotalAmountFromOrders";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -73,17 +72,8 @@ const CustomerDetail = () => {
   const handlePngDownload = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
-    // setTimeout(() => {
-    //   handleScreenshot("invoice");
-    //   invoiceRef.current.style.display = "none";
-    // }, 10);
-  };
-
-  const handlePdfDownload = () => {
-    // Show the hidden invoice, take the screenshot, and then hide it again
-    invoiceRef.current.style.display = "block";
     setTimeout(() => {
-      handleScreenshotAsPDF("invoice");
+      handleScreenshot("mobileinvoice");
       invoiceRef.current.style.display = "none";
     }, 10);
   };
@@ -543,9 +533,6 @@ td:nth-child(4) {
             </button>
             <button onClick={handlePngDownload} style={styles.popupButton}>
               Download Invoice
-            </button>
-            <button onClick={handlePdfDownload} style={styles.popupButton}>
-              Download as PDF
             </button>
             <button onClick={DesktopPrint} style={styles.popupButton}>
               Desktop Print
