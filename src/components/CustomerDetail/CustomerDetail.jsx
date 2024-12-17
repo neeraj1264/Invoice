@@ -285,7 +285,7 @@ td:nth-child(4) {
       country={"in"} // Default country
       value={customerPhone}
       onChange={(customerPhone) => setCustomerPhone(customerPhone)}
-      placeholder="Customer phone..."
+      placeholder="Customer phone..." 
     />
       </div>
       <div className="cust-inputs">
