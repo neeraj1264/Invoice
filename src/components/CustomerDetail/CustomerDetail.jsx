@@ -54,7 +54,7 @@ const CustomerDetail = () => {
     );
 
     const phoneNumber = customerPhone;
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+    window.open(`https://wa.me/+91${phoneNumber}?text=${message}`, "_blank");
   };
 
   const handleBack = () => {
