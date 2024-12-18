@@ -55,7 +55,6 @@ h2 {
 .products-table td {
   border: 1px solid #ddd;
   text-align: left;
-  padding: 0.8rem;
 }
 
 .details-table th,
@@ -87,5 +86,5 @@ hr{
   color: inherit;
   border-top: var(--bs-border-width) solid;
   opacity: .25;
-  border: 2px dotted var(--bg);
+  border: 2px dotted black;
 }

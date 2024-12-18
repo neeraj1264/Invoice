@@ -32,12 +32,10 @@ const CustomerDetail = () => {
   }, []);
 
   const handleSendToWhatsApp = () => {
-    // Assuming you want to use the latest order's totalAmount
-    const latestOrder = orders.length > 0 ? orders[orders.length - 1] : null;
-
-    // Use the totalAmount from the latest order, fallback to the existing state value
-    const orderTotalAmount = (latestOrder?.totalAmount || totalAmount) + 20; // Adding ₹20
-
+    // Calculate the current total amount from productsToSend
+    const currentTotalAmount =
+      calculateTotalPrice(productsToSend); // Add ₹20 service charge
+  
     const productDetails = productsToSend
       .map(
         (product) =>
@@ -46,16 +44,25 @@ const CustomerDetail = () => {
           }`
       )
       .join("\n");
-
+  
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-
+  
     const message = encodeURIComponent(
-      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${orderTotalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\nService Charge = ₹20.00`
+      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${currentTotalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\n`
     );
-
+  
     const phoneNumber = customerPhone;
-    window.open(`https://wa.me/+91${phoneNumber}?text=${message}`, "_blank");
-  };
+  
+    const formattedPhoneNumber = phoneNumber
+      ? `+91${phoneNumber}` // Prepend +91 for India if the phone number is present
+      : phoneNumber;
+  
+    if (phoneNumber) {
+      window.open(`https://wa.me/${formattedPhoneNumber}?text=${message}`, "_blank");
+    } else {
+      window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+    }
+  };  
 
   const handleBack = () => {
     navigate(-1);
@@ -63,6 +70,27 @@ const CustomerDetail = () => {
 
   const handleSendClick = () => {
     setShowPopup(true);
+
+     // Generate a unique identifier for the order
+     const orderId = `order_${Date.now()}`;
+
+     // Create an order object
+     const order = {
+       id: orderId,
+       products: productsToSend,
+       totalAmount: calculateTotalPrice(productsToSend),
+       timestamp: new Date().toISOString(),
+     };
+ 
+     // Retrieve existing orders from localStorage
+     const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+ 
+     // Add the new order to the list of orders
+     const updatedOrders = [...existingOrders, order];
+ 
+     // Store the updated orders list in localStorage
+     localStorage.setItem("orders", JSON.stringify(updatedOrders));
+     
   };
 
   const handleClosePopup = () => {
@@ -266,6 +294,14 @@ td:nth-child(4) {
     };
   };
 
+   // Helper function to calculate total price
+   const calculateTotalPrice = (products = []) => {
+    return products.reduce(
+      (total, product) => total + product.price * product.quantity,
+      0
+    );
+  };
+
   return (
     <div>
       <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
@@ -381,7 +417,7 @@ td:nth-child(4) {
           </tbody>
         </table>
         <div className="total">
-          <p>
+          {/* <p>
             Item Total:{" "}
             <span>
               ₹
@@ -393,10 +429,10 @@ td:nth-child(4) {
                 )
                 .toFixed(2)}
             </span>
-          </p>
-          <p>
+          </p> */}
+          {/* <p>
             Service Charge: <span>₹20.00</span>
-          </p>
+          </p> */}
         </div>
         <p className="totalAmount">
         NetTotal: ₹
@@ -404,8 +440,8 @@ td:nth-child(4) {
             productsToSend.reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
               0
-            ) + 20
-          ) // Adding ₹20 service charge
+            ) 
+          )
             .toFixed(2)}
         </p>{" "}
       </div>
@@ -492,22 +528,9 @@ td:nth-child(4) {
           </tbody>
         </table>
         <div className="total">
-          <p>
-            Item Total:{" "}
-            <span>
-              ₹
-              {productsToSend
-                .reduce(
-                  (sum, product) =>
-                    sum + product.price * (product.quantity || 1),
-                  0
-                )
-                .toFixed(2)}
-            </span>
-          </p>
-          <p>
+          {/* <p>
             Service Charge: <span>₹20.00</span>
-          </p>
+          </p> */}
         </div>
         <p className="totalAmount">
         NetTotal: ₹
@@ -515,8 +538,8 @@ td:nth-child(4) {
             productsToSend.reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
               0
-            ) + 20
-          ) // Adding ₹20 service charge
+            ) 
+          )
             .toFixed(2)}
         </p>{" "}
       </div>

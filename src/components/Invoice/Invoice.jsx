@@ -284,25 +284,6 @@ const Invoice = () => {
       return; // Prevent navigation if no products are selected
     }
 
-    // Generate a unique identifier for the order
-    const orderId = `order_${Date.now()}`;
-
-    // Create an order object
-    const order = {
-      id: orderId,
-      products: productsToSend,
-      totalAmount: calculateTotalPrice(productsToSend),
-      timestamp: new Date().toISOString(),
-    };
-
-    // Retrieve existing orders from localStorage
-    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-
-    // Add the new order to the list of orders
-    const updatedOrders = [...existingOrders, order];
-
-    // Store the updated orders list in localStorage
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
 
     navigate("/customer-detail"); // Navigate to customer detail page
   };
