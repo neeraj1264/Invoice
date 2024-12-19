@@ -68,7 +68,7 @@ const CustomerDetail = () => {
     navigate(-1);
   };
 
-  const handleSendClick = () => {
+  const handleSendClick = async() => {
     setShowPopup(true);
 
      // Generate a unique identifier for the order
@@ -82,14 +82,29 @@ const CustomerDetail = () => {
        timestamp: new Date().toISOString(),
      };
  
-     // Retrieve existing orders from localStorage
-     const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
- 
-     // Add the new order to the list of orders
-     const updatedOrders = [...existingOrders, order];
- 
-     // Store the updated orders list in localStorage
-     localStorage.setItem("orders", JSON.stringify(updatedOrders));
+     try {
+      // Send the order to your backend to be saved in MongoDB
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to send order to the server ${response.statusText}`);
+      }
+  
+      // Optionally, you can show a confirmation message or handle the response
+      const data = await response.json();
+      console.log("Order created:", data);
+  
+      // You can clear localStorage or perform any other actions as needed
+      // localStorage.removeItem("products"); // Example
+    } catch (error) {
+      console.error("Error sending order:", error.message);
+    }
      
   };
 
