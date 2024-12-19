@@ -59,16 +59,21 @@ const Invoice = () => {
 
   // Load products from localStorage on component mount
   useEffect(() => {
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    setSelectedProducts(products);
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("https://invoice-backend-phi-ten.vercel.app/api/products");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch products: ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log("Fetched products:", data);
+        setSelectedProducts(data); // Set fetched products to state
+      } catch (error) {
+        console.error("Error fetching products:", error.message); // Logs the error message
+      }
+    };
 
-    const storedProductsToSend =
-      JSON.parse(localStorage.getItem("productsToSend")) || [];
-    setProductsToSend(storedProductsToSend);
-
-    // const storedSelectedVariety =
-    //   JSON.parse(localStorage.getItem("selectedVariety")) || [];
-    // setSelectedVariety(storedSelectedVariety);
+    fetchProducts();
   }, []);
 
   const handleOpenPopup = (product) => {

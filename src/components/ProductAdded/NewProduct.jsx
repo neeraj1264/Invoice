@@ -92,7 +92,7 @@ const NewProduct = ({ setSelectedProducts }) => {
     setProductVariety({ size: "", price: "" });
   };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     // Check for name field (always required)
     if (!product.name) {
       toast.error("Please fill in the product name!", toastOptions);
@@ -126,21 +126,38 @@ const NewProduct = ({ setSelectedProducts }) => {
       return;
     }
   
-    // Save the product to localStorage
-    const updatedProducts = [...storedProducts, product];
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+    try {
+      // Send product data to backend (API call)
+      const response = await fetch('https://invoice-backend-phi-ten.vercel.app/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(product),
+      });
   
-    // Reset the form fields
-    setProduct({
-      name: "",
-      price: "",
-      image: "",
-      category: "",
-      varieties: [],
-    });
+      if (!response.ok) {
+        throw new Error('Failed to save the product');
+      }
   
-    setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 1000);
+      const savedProduct = await response.json();
+      console.log('Product saved:', savedProduct);
+  
+      // Reset the form fields
+      setProduct({
+        name: "",
+        price: "",
+        image: "",
+        category: "",
+        varieties: [],
+      });
+  
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 1000);
+    } catch (error) {
+      toast.error("Error saving product!", toastOptions);
+      console.error(error);
+    }
   };
   
 
