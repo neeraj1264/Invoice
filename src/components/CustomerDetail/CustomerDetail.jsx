@@ -84,7 +84,7 @@ const CustomerDetail = () => {
  
      try {
       // Send the order to your backend to be saved in MongoDB
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

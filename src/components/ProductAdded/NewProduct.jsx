@@ -128,7 +128,7 @@ const NewProduct = ({ setSelectedProducts }) => {
   
     try {
       // Send product data to backend (API call)
-      const response = await fetch('http://localhost:5000/api/products', {
+      const response = await fetch('https://invoice-5vnp09gr.b4a.run/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

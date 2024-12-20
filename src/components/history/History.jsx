@@ -11,46 +11,46 @@ const History = () => {
   const [expandedOrderId, setExpandedOrderId] = useState(null); // Track expanded order
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/orders');  // Your backend endpoint for fetching orders
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
-        const data = await response.json();
-        setOrders(data);
-  
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Start of today at midnight
-  
-        // Calculate start and end time for the selected day
-        const daysAgo = getDaysAgo(filter);
-        const startOfSelectedDay = new Date(today);
-        startOfSelectedDay.setDate(today.getDate() - daysAgo);
-  
-        const endOfSelectedDay = new Date(startOfSelectedDay);
-        endOfSelectedDay.setHours(23, 59, 59, 999);
-  
-        // Filter orders for the selected day
-        const dayOrders = data.filter((order) => {
-          const orderDate = new Date(order.timestamp);
-          return orderDate >= startOfSelectedDay && orderDate <= endOfSelectedDay;
-        });
-  
-        setFilteredOrders(dayOrders);
-  
-        // Calculate grand total for the day
-        const total = dayOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-        setGrandTotal(total);
-      } catch (error) {
-        console.error('Error fetching orders:', error.message);
+ useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('https://invoice-5vnp09gr.b4a.run/api/orders');  // Your backend endpoint for fetching orders
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
       }
-    };
-  
-    fetchOrders();
-  }, [filter]);
-  
+      const data = await response.json();
+      setOrders(data);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Start of today at midnight
+
+      // Calculate start and end time for the selected day
+      const daysAgo = getDaysAgo(filter);
+      const startOfSelectedDay = new Date(today);
+      startOfSelectedDay.setDate(today.getDate() - daysAgo);
+
+      const endOfSelectedDay = new Date(startOfSelectedDay);
+      endOfSelectedDay.setHours(23, 59, 59, 999);
+
+      // Filter orders for the selected day
+      const dayOrders = data.filter((order) => {
+        const orderDate = new Date(order.timestamp);
+        return orderDate >= startOfSelectedDay && orderDate <= endOfSelectedDay;
+      });
+
+      setFilteredOrders(dayOrders);
+
+      // Calculate grand total for the day
+      const total = dayOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+      setGrandTotal(total);
+    } catch (error) {
+      console.error('Error fetching orders:', error.message);
+    }
+  };
+
+  fetchOrders();
+}, [filter]);
+
 
   // Helper to get "days ago" count
   const getDaysAgo = (filterValue) => {

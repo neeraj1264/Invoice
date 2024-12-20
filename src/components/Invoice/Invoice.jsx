@@ -61,7 +61,7 @@ const Invoice = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/products");
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
@@ -74,6 +74,11 @@ const Invoice = () => {
     };
 
     fetchProducts();
+
+    const storedProductsToSend =
+    JSON.parse(localStorage.getItem("productsToSend")) || [];
+  setProductsToSend(storedProductsToSend);
+
   }, []);
 
   const handleOpenPopup = (product) => {
@@ -264,43 +269,43 @@ const Invoice = () => {
   };
 
   // Function to remove a product from selected products and productsToSend
-  const handleRemoveProduct = async (productName, productPrice) => {
-    try {
-      // Send DELETE request to your backend API to delete the product from MongoDB
-      const response = await fetch("http://localhost:5000/api/products", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: productName, price: productPrice }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to remove product from database");
-      }
-  
-      // Remove product from the selectedProducts and productsToSend arrays
-      const updatedSelectedProducts = selectedProducts.filter(
-        (prod) => !(prod.name === productName && prod.price === productPrice)
-      );
-      const updatedProductsToSend = productsToSend.filter(
-        (prod) => !(prod.name === productName && prod.price === productPrice)
-      );
-  
-      // Update the state
-      setSelectedProducts(updatedSelectedProducts);
-      setProductsToSend(updatedProductsToSend);
-  
-      // Update localStorage
-      localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
-      localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
-  
-      console.log("Product removed successfully from both MongoDB and state");
-    } catch (error) {
-      console.error("Error removing product:", error.message);
+ const handleRemoveProduct = async (productName, productPrice) => {
+  try {
+    // Send DELETE request to your backend API to delete the product from MongoDB
+    const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/products", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: productName, price: productPrice }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove product from database");
     }
-  };
-  
+
+    // Remove product from the selectedProducts and productsToSend arrays
+    const updatedSelectedProducts = selectedProducts.filter(
+      (prod) => !(prod.name === productName && prod.price === productPrice)
+    );
+    const updatedProductsToSend = productsToSend.filter(
+      (prod) => !(prod.name === productName && prod.price === productPrice)
+    );
+
+    // Update the state
+    setSelectedProducts(updatedSelectedProducts);
+    setProductsToSend(updatedProductsToSend);
+
+    // Update localStorage
+    localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
+    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
+
+    console.log("Product removed successfully from both MongoDB and state");
+  } catch (error) {
+    console.error("Error removing product:", error.message);
+  }
+};
+
 
   // Navigate to the customer details page
   const handleDone = () => {
