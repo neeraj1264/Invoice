@@ -451,7 +451,15 @@ const Invoice = () => {
               </React.Fragment>
             ))
         ) : (
-          <p>No products selected</p>
+          <p style={{
+            textAlign:"center",
+            position: "absolute",
+            top: "48%",
+            left: "30%",
+            fontSize: "2rem",
+            fontWeight: 700,
+            color: "#3c60fd"
+          }}>Loading...</p>
         )}
       </div>
 
