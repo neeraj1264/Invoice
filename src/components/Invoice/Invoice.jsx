@@ -61,7 +61,9 @@ const Invoice = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/products");
+        const response = await fetch(
+          "https://invoice-5vnp09gr.b4a.run/api/products"
+        );
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.statusText}`);
         }
@@ -76,9 +78,8 @@ const Invoice = () => {
     fetchProducts();
 
     const storedProductsToSend =
-    JSON.parse(localStorage.getItem("productsToSend")) || [];
-  setProductsToSend(storedProductsToSend);
-
+      JSON.parse(localStorage.getItem("productsToSend")) || [];
+    setProductsToSend(storedProductsToSend);
   }, []);
 
   const handleOpenPopup = (product) => {
@@ -269,43 +270,48 @@ const Invoice = () => {
   };
 
   // Function to remove a product from selected products and productsToSend
- const handleRemoveProduct = async (productName, productPrice) => {
-  try {
-    // Send DELETE request to your backend API to delete the product from MongoDB
-    const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/products", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: productName, price: productPrice }),
-    });
+  const handleRemoveProduct = async (productName, productPrice) => {
+    try {
+      // Send DELETE request to your backend API to delete the product from MongoDB
+      const response = await fetch(
+        "https://invoice-5vnp09gr.b4a.run/api/products",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: productName, price: productPrice }),
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error("Failed to remove product from database");
+      if (!response.ok) {
+        throw new Error("Failed to remove product from database");
+      }
+
+      // Remove product from the selectedProducts and productsToSend arrays
+      const updatedSelectedProducts = selectedProducts.filter(
+        (prod) => !(prod.name === productName && prod.price === productPrice)
+      );
+      const updatedProductsToSend = productsToSend.filter(
+        (prod) => !(prod.name === productName && prod.price === productPrice)
+      );
+
+      // Update the state
+      setSelectedProducts(updatedSelectedProducts);
+      setProductsToSend(updatedProductsToSend);
+
+      // Update localStorage
+      localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
+      localStorage.setItem(
+        "productsToSend",
+        JSON.stringify(updatedProductsToSend)
+      );
+
+      console.log("Product removed successfully from both MongoDB and state");
+    } catch (error) {
+      console.error("Error removing product:", error.message);
     }
-
-    // Remove product from the selectedProducts and productsToSend arrays
-    const updatedSelectedProducts = selectedProducts.filter(
-      (prod) => !(prod.name === productName && prod.price === productPrice)
-    );
-    const updatedProductsToSend = productsToSend.filter(
-      (prod) => !(prod.name === productName && prod.price === productPrice)
-    );
-
-    // Update the state
-    setSelectedProducts(updatedSelectedProducts);
-    setProductsToSend(updatedProductsToSend);
-
-    // Update localStorage
-    localStorage.setItem("products", JSON.stringify(updatedSelectedProducts));
-    localStorage.setItem("productsToSend", JSON.stringify(updatedProductsToSend));
-
-    console.log("Product removed successfully from both MongoDB and state");
-  } catch (error) {
-    console.error("Error removing product:", error.message);
-  }
-};
-
+  };
 
   // Navigate to the customer details page
   const handleDone = () => {
@@ -313,7 +319,6 @@ const Invoice = () => {
       alert("Please add at least one product before proceeding.");
       return; // Prevent navigation if no products are selected
     }
-
 
     navigate("/customer-detail"); // Navigate to customer detail page
   };
@@ -451,15 +456,19 @@ const Invoice = () => {
               </React.Fragment>
             ))
         ) : (
-          <p style={{
-            textAlign:"center",
-            position: "absolute",
-            top: "48%",
-            left: "30%",
-            fontSize: "2rem",
-            fontWeight: 700,
-            color: "#3c60fd"
-          }}>Loading...</p>
+          <p
+            style={{
+              textAlign: "center",
+              position: "absolute",
+              top: "48%",
+              left: "30%",
+              fontSize: "2rem",
+              fontWeight: 700,
+              color: "#3c60fd",
+            }}
+          >
+            Loading...
+          </p>
         )}
       </div>
 
@@ -474,19 +483,14 @@ const Invoice = () => {
       {showPopup && currentProduct && currentProduct.varieties?.length > 0 && (
         <div className="popup-overlay">
           <div className="popup-content">
-            {/* Close Button */}
             <FaTimesCircle
               className="close-icon"
-              onClick={() => setShowPopup(false)} // Close the popup when clicked
-              style={{ cursor: "pointer" }}
+              onClick={() => setShowPopup(false)}
             />
             <h3>Select Varieties for {currentProduct.name}</h3>
             {currentProduct.varieties.map((variety, index) => (
-              <div
-                key={index}
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-              >
-                <label>
+              <div key={index} className="variety-option">
+                <label className="variety-label">
                   <input
                     type="checkbox"
                     name="variety"
@@ -499,20 +503,15 @@ const Invoice = () => {
                       handleVarietyChange(variety, e.target.checked)
                     }
                   />
-                  {variety.size} ~ ₹ {variety.price}
+                  <span>
+                    {variety.size.charAt(0).toUpperCase()} ~ ₹ {variety.price}
+                  </span>
                 </label>
 
-                {/* Render Quantity Buttons for checked varieties */}
                 {selectedVariety.some(
                   (v) => v.size === variety.size && v.price === variety.price
                 ) && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
+                  <div className="quantity-buttons">
                     <button
                       onClick={() => handleVarietyQuantityChange(variety, -1)}
                       disabled={variety.quantity <= 1}

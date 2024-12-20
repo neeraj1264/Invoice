@@ -48,7 +48,12 @@ const CustomerDetail = () => {
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
   
     const message = encodeURIComponent(
-      `Order: *${orderId}*\nPhone: *${customerPhone}*\nName: *${customerName}*\nAmount: *₹${currentTotalAmount}*\nAddress: *${customerAddress}*\n\n----------item----------\n${productDetails}\n`
+      `Order: *${orderId}*` +
+      (customerPhone ? `\nPhone: *${customerPhone}*` : '') +
+      (customerName ? `\nName: *${customerName}*` : '') +
+      (customerAddress ? `\nAddress: *${customerAddress}*` : '') +
+      `\nAmount: *₹${currentTotalAmount}*` +
+      `\n\n----------item----------\n${productDetails}\n`
     );
   
     const phoneNumber = customerPhone;
