@@ -5,6 +5,7 @@ import { FaTimes, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./NewProduct.css";
+import { fetchCategories, addCategory } from "../../api";
 
 const toastOptions = {
   position: "bottom-right",
@@ -20,7 +21,7 @@ const NewProduct = ({ setSelectedProducts }) => {
 
   const [product, setProduct] = useState({
     name: "",
-    price:"",
+    price: "",
     image: "",
     category: "",
     varieties: [], // Stores size and price combinations
@@ -32,23 +33,36 @@ const NewProduct = ({ setSelectedProducts }) => {
   const [isWithVariety, setIsWithVariety] = useState(false); // Toggle for variety
 
   useEffect(() => {
-    const savedCategories = JSON.parse(localStorage.getItem("categories"));
-    if (savedCategories) {
-      setCategories(savedCategories);
-    }
+    const loadCategories = async () => {
+      try {
+        const savedCategories = await fetchCategories();
+        setCategories(savedCategories.map((category) => category.name));
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    loadCategories();
   }, []);
 
-  const handleAddCategory = (e) => {
-    if (e.key === "Enter" && newCategory.trim()) {
-      const newCategoryTrimmed = newCategory.trim();
+  const handleAddCategory = async (e) => {
+    if (e.key === 'Enter' && newCategory.trim()) {
+      let newCategoryTrimmed = newCategory.trim();
+  
+      // Convert the first letter to uppercase and the rest to lowercase
+      newCategoryTrimmed = newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1).toLowerCase();
+  
       if (!categories.includes(newCategoryTrimmed)) {
-        const updatedCategories = [...categories, newCategoryTrimmed];
-        setCategories(updatedCategories);
-        localStorage.setItem("categories", JSON.stringify(updatedCategories));
+        try {
+          const addedCategory = await addCategory(newCategoryTrimmed);
+          setCategories((prev) => [...prev, addedCategory.name]);
+          setNewCategory('');
+        } catch (error) {
+          console.error('Error adding category:', error);
+        }
       }
-      setNewCategory("");
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -98,7 +112,7 @@ const NewProduct = ({ setSelectedProducts }) => {
       toast.error("Please fill in the product name!", toastOptions);
       return;
     }
-  
+
     // When "Add Varieties" is checked
     if (isWithVariety) {
       if (product.varieties.length === 0) {
@@ -112,7 +126,7 @@ const NewProduct = ({ setSelectedProducts }) => {
         return;
       }
     }
-  
+
     // Check if the product already exists in the same category
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     const isProductExist = storedProducts.some(
@@ -120,29 +134,32 @@ const NewProduct = ({ setSelectedProducts }) => {
         prod.name.toLowerCase() === product.name.toLowerCase() &&
         prod.category.toLowerCase() === product.category.toLowerCase()
     );
-  
+
     if (isProductExist) {
       toast.error("This product already exists!", toastOptions);
       return;
     }
-  
+
     try {
       // Send product data to backend (API call)
-      const response = await fetch('https://invoice-5vnp09gr.b4a.run/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(product),
-      });
-  
+      const response = await fetch(
+        "https://invoice-5vnp09gr.b4a.run/api/products",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(product),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to save the product');
+        throw new Error("Failed to save the product");
       }
-  
+
       const savedProduct = await response.json();
-      console.log('Product saved:', savedProduct);
-  
+      console.log("Product saved:", savedProduct);
+
       // Reset the form fields
       setProduct({
         name: "",
@@ -151,7 +168,7 @@ const NewProduct = ({ setSelectedProducts }) => {
         category: "",
         varieties: [],
       });
-  
+
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 1000);
     } catch (error) {
@@ -159,7 +176,6 @@ const NewProduct = ({ setSelectedProducts }) => {
       console.error(error);
     }
   };
-  
 
   const handleNavigateToInvoice = () => {
     navigate("/invoice");
@@ -208,15 +224,15 @@ const NewProduct = ({ setSelectedProducts }) => {
           onChange={handleInputChange}
         />
 
-       {!isWithVariety && (
-    <input
-      type="number"
-      name="price"
-      placeholder="₹ price"
-      value={product.price}
-      onChange={handleInputChange}
-    />
-  )}
+        {!isWithVariety && (
+          <input
+            type="number"
+            name="price"
+            placeholder="₹ price"
+            value={product.price}
+            onChange={handleInputChange}
+          />
+        )}
 
         {/* Toggle to enable or disable varieties */}
         <div className="toggle-variety">
@@ -227,7 +243,7 @@ const NewProduct = ({ setSelectedProducts }) => {
               onChange={(e) => {
                 const isChecked = e.target.checked;
                 setIsWithVariety(isChecked);
-        
+
                 // Clear price if Add Varieties is checked
                 if (isChecked) {
                   setProduct((prev) => ({
@@ -236,7 +252,6 @@ const NewProduct = ({ setSelectedProducts }) => {
                   }));
                 }
               }}
-        
             />
             Add Varieties
           </label>
@@ -257,7 +272,10 @@ const NewProduct = ({ setSelectedProducts }) => {
               placeholder="Price (₹)"
               value={productVariety.price}
               onChange={(e) =>
-                setProductVariety((prev) => ({ ...prev, price: e.target.value }))
+                setProductVariety((prev) => ({
+                  ...prev,
+                  price: e.target.value,
+                }))
               }
             />
             <button onClick={handleAddVariety}>Add Variety</button>
