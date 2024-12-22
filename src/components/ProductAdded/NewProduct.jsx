@@ -322,6 +322,7 @@ const NewProduct = ({ setSelectedProducts }) => {
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             onKeyUp={handleAddCategory}
+            onBlur={() => setNewCategory("")} 
             className="add-category-input"
           />
         </div>
