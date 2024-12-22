@@ -35,34 +35,46 @@ const NewProduct = ({ setSelectedProducts }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
+        // Fetch categories from MongoDB
         const savedCategories = await fetchCategories();
-        setCategories(savedCategories.map((category) => category.name));
+
+        // Update state and save categories to localStorage
+        const categoryNames = savedCategories.map((category) => category.name);
+        setCategories(categoryNames);
+        localStorage.setItem("categories", JSON.stringify(categoryNames));
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
+
+    // Load categories when the component mounts
     loadCategories();
   }, []);
 
   const handleAddCategory = async (e) => {
-    if (e.key === 'Enter' && newCategory.trim()) {
+    if (e.key === "Enter" && newCategory.trim()) {
       let newCategoryTrimmed = newCategory.trim();
-  
+
       // Convert the first letter to uppercase and the rest to lowercase
       // newCategoryTrimmed = newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1).toLowerCase();
-  
+
       if (!categories.includes(newCategoryTrimmed)) {
         try {
           const addedCategory = await addCategory(newCategoryTrimmed);
           setCategories((prev) => [...prev, addedCategory.name]);
-          setNewCategory('');
+
+          // Update localStorage with the new category
+          const updatedCategories = [...categories, addedCategory.name];
+          localStorage.setItem("categories", JSON.stringify(updatedCategories));
+
+          // Clear the input field
+          setNewCategory("");
         } catch (error) {
-          console.error('Error adding category:', error);
+          console.error("Error adding category:", error);
         }
       }
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
