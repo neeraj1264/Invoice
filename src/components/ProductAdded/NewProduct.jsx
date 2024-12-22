@@ -52,21 +52,20 @@ const NewProduct = ({ setSelectedProducts }) => {
   }, []);
 
   const handleAddCategory = async (e) => {
-    if (e.key === "Enter" && newCategory.trim()) {
+    if ((e.key === "Enter" || e.key === "Return") && newCategory.trim()) {
+      e.preventDefault();
       let newCategoryTrimmed = newCategory.trim();
-
-      // Convert the first letter to uppercase and the rest to lowercase
-      // newCategoryTrimmed = newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1).toLowerCase();
-
+  
+      // Check for duplicate categories and format input
       if (!categories.includes(newCategoryTrimmed)) {
         try {
           const addedCategory = await addCategory(newCategoryTrimmed);
           setCategories((prev) => [...prev, addedCategory.name]);
-
-          // Update localStorage with the new category
+  
+          // Update localStorage
           const updatedCategories = [...categories, addedCategory.name];
           localStorage.setItem("categories", JSON.stringify(updatedCategories));
-
+  
           // Clear the input field
           setNewCategory("");
         } catch (error) {
@@ -74,7 +73,7 @@ const NewProduct = ({ setSelectedProducts }) => {
         }
       }
     }
-  };
+  };  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -322,7 +321,7 @@ const NewProduct = ({ setSelectedProducts }) => {
             placeholder="Add new category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            onKeyDown={handleAddCategory}
+            onKeyUp={handleAddCategory}
             className="add-category-input"
           />
         </div>
