@@ -5,7 +5,7 @@ import { FaTimes, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./NewProduct.css";
-import { fetchCategories, addCategory } from "../../api";
+import { fetchCategories, addCategory, addProduct } from "../../api";
 
 const toastOptions = {
   position: "bottom-right",
@@ -33,7 +33,6 @@ const NewProduct = ({ setSelectedProducts }) => {
   const [isWithVariety, setIsWithVariety] = useState(false); // Toggle for variety
 
   useEffect(() => {
-    console.log("new-product file")
     const loadCategories = async () => {
       try {
         // Fetch categories from MongoDB
@@ -154,23 +153,9 @@ const NewProduct = ({ setSelectedProducts }) => {
     }
 
     try {
-      // Send product data to backend (API call)
-      const response = await fetch(
-        "https://invoice-5vnp09gr.b4a.run/api/products",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(product),
-        }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to save the product");
-      }
-
-      const savedProduct = await response.json();
+          // Call the API function
+      const savedProduct = await addProduct(product);
       console.log("Product saved:", savedProduct);
 
       // Reset the form fields

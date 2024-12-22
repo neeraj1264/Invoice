@@ -6,6 +6,7 @@ import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 // import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
+import { sendorder } from "../../api";
 
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
@@ -89,20 +90,7 @@ const CustomerDetail = () => {
  
      try {
       // Send the order to your backend to be saved in MongoDB
-      const response = await fetch("https://invoice-5vnp09gr.b4a.run/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to send order to the server ${response.statusText}`);
-      }
-  
-      // Optionally, you can show a confirmation message or handle the response
-      const data = await response.json();
+    const data = await sendorder(order)
       console.log("Order created:", data);
   
       // You can clear localStorage or perform any other actions as needed

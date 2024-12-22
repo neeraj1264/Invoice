@@ -13,6 +13,7 @@ import {
 // import { AiOutlineBars } from "react-icons/ai";
 import { IoMdCloseCircle } from "react-icons/io";
 import Header from "../header/Header";
+import { fetchProducts, removeProduct } from "../../api";
 
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -59,24 +60,16 @@ const Invoice = () => {
 
   // Load products from localStorage on component mount
   useEffect(() => {
-    console.log("invoice-file")
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://invoice-5vnp09gr.b4a.run/api/products"
-        );
-        if (!response.ok) {
-          throw new Error(`Failed to fetch products: ${response.statusText}`);
-        }
-        const data = await response.json();
-        // console.log("Fetched products:", data);
-        setSelectedProducts(data); // Set fetched products to state
+        const products = await fetchProducts(); // Use the function from api.js
+        setSelectedProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error.message); // Logs the error message
       }
     };
 
-    fetchProducts();
+    fetchData();
 
     const storedProductsToSend =
       JSON.parse(localStorage.getItem("productsToSend")) || [];
@@ -273,21 +266,8 @@ const Invoice = () => {
   // Function to remove a product from selected products and productsToSend
   const handleRemoveProduct = async (productName, productPrice) => {
     try {
-      // Send DELETE request to your backend API to delete the product from MongoDB
-      const response = await fetch(
-        "https://invoice-5vnp09gr.b4a.run/api/products",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: productName, price: productPrice }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to remove product from database");
-      }
+      // Call the API function
+      await removeProduct(productName, productPrice);
 
       // Remove product from the selectedProducts and productsToSend arrays
       const updatedSelectedProducts = selectedProducts.filter(

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./History.css";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { fetchOrders } from "../../api";
 
 const History = () => {
   const [orders, setOrders] = useState([]);
@@ -12,13 +13,10 @@ const History = () => {
   const navigate = useNavigate();
 
  useEffect(() => {
-  const fetchOrders = async () => {
+  const getOrders = async () => {
     try {
-      const response = await fetch('https://invoice-5vnp09gr.b4a.run/api/orders');  // Your backend endpoint for fetching orders
-      if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-      }
-      const data = await response.json();
+      const data = await fetchOrders(); // Call the API function
+
       setOrders(data);
 
       const today = new Date();
@@ -48,7 +46,7 @@ const History = () => {
     }
   };
 
-  fetchOrders();
+  getOrders();
 }, [filter]);
 
 
