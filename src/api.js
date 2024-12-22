@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000/api'; // Replace with your backend URL
+const BASE_URL = 'https://invoice-5vnp09gr.b4a.run/api'; // Replace with your backend URL
 
 export const fetchCategories = async () => {
   const response = await fetch(`${BASE_URL}/categories`);

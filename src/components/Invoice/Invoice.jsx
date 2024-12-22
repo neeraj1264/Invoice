@@ -59,6 +59,7 @@ const Invoice = () => {
 
   // Load products from localStorage on component mount
   useEffect(() => {
+    console.log("invoice-file")
     const fetchProducts = async () => {
       try {
         const response = await fetch(

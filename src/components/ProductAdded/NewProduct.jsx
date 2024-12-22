@@ -33,6 +33,7 @@ const NewProduct = ({ setSelectedProducts }) => {
   const [isWithVariety, setIsWithVariety] = useState(false); // Toggle for variety
 
   useEffect(() => {
+    console.log("new-product file")
     const loadCategories = async () => {
       try {
         // Fetch categories from MongoDB
@@ -53,6 +54,7 @@ const NewProduct = ({ setSelectedProducts }) => {
 
   const handleAddCategory = async (e) => {
     if ((e.key === "Enter" || e.key === "Return") && newCategory.trim()) {
+      console.log("enter key presed", e.key)
       e.preventDefault();
       let newCategoryTrimmed = newCategory.trim();
   
