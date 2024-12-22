@@ -49,7 +49,7 @@ const NewProduct = ({ setSelectedProducts }) => {
       let newCategoryTrimmed = newCategory.trim();
   
       // Convert the first letter to uppercase and the rest to lowercase
-      newCategoryTrimmed = newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1).toLowerCase();
+      // newCategoryTrimmed = newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1).toLowerCase();
   
       if (!categories.includes(newCategoryTrimmed)) {
         try {
