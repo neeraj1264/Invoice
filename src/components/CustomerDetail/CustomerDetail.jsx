@@ -86,6 +86,15 @@ const CustomerDetail = () => {
        timestamp: new Date().toISOString(),
      };
  
+       // Get the current orders from localStorage
+  const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  // Add the new order to the list
+  savedOrders.push(order);
+
+  // Save the updated orders back to localStorage
+  localStorage.setItem("orders", JSON.stringify(savedOrders));
+  
      try {
       // Send the order to your backend to be saved in MongoDB
     const data = await sendorder(order)
