@@ -37,14 +37,12 @@ const CustomerDetail = () => {
     const currentTotalAmount =
       calculateTotalPrice(productsToSend); // Add ₹20 service charge
   
-    const productDetails = productsToSend
-      .map(
-        (product) =>
-          `${product.quantity || 1}.0 x ${product.name} ${product.size} = ₹${
-            product.price * (product.quantity || 1)
-          }`
-      )
-      .join("\n");
+      const productDetails = productsToSend
+      .map((product) => {
+        const quantity = product.quantity || 1;
+        const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
+        return `${quantity}.0 x ${product.name}${size} = ₹${product.price * quantity}\n`;
+      });
   
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
   

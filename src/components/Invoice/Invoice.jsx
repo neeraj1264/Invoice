@@ -74,16 +74,34 @@ const Invoice = () => {
     const storedProductsToSend =
       JSON.parse(localStorage.getItem("productsToSend")) || [];
     setProductsToSend(storedProductsToSend);
+    
+      setSelectedVariety([]);
   }, []);
 
   const handleOpenPopup = (product) => {
     if (product.varieties && product.varieties.length > 0) {
       setCurrentProduct(product);
       setShowPopup(true);
+
+      const savedSelectedVarieties = JSON.parse(sessionStorage.getItem('selectedVariety') || '[]');
+      setSelectedVariety(savedSelectedVarieties);
+
     } else {
       handleAddToWhatsApp(product); // Directly add product if no varieties
     }
   };
+
+   // Save selectedVariety to localStorage whenever it changes
+   useEffect(() => {
+    if (selectedVariety.length > 0) {
+      sessionStorage.setItem('selectedVariety', JSON.stringify(selectedVariety));
+    }
+  }, [selectedVariety]);
+
+   // Clear selectedVariety from sessionStorage when page refreshes
+   useEffect(() => {
+    sessionStorage.removeItem('selectedVariety');
+  }, []);
 
   const handleVarietyQuantityChange = (variety, delta) => {
     setSelectedVariety((prev) => {
@@ -99,7 +117,7 @@ const Invoice = () => {
       );
 
       // Save updated selectedVariety to localStorage
-      // localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
+      localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
 
       // Update productsToSend based on the updated selectedVarieties
       setProductsToSend((prevProducts) => {
@@ -201,7 +219,7 @@ const Invoice = () => {
     const newProducts = selectedVarieties.map((variety) => ({
       ...product,
       ...variety,
-      quantity: variety.quantity || 1, // Default quantity for each variety
+      quantity: variety.quantity || 0, // Default quantity for each variety
     }));
 
     setProductsToSend((prev) => {
@@ -222,7 +240,7 @@ const Invoice = () => {
             prod.name === newProduct.name &&
             prod.price === newProduct.price &&
             prod.size === newProduct.size
-              ? { ...prod, quantity: prod.quantity + 1 }
+              ? { ...prod, quantity: newProduct.quantity }
               : prod
           );
         }
