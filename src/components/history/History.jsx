@@ -10,10 +10,12 @@ const History = () => {
   const [grandTotal, setGrandTotal] = useState(0);
   const [filter, setFilter] = useState("Today");
   const [expandedOrderId, setExpandedOrderId] = useState(null); // Track expanded order
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
  useEffect(() => {
   const getOrders = async () => {
+    setLoading(true); // Start loading
     try {
       const data = await fetchOrders(); // Call the API function
 
@@ -43,6 +45,8 @@ const History = () => {
       setGrandTotal(total);
     } catch (error) {
       console.error('Error fetching orders:', error.message);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -91,6 +95,7 @@ const History = () => {
       <div className="history-header fixed-top">
         <FaArrowLeft className="back-arrow" onClick={handleBack} />
         <h1 className="header">Order History</h1>
+         {/* Show loading spinner when fetching */}
         <div className="filter-container">
           <select
             id="filter"
@@ -108,6 +113,9 @@ const History = () => {
           </select>
         </div>
       </div>
+      {loading ? (
+        <div className="lds-ripple"><div></div><div></div></div>
+        ) : (
       <div className="history-container">
         <div className="grand-total">
           <h2 className="total-sale">
@@ -161,6 +169,7 @@ const History = () => {
           <p>No orders found for {filter.toLowerCase()}.</p>
         )}
       </div>
+      )}
     </div>
   );
 };

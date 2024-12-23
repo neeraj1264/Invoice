@@ -455,19 +455,7 @@ const Invoice = () => {
               </React.Fragment>
             ))
         ) : (
-          <p
-            style={{
-              textAlign: "center",
-              position: "absolute",
-              top: "48%",
-              left: "30%",
-              fontSize: "2rem",
-              fontWeight: 700,
-              color: "#3c60fd",
-            }}
-          >
-            Loading...
-          </p>
+          <div className="lds-ripple"><div></div><div></div></div>
         )}
       </div>
 
