@@ -53,14 +53,18 @@ const NewProduct = ({ setSelectedProducts }) => {
 
   const handleAddCategory = async (e) => {
     if ((e.key === "Enter" || e.key === "Return") && newCategory.trim()) {
-      console.log("enter key presed", e.key)
+      console.log("Enter key pressed", e.key);
       e.preventDefault();
+      
+      // Trim and format the new category
       let newCategoryTrimmed = newCategory.trim();
+      let formattedCategory = 
+        newCategoryTrimmed.charAt(0).toUpperCase() + newCategoryTrimmed.slice(1);
   
       // Check for duplicate categories and format input
-      if (!categories.includes(newCategoryTrimmed)) {
+      if (!categories.includes(formattedCategory)) {
         try {
-          const addedCategory = await addCategory(newCategoryTrimmed);
+          const addedCategory = await addCategory(formattedCategory);
           setCategories((prev) => [...prev, addedCategory.name]);
   
           // Update localStorage
@@ -74,7 +78,8 @@ const NewProduct = ({ setSelectedProducts }) => {
         }
       }
     }
-  };  
+  };
+   
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
