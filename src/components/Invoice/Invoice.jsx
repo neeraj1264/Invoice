@@ -91,6 +91,11 @@ const Invoice = () => {
     }
   };
 
+  useEffect(() => {
+    // Reset selectedVariety on popup close or when a new product is selected
+    setSelectedVariety([]);
+  }, [showPopup]);
+  
    // Save selectedVariety to localStorage whenever it changes
    useEffect(() => {
     if (selectedVariety.length > 0) {
@@ -364,14 +369,14 @@ const Invoice = () => {
                       onTouchStart={handlePressStart}
                       onTouchEnd={handlePressEnd}
                     >
-                      <h3 className="p-name">
+                      <h4 className="p-name">
                         {product.name}
                         {product.varieties &&
                         Array.isArray(product.varieties) &&
                         product.varieties[0]?.size
                           ? ` (${product.varieties[0].size})`
                           : ""}
-                      </h3>
+                      </h4>
                       <p style={{ color: "grey", fontWeight: 700 }}>
                         Price:{" "}
                         <span

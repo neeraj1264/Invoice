@@ -119,6 +119,7 @@
 .p-name {
   color: #1a1a1a;
   font-family: "Noto Sans", "Roboto", "Arial";
+  margin: 0;
 }
 .sub-box h3 {
   margin: 0;
