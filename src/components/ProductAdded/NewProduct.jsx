@@ -20,6 +20,7 @@ const NewProduct = ({ setSelectedProducts }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const [product, setProduct] = useState({
+    id:"",
     name: "",
     price: "",
     image: "",
@@ -129,7 +130,7 @@ const NewProduct = ({ setSelectedProducts }) => {
       toast.error("Please fill in the product name!", toastOptions);
       return;
     }
-
+  
     // When "Add Varieties" is checked
     if (isWithVariety) {
       if (product.varieties.length === 0) {
@@ -143,7 +144,7 @@ const NewProduct = ({ setSelectedProducts }) => {
         return;
       }
     }
-
+  
     // Check if the product already exists in the same category
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     const isProductExist = storedProducts.some(
@@ -151,34 +152,44 @@ const NewProduct = ({ setSelectedProducts }) => {
         prod.name.toLowerCase() === product.name.toLowerCase() &&
         prod.category.toLowerCase() === product.category.toLowerCase()
     );
-
+  
     if (isProductExist) {
       toast.error("This product already exists!", toastOptions);
       return;
     }
-
+  
+    // Generate a new ID for the product
+    const productId = `invoice${storedProducts.length + 1}`;
+  
+    // Add the generated ID to the product
+    const productWithId = { ...product, id: productId };
+  
     try {
-
-          // Call the API function
-      const savedProduct = await addProduct(product);
+      // Call the API function to add the product (you might need to pass the full object with the id)
+      const savedProduct = await addProduct(productWithId);
       console.log("Product saved:", savedProduct);
-
+  
+      // Add the product to the localStorage
+      storedProducts.push(productWithId);
+      localStorage.setItem("products", JSON.stringify(storedProducts));
+  
       // Reset the form fields
       setProduct({
+        id:"",
         name: "",
         price: "",
         image: "",
         category: "",
         varieties: [],
       });
-
+  
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 1000);
     } catch (error) {
       toast.error("Error saving product!", toastOptions);
       console.error(error);
     }
-  };
+  };  
 
   const handleNavigateToInvoice = () => {
     navigate("/invoice");
