@@ -116,13 +116,27 @@ const NewProduct = ({ setSelectedProducts }) => {
       toast.error("Please fill in size and price!", toastOptions);
       return;
     }
-    const updatedVarieties = [...product.varieties, productVariety];
+  
+    // Capitalize the first letter of the variety size
+    const formattedSize = productVariety.size.charAt(0).toUpperCase() + productVariety.size.slice(1).toLowerCase();
+  
+    // Generate a variety ID like 'variety-1', 'variety-2', etc.
+    const varietyId = `variety-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  
+    // Add the variety with the generated id
+    const updatedVarieties = [
+      ...product.varieties,
+      { id: varietyId, size: formattedSize, price: productVariety.price },
+    ];
+  
     setProduct((prev) => ({
       ...prev,
       varieties: updatedVarieties,
     }));
+  
     setProductVariety({ size: "", price: "" });
   };
+  
 
   const handleAddProduct = async () => {
     // Check for name field (always required)
@@ -131,25 +145,41 @@ const NewProduct = ({ setSelectedProducts }) => {
       return;
     }
   
+    // Capitalize the first letter of the product name
+    const formattedName = product.name.charAt(0).toUpperCase() + product.name.slice(1).toLowerCase();
+  
     // When "Add Varieties" is checked
     if (isWithVariety) {
       if (product.varieties.length === 0) {
         toast.error("Please add at least one variety!", toastOptions);
         return;
       }
+      const updatedVarieties = product.varieties.map(variety => ({
+        ...variety,
+        size: variety.size.charAt(0).toUpperCase() + variety.size.slice(1).toLowerCase(),
+      }));
+      setProduct(prev => ({
+        ...prev,
+        name: formattedName, // Ensure the capitalized name is saved here
+        varieties: updatedVarieties,
+      }));
     } else {
       // When "Add Varieties" is NOT checked, validate the price field
       if (!product.price) {
         toast.error("Please fill in the product price!", toastOptions);
         return;
       }
+      setProduct(prev => ({
+        ...prev,
+        name: formattedName, // Ensure the capitalized name is saved here
+      }));
     }
   
     // Check if the product already exists in the same category
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     const isProductExist = storedProducts.some(
       (prod) =>
-        prod.name.toLowerCase() === product.name.toLowerCase() &&
+        prod.name.toLowerCase() === formattedName.toLowerCase() && // Use the formatted name here
         prod.category.toLowerCase() === product.category.toLowerCase()
     );
   
@@ -162,7 +192,7 @@ const NewProduct = ({ setSelectedProducts }) => {
     const productId = `invoice${storedProducts.length + 1}`;
   
     // Add the generated ID to the product
-    const productWithId = { ...product, id: productId };
+    const productWithId = { ...product, id: productId, name: formattedName }; // Use the capitalized name
   
     try {
       // Call the API function to add the product (you might need to pass the full object with the id)
@@ -175,7 +205,7 @@ const NewProduct = ({ setSelectedProducts }) => {
   
       // Reset the form fields
       setProduct({
-        id:"",
+        id: "",
         name: "",
         price: "",
         image: "",
@@ -189,8 +219,8 @@ const NewProduct = ({ setSelectedProducts }) => {
       toast.error("Error saving product!", toastOptions);
       console.error(error);
     }
-  };  
-
+  };
+  
   const handleNavigateToInvoice = () => {
     navigate("/invoice");
   };
@@ -297,8 +327,8 @@ const NewProduct = ({ setSelectedProducts }) => {
         )}
 
         <ul>
-          {product.varieties.map((variety, index) => (
-            <li key={index}>
+          {product.varieties.map((variety) => (
+            <li key={variety.id}>
               {variety.size} - ₹{variety.price}
             </li>
           ))}

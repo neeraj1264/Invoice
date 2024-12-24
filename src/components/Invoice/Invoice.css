@@ -90,8 +90,28 @@
   border-radius: 0.5rem;
   font-size: 1rem;
 }
+.category-bar{
+  position: fixed;
+    top: 4.3rem;
+    border: 3px solid var(--bg);
+    margin: 0 1rem;
+    width: 90%;
+    border-radius: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    background: white;
+}
+.category-bar button{
+  margin: 0 .5rem;
+  background: transparent;
+  border: none;
+  color: var(--bg);
+  font-size: 1.3rem;
+  font-weight: 800;
+}
 .main {
-  margin: 4rem 0;
+  margin: 7rem 0;
 }
 .main-box {
   display: flex;
@@ -345,4 +365,10 @@ h3 {
 
 .save-btn:hover:not(:disabled) {
   background: #218838;
+}
+
+.no-data{
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 700;
 }

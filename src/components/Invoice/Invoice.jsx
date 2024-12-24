@@ -22,6 +22,7 @@ const Invoice = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [selectedVariety, setSelectedVariety] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate(); // For navigation
 
@@ -64,8 +65,10 @@ const Invoice = () => {
       try {
         const products = await fetchProducts(); // Use the function from api.js
         setSelectedProducts(products);
+        setLoading(false); 
       } catch (error) {
         console.error("Error fetching products:", error.message); // Logs the error message
+        setLoading(false); 
       }
     };
 
@@ -75,7 +78,7 @@ const Invoice = () => {
       JSON.parse(localStorage.getItem("productsToSend")) || [];
     setProductsToSend(storedProductsToSend);
     
-      setSelectedVariety([]);
+      // setSelectedVariety([]);
   }, []);
 
   const handleOpenPopup = (product) => {
@@ -83,37 +86,39 @@ const Invoice = () => {
       setCurrentProduct(product);
       setShowPopup(true);
 
-      const savedSelectedVarieties = JSON.parse(sessionStorage.getItem('selectedVariety') || '[]');
-      setSelectedVariety(savedSelectedVarieties);
+      const savedSelectedVarieties = JSON.parse(localStorage.getItem('selectedVariety') || '[]');
+      setSelectedVariety(savedSelectedVarieties.filter(v => v.productId === product.id)); // Filter by productId
 
     } else {
       handleAddToWhatsApp(product); // Directly add product if no varieties
     }
   };
 
-  useEffect(() => {
-    // Reset selectedVariety on popup close or when a new product is selected
-    setSelectedVariety([]);
-  }, [showPopup]);
+  // useEffect(() => {
+  //   // Reset selectedVariety on popup close or when a new product is selected
+  //   setSelectedVariety([]);
+  // }, [showPopup]);
   
    // Save selectedVariety to localStorage whenever it changes
    useEffect(() => {
     if (selectedVariety.length > 0) {
-      sessionStorage.setItem('selectedVariety', JSON.stringify(selectedVariety));
+      localStorage.setItem('selectedVariety', JSON.stringify(selectedVariety));
     }
   }, [selectedVariety]);
 
-   // Clear selectedVariety from sessionStorage when page refreshes
+   // Clear selectedVariety from localStorage when page refreshes
    useEffect(() => {
-    sessionStorage.removeItem('selectedVariety');
+    localStorage.removeItem('selectedVariety');
   }, []);
 
-  const handleVarietyQuantityChange = (variety, delta) => {
+  const handleVarietyQuantityChange = (variety, delta, productId) => {
     setSelectedVariety((prev) => {
       let updatedVarieties = prev.map((selected) =>
-        selected.size === variety.size && selected.price === variety.price
-          ? { ...selected, quantity: selected.quantity + delta }
-          : selected
+        selected.size === variety.size &&
+      selected.price === variety.price &&
+      selected.productId === productId
+      ? { ...selected, quantity: (selected.quantity || 0) + delta }
+      : selected
       );
 
       // Remove variety if the quantity becomes less than 1
@@ -125,55 +130,30 @@ const Invoice = () => {
       localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
 
       // Update productsToSend based on the updated selectedVarieties
-      setProductsToSend((prevProducts) => {
-        const updatedProducts = prevProducts
-          .map((prod) => {
-            if (
-              prod.name === currentProduct.name &&
-              prod.size === variety.size &&
-              prod.price === variety.price
-            ) {
-              const newQuantity = prod.quantity + delta;
-
-              // If quantity becomes less than 1, remove it
-              if (newQuantity < 1) {
-                return null; // Mark for removal
-              }
-              return { ...prod, quantity: newQuantity };
-            }
-            return prod;
-          })
-          .filter((prod) => prod !== null); // Remove null entries
-
-        // Update localStorage with the updated productsToSend
-        localStorage.setItem("productsToSend", JSON.stringify(updatedProducts));
-        return updatedProducts;
-      });
+   
 
       return updatedVarieties;
     });
   };
 
-  const handleVarietyChange = (variety, isChecked) => {
+  const handleVarietyChange = (variety, isChecked, productId) => {
     setSelectedVariety((prev) => {
       let updatedVarieties;
       if (isChecked) {
         updatedVarieties = [
           ...prev,
-          { ...variety, quantity: 1 }, // Default quantity for each selected variety
+          { ...variety, quantity: 1, productId }, // Add productId to variety
         ];
       } else {
         updatedVarieties = prev.filter(
           (selected) =>
-            !(
-              selected.size === variety.size && selected.price === variety.price
-            )
+            !(selected.size === variety.size &&
+              selected.price === variety.price &&
+              selected.productId === productId) // Match by productId too
         );
       }
-
-      // Save updated selectedVariety to localStorage
+  
       localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
-
       return updatedVarieties;
     });
   };
@@ -335,19 +315,56 @@ const Invoice = () => {
     );
   };
 
+  const handleCategoryClick = (category) => {
+    const categoryElement = document.getElementById(category);
+    if (categoryElement) {
+      // Calculate the offset position (7rem margin)
+      const offset = 7 * 16; // Convert rem to pixels (assuming 1rem = 16px)
+      const elementPosition = categoryElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+  
+      // Smooth scroll to the position with the offset
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+  
+  
   return (
     <div>
       <Header headerName="Invoice" setSearch={setSearch} />
 
+     {/* Fixed Category Bar */}
+   <div className="category-bar">
+  {Object.keys(filteredProducts)
+    .sort((a, b) => a.localeCompare(b))
+    .map((category, index) => (
+      <button
+        key={index}
+        className="category-btn"
+        onClick={() => handleCategoryClick(category)}  // Trigger scroll to category
+      >
+        {category}
+      </button>
+    ))}
+</div>
       {/* Add a search input to filter products */}
 
       <div className="main">
-        {Object.keys(filteredProducts).length > 0 ? (
+      {loading ? (
+    // Display loading effect when fetching data
+    <div className="lds-ripple">
+      <div></div>
+      <div></div>
+    </div>
+  ) : Object.keys(filteredProducts).length > 0 ? (
           Object.keys(filteredProducts)
             .sort((a, b) => a.localeCompare(b)) // Sort category names alphabetically
             .map((category, index) => (
               <React.Fragment key={index}>
-                <h2 className="category">{category}</h2>
+                <h2 className="category" id={category}>{category}</h2>
                 {filteredProducts[category].map((product, idx) => (
                   <div key={idx} className="main-box">
                     <div className="img-box">
@@ -460,7 +477,7 @@ const Invoice = () => {
               </React.Fragment>
             ))
         ) : (
-          <div className="lds-ripple"><div></div><div></div></div>
+          <div className="no-data">No data available</div>
         )}
       </div>
 
@@ -488,12 +505,9 @@ const Invoice = () => {
                     name="variety"
                     value={index}
                     checked={selectedVariety.some(
-                      (v) =>
-                        v.size === variety.size && v.price === variety.price
+                      (v) => v.size === variety.size && v.price === variety.price && v.productId === currentProduct.id
                     )}
-                    onChange={(e) =>
-                      handleVarietyChange(variety, e.target.checked)
-                    }
+                    onChange={(e) => handleVarietyChange(variety, e.target.checked, currentProduct.id)}
                   />
                   <span>
                     {variety.size.charAt(0).toUpperCase()} ~ ₹ {variety.price}
@@ -505,7 +519,7 @@ const Invoice = () => {
                 ) && (
                   <div className="quantity-buttons">
                     <button
-                      onClick={() => handleVarietyQuantityChange(variety, -1)}
+                      onClick={() => handleVarietyQuantityChange(variety, -1, currentProduct.id)}
                       disabled={variety.quantity <= 1}
                     >
                       <FaMinusCircle />
@@ -528,7 +542,7 @@ const Invoice = () => {
                       }}
                     />
                     <button
-                      onClick={() => handleVarietyQuantityChange(variety, 1)}
+                      onClick={() => handleVarietyQuantityChange(variety, 1, currentProduct.id)}
                     >
                       <FaPlusCircle />
                     </button>
