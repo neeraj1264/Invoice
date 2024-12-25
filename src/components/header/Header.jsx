@@ -67,8 +67,13 @@ const Header = ({ headerName, setSearch }) => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link custom-text" to="/customer-detail">
-                    Customer Detail
+                  <Link className="nav-link custom-text" to="/customer-data">
+                    Customer Data
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link custom-text" to="/printer">
+                    printer
                   </Link>
                 </li>
               </ul>

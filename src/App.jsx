@@ -6,6 +6,8 @@ import "./App.css";
 import CustomerDetail from "./components/CustomerDetail/CustomerDetail";
 import NewProduct from "./components/ProductAdded/NewProduct";
 import History from "./components/history/History";
+import { CustomerData } from "./components/data/CustomerData";
+import ThermalPrinterConnect from "./components/BluetoothComponent/printer";
 
 
 const App = () => {
@@ -40,6 +42,8 @@ const App = () => {
           element={<Invoice selectedProducts={selectedProducts} />}
         />
         <Route path="/customer-detail" element={<CustomerDetail />} />
+        <Route path="/customer-data" element={<CustomerData />} />
+        <Route path="/printer" element={<ThermalPrinterConnect/>} />
         <Route path="/history" element={<History />} />
 
 

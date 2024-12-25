@@ -11,7 +11,7 @@ import { sendorder } from "../../api";
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [customerAddress, setCustomerAddress] = useState(""); 
+  const [customerAddress, setCustomerAddress] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [productsToSend, setproductsToSend] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -34,78 +34,109 @@ const CustomerDetail = () => {
 
   const handleSendToWhatsApp = () => {
     // Calculate the current total amount from productsToSend
-    const currentTotalAmount =
-      calculateTotalPrice(productsToSend); // Add ₹20 service charge
-  
-      const productDetails = productsToSend
-      .map((product) => {
-        const quantity = product.quantity || 1;
-        const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
-        return `${quantity}.0 x ${product.name}${size} = ₹${product.price * quantity}\n`;
-      });
-  
+    const currentTotalAmount = calculateTotalPrice(productsToSend); // Add ₹20 service charge
+
+    const productDetails = productsToSend.map((product) => {
+      const quantity = product.quantity || 1;
+      const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
+      return `${quantity}.0 x ${product.name}${size} = ₹${
+        product.price * quantity
+      }\n`;
+    });
+
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-  
+
     const message = encodeURIComponent(
       `Order: *${orderId}*` +
-      (customerPhone ? `\nPhone: *${customerPhone}*` : '') +
-      (customerName ? `\nName: *${customerName}*` : '') +
-      (customerAddress ? `\nAddress: *${customerAddress}*` : '') +
-      `\nAmount: *₹${currentTotalAmount}*` +
-      `\n\n----------item----------\n${productDetails}\n`
+        (customerPhone ? `\nPhone: *${customerPhone}*` : "") +
+        (customerName ? `\nName: *${customerName}*` : "") +
+        (customerAddress ? `\nAddress: *${customerAddress}*` : "") +
+        `\nAmount: *₹${currentTotalAmount}*` +
+        `\n\n----------item----------\n${productDetails}\n`
     );
-  
+
     const phoneNumber = customerPhone;
-  
+
     const formattedPhoneNumber = phoneNumber
       ? `+91${phoneNumber}` // Prepend +91 for India if the phone number is present
       : phoneNumber;
-  
+
     if (phoneNumber) {
-      window.open(`https://wa.me/${formattedPhoneNumber}?text=${message}`, "_blank");
+      window.open(
+        `https://wa.me/${formattedPhoneNumber}?text=${message}`,
+        "_blank"
+      );
     } else {
       window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     }
-  };  
+  };
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleSendClick = async() => {
+  const handleSendClick = async () => {
     setShowPopup(true);
 
-     // Generate a unique identifier for the order
-     const orderId = `order_${Date.now()}`;
+    // Create a customer object
+    const customerData = {
+      name: customerName,
+      phone: customerPhone,
+      address: customerAddress,
+      products: productsToSend,
+      totalAmount: calculateTotalPrice(productsToSend),
+      timestamp: new Date().toISOString(),
+    };
 
-     // Create an order object
-     const order = {
-       id: orderId,
-       products: productsToSend,
-       totalAmount: calculateTotalPrice(productsToSend),
-       timestamp: new Date().toISOString(),
-     };
- 
-       // Get the current orders from localStorage
-  const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    // Retrieve existing customer data from localStorage, or initialize as an empty array if not present
+    const savedCustomers = JSON.parse(localStorage.getItem("customers")) || [];
 
-  // Add the new order to the list
-  savedOrders.push(order);
+    // Add the new customer to the array
+    savedCustomers.push(customerData);
 
-  // Save the updated orders back to localStorage
-  localStorage.setItem("orders", JSON.stringify(savedOrders));
-  
-     try {
+    // Save the updated array back to localStorage
+    localStorage.setItem("customers", JSON.stringify(savedCustomers));
+
+    try {
       // Send the order to your backend to be saved in MongoDB
-    const data = await sendorder(order)
+      const data = await sendorder(customerData);
       console.log("Order created:", data);
-  
+
+      // Optionally clear localStorage or perform other actions after saving the order
+      // localStorage.removeItem("products"); // Example
+    } catch (error) {
+      console.error("Error sending order:", error.message);
+    }
+    // Generate a unique identifier for the order
+    const orderId = `order_${Date.now()}`;
+
+    // Create an order object
+    const order = {
+      id: orderId,
+      products: productsToSend,
+      totalAmount: calculateTotalPrice(productsToSend),
+      timestamp: new Date().toISOString(),
+    };
+
+    // Get the current orders from localStorage
+    const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    // Add the new order to the list
+    savedOrders.push(order);
+
+    // Save the updated orders back to localStorage
+    localStorage.setItem("orders", JSON.stringify(savedOrders));
+
+    try {
+      // Send the order to your backend to be saved in MongoDB
+      const data = await sendorder(order);
+      console.log("Order created:", data);
+
       // You can clear localStorage or perform any other actions as needed
       // localStorage.removeItem("products"); // Example
     } catch (error) {
       console.error("Error sending order:", error.message);
     }
-     
   };
 
   const handleClosePopup = () => {
@@ -309,8 +340,8 @@ td:nth-child(4) {
     };
   };
 
-   // Helper function to calculate total price
-   const calculateTotalPrice = (products = []) => {
+  // Helper function to calculate total price
+  const calculateTotalPrice = (products = []) => {
     return products.reduce(
       (total, product) => total + product.price * product.quantity,
       0
@@ -450,13 +481,12 @@ td:nth-child(4) {
           </p> */}
         </div>
         <p className="totalAmount">
-        NetTotal: ₹
-          {(
-            productsToSend.reduce(
+          NetTotal: ₹
+          {productsToSend
+            .reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
               0
-            ) 
-          )
+            )
             .toFixed(2)}
         </p>{" "}
       </div>
@@ -548,13 +578,12 @@ td:nth-child(4) {
           </p> */}
         </div>
         <p className="totalAmount">
-        NetTotal: ₹
-          {(
-            productsToSend.reduce(
+          NetTotal: ₹
+          {productsToSend
+            .reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
               0
-            ) 
-          )
+            )
             .toFixed(2)}
         </p>{" "}
       </div>
