@@ -5,6 +5,10 @@ const BluetoothComponent = () => {
   const [device, setDevice] = useState(null);
 
   const handleConnect = () => {
+    if (!navigator.bluetooth) {
+        console.log('Bluetooth is not available in this browser.');
+        return;
+      }
     BluetoothDevice.requestDevice({
       filters: [{ services: ['printer'] }],
     })
