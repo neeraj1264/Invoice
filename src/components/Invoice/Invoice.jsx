@@ -334,9 +334,10 @@ const Invoice = () => {
   
   return (
     <div>
-      <Header headerName="Invoice" setSearch={setSearch} />
+      <Header headerName="Foodies Hub" setSearch={setSearch} />
 
      {/* Fixed Category Bar */}
+     <div className="category-b">
    <div className="category-bar">
   {Object.keys(filteredProducts)
     .sort((a, b) => a.localeCompare(b))
@@ -349,6 +350,7 @@ const Invoice = () => {
         {category}
       </button>
     ))}
+</div>
 </div>
       {/* Add a search input to filter products */}
 
