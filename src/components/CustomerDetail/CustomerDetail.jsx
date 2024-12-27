@@ -97,16 +97,16 @@ const CustomerDetail = () => {
     // Save the updated array back to localStorage
     localStorage.setItem("customers", JSON.stringify(savedCustomers));
 
-    try {
-      // Send the order to your backend to be saved in MongoDB
-      const data = await sendorder(customerData);
-      console.log("Order created:", data);
+    // try {
+    //   // Send the order to your backend to be saved in MongoDB
+    //   const data = await sendorder(customerData);
+    //   console.log("Order created:", data);
 
-      // Optionally clear localStorage or perform other actions after saving the order
-      // localStorage.removeItem("products"); // Example
-    } catch (error) {
-      console.error("Error sending order:", error.message);
-    }
+    //   // Optionally clear localStorage or perform other actions after saving the order
+    //   // localStorage.removeItem("products"); // Example
+    // } catch (error) {
+    //   console.error("Error sending order:", error.message);
+    // }
     // Generate a unique identifier for the order
     const orderId = `order_${Date.now()}`;
 
@@ -286,34 +286,40 @@ td:nth-child(4) {
             body {
               font-family: Arial, sans-serif;
               font-size: 12px; /* Adjust font size for 58mm printers */
-              margin: 0;
+              margin: 3rem 0;
               padding: 0;
               width: 48mm; /* Limit width to fit within 58mm printer */
             }
             table {
-              width: 100%;
+              width: 94%;
               border-collapse: collapse;
             }
             th, td {
-              border: 1px solid black;
-              padding: 4px;
+              border: 2px solid black;
+              padding: 2px;
               text-align: left;
-              font-size: 10px; /* Smaller font for compact printing */
+              font-size: 10px;
+              font-weight: bold;
             }
             .total {
               font-size: 13px;
               text-align: left;
               margin-top: 4px;
             }
-              .totalAmount{
+            .totalAmount{
               font-size: 15px;
               font-weight: 800;
               border: 2px dashed;
-              }
+              text-align: center;
+              background: black;
+              color: white;
+              padding: .4rem;
+            }
               .thanku{
               text-align: center;
               font-size: 15px;
-              }
+              padding-bottom: 2rem;
+            }
              .logo {
                display: flex;
                margin: auto;
@@ -322,11 +328,15 @@ td:nth-child(4) {
               width: 40px; /* Adjust logo size */
               height: auto;
             }
+              hr {
+              border: 2px dashed;
+            }
           </style>
         </head>
         <body>
           ${kotContent}
           <div class="thanku">Thank You!</div>
+          <hr/>
         </body>
       </html>
     `);
@@ -501,25 +511,31 @@ td:nth-child(4) {
         <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
           Foodies Hub
         </h1>
-        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
+        <p
+          style={{
+            textAlign: "center",
+            margin: 0,
+            fontSize: "14px",
+            padding: "0 2px",
+          }}
+        >
           Pehowa, Haryana, 136128
         </p>
-        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
-          Phone Number - +91 70158-23645
+        <p style={{ textAlign: "center", margin: 0, fontSize: "14px" }}>
+          +91 70158-23645
         </p>
         <hr />
         <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
           Invoice Details
         </h2>
         <div className="customer-info">
-          {/* Bill No and Date */}
           <p style={{ fontSize: "15px" }}>
             Bill No&nbsp;&nbsp;-&nbsp;&nbsp;
             {`#${Math.floor(1000 + Math.random() * 9000)}`}{" "}
             {/* Random 6-digit bill number */}
           </p>
-          <p style={{ fontSize: "15px" }}>
-            Created On&nbsp;
+          <p style={{ fontSize: "13px" }}>
+            Created On:&nbsp;
             {new Date().toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "2-digit",
@@ -534,23 +550,27 @@ td:nth-child(4) {
               })}
           </p>
 
-          <p style={{ fontSize: "15px" }}>
-            Customer Name &nbsp;- &nbsp;
-            {customerName ? customerName : "Guest Customer"}
-          </p>
-          <p style={{ fontSize: "15px" }}>
-            Phone Number &nbsp;- &nbsp;{customerPhone ? customerPhone : "...."}
-          </p>
-          <p style={{ fontSize: "15px" }}>
-            Address&nbsp;-&nbsp;
-            {customerAddress ? customerAddress : "...."}
-          </p>
+          {customerName && (
+            <p style={{ fontSize: "12px" }}>
+              Customer Name &nbsp;- &nbsp;{customerName}
+            </p>
+          )}
+          {customerPhone && (
+            <p style={{ fontSize: "12px" }}>
+              Phone Number &nbsp;- &nbsp;{customerPhone}
+            </p>
+          )}
+          {customerAddress && (
+            <p style={{ fontSize: "13px" }}>
+              Address&nbsp;-&nbsp;{customerAddress}
+            </p>
+          )}
         </div>
         <table>
           <thead>
             <tr className="productname">
-              <th>Product Name</th>
-              <th>Quantity</th>
+              <th>Item</th>
+              <th>Qty</th>
               <th>Price</th>
               <th>Total</th>
             </tr>
@@ -573,16 +593,31 @@ td:nth-child(4) {
           </tbody>
         </table>
         <div className="total">
-          {/* <p>
+          <p>
+            item total{" "}
+            <span>
+              ₹{" "}
+              {productsToSend
+                .reduce(
+                  (sum, product) =>
+                    sum + product.price * (product.quantity || 1),
+                  0
+                )
+                .toFixed(2)}
+            </span>
+          </p>
+        </div>
+        <div className="total">
+          <p>
             Service Charge: <span>₹20.00</span>
-          </p> */}
+          </p>
         </div>
         <p className="totalAmount">
           NetTotal: ₹
           {productsToSend
             .reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
-              0
+              20
             )
             .toFixed(2)}
         </p>{" "}
