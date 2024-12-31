@@ -105,7 +105,7 @@ const History = () => {
           >
             <option value="Today">Today</option>
             <option value="Yesterday">Yesterday</option>
-            {[...Array(5)].map((_, i) => (
+            {[...Array(6)].map((_, i) => (
               <option key={i} value={`${i + 2} days ago`}>
                 {i + 2} days ago
               </option>
@@ -127,8 +127,8 @@ const History = () => {
           [...filteredOrders].reverse().map((order, index) => (
             <div key={order.id} className="order-section">
               <hr />
+              <div onClick={() => toggleOrder(order.id)}>
               <h2
-                onClick={() => toggleOrder(order.id)}
                 style={{ cursor: "pointer", fontSize: "1rem" }}
               >
                 Order {filteredOrders.length - index} -{" "}
@@ -137,6 +137,8 @@ const History = () => {
               <p>
                 <strong>Amount Received: ₹{order.totalAmount}</strong>{" "}
               </p>
+              </div>
+             
               {expandedOrderId === order.id && ( // Render table only if this order is expanded
                 <table className="products-table">
                   <thead>

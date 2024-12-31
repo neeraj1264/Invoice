@@ -1,10 +1,13 @@
 .custom-navbar {
   background: var(--bg); /* Custom blue background */
+  padding: 0;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 2px 2px 2px 2px var(--bg);
 }
 
 .custom-text {
   color: #fff !important; /* Custom text color */
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 .custom-navbar .navbar-toggler,
@@ -18,6 +21,8 @@
   color: white !important; /* Custom brand color */
   margin: 0;
   font-weight: bold;
+  margin-right: 2rem;
+
 }
 .btn {
   background-color: var(--bg);

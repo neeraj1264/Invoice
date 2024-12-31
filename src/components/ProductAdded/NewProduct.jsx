@@ -337,7 +337,7 @@ const NewProduct = ({ setSelectedProducts }) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <select
             name="category"
-            className="dropdown"
+            className="dropdownn"
             value={product.category}
             onChange={handleInputChange}
           >

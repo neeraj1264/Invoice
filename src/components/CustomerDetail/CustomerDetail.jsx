@@ -78,25 +78,6 @@ const CustomerDetail = () => {
   const handleSendClick = async () => {
     setShowPopup(true);
 
-    // Create a customer object
-    const customerData = {
-      name: customerName,
-      phone: customerPhone,
-      address: customerAddress,
-      products: productsToSend,
-      totalAmount: calculateTotalPrice(productsToSend),
-      timestamp: new Date().toISOString(),
-    };
-
-    // Retrieve existing customer data from localStorage, or initialize as an empty array if not present
-    const savedCustomers = JSON.parse(localStorage.getItem("customers")) || [];
-
-    // Add the new customer to the array
-    savedCustomers.push(customerData);
-
-    // Save the updated array back to localStorage
-    localStorage.setItem("customers", JSON.stringify(savedCustomers));
-
     // try {
     //   // Send the order to your backend to be saved in MongoDB
     //   const data = await sendorder(customerData);
@@ -115,6 +96,9 @@ const CustomerDetail = () => {
       id: orderId,
       products: productsToSend,
       totalAmount: calculateTotalPrice(productsToSend),
+      name: customerName,
+      phone: customerPhone,
+      address: customerAddress,
       timestamp: new Date().toISOString(),
     };
 
@@ -141,6 +125,8 @@ const CustomerDetail = () => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    navigate('/invoice')
+    window.location.reload();
   };
 
   const handlePngDownload = () => {
@@ -269,85 +255,98 @@ td:nth-child(4) {
     };
   };
 
-  const MobilePrint = () => {
-    const image = new Image();
-    image.src = "/logo.png"; // Use an absolute path
-
-    image.onload = () => {
-      // Proceed with printing after the image is fully loaded
-
-      const kotContent = document.getElementById("mobileinvoice").innerHTML; // Fetch KOT content
-      const newWindow = window.open("", "", "width=600,height=400"); // Open a new window
+  const convertImageToBase64 = (imagePath) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.crossOrigin = "Anonymous"; // To handle cross-origin issues if needed
+      image.src = imagePath;
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      image.onerror = (error) => reject(error);
+    });
+  };
+  
+  const MobilePrint = async () => {
+    try {
+      // Convert both logo and QR code to Base64
+      const logoBase64 = await convertImageToBase64("/logo.png");
+      const qrBase64 = await convertImageToBase64("/qr.png");
+  
+      const kotContent = document.getElementById("mobileinvoice").innerHTML;
+  
+      const newWindow = window.open("", "", "width=600,height=400");
       newWindow.document.write(`
-      <html>
-        <head>
-          <title>KOT</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              font-size: 12px; /* Adjust font size for 58mm printers */
-              margin: 3rem 0;
-              padding: 0;
-              width: 48mm; /* Limit width to fit within 58mm printer */
-            }
-            table {
-              width: 94%;
-              border-collapse: collapse;
-            }
-            th, td {
-              border: 2px solid black;
-              padding: 2px;
-              text-align: left;
-              font-size: 10px;
-              font-weight: bold;
-            }
-            .total {
-              font-size: 13px;
-              text-align: left;
-              margin-top: 4px;
-            }
-            .totalAmount{
-              font-size: 15px;
-              font-weight: 800;
-              border: 2px dashed;
-              text-align: center;
-              background: black;
-              color: white;
-              padding: .4rem;
-            }
-              .thanku{
-              text-align: center;
-              font-size: 15px;
-              padding-bottom: 2rem;
-            }
-             .logo {
-               display: flex;
-               margin: auto;
-                    }
-            .logo img {
-              width: 40px; /* Adjust logo size */
-              height: auto;
-            }
+        <html>
+          <head>
+            <title>KOT</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                margin: 3rem 0;
+                padding: 0;
+                width: 48mm;
+              }
+              table {
+                width: 94%;
+                border-collapse: collapse;
+              }
+              th, td {
+                border: 2px solid black;
+                padding: 2px;
+                text-align: left;
+                font-size: 10px;
+                font-weight: bold;
+              }
+              .total {
+                font-size: 13px;
+                text-align: left;
+                margin-top: 4px;
+              }
+              .totalAmount {
+                font-size: 15px;
+                font-weight: 800;
+                border: 2px dashed;
+                text-align: center;
+                background: black;
+                color: white;
+                padding: 0.4rem;
+              }
+              .logo {
+                display: flex;
+                margin: auto;
+              }
+              .logo img {
+                width: 40px;
+                height: auto;
+              }
               hr {
-              border: 2px dashed;
-            }
-          </style>
-        </head>
-        <body>
-          ${kotContent}
-          <div class="thanku">Thank You!</div>
-          <hr/>
-        </body>
-      </html>
-    `);
+                border: 2px dashed;
+              }
+            </style>
+          </head>
+          <body>
+            ${kotContent}
+          </body>
+        </html>
+      `);
+  
       newWindow.document.close();
-      newWindow.focus();
-      newWindow.print();
-      newWindow.close();
-    };
-    image.onerror = () => {
-      console.error("Image failed to load.");
-    };
+  
+      newWindow.onload = () => {
+        newWindow.focus();
+        newWindow.print();
+        newWindow.close();
+      };
+    } catch (error) {
+      console.error("Error generating printable content:", error);
+    }
   };
 
   // Helper function to calculate total price
@@ -621,6 +620,32 @@ td:nth-child(4) {
             )
             .toFixed(2)}
         </p>{" "}
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "15px",
+            paddingBottom: "2rem",
+          }}
+        >
+          Thank You!
+        </div>
+        <hr />
+        <div
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "1rem",
+          }}
+        >
+          {" "}
+          Order Online
+        </div>
+          <img
+            src="/qr.png"
+            alt="QR Code"
+            style={{ width: "80%", display: "flex", margin: "2px auto" }}
+          />
+
       </div>
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
