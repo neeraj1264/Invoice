@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./History.css";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft , FaWhatsapp} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { fetchOrders } from "../../api";
 
@@ -90,6 +90,16 @@ const History = () => {
     setExpandedOrderId((prevId) => (prevId === orderId ? null : orderId));
   };
 
+  const handleWhatsappClick = (order) => {
+    const customerPhoneNumber = order.phone; // Correct field to access phone number
+    const message = `We hope you had a delightful order experience with us. Your feedback is incredibly valuable as we continue to enhance our services. How did you enjoy your meal? We’d love to hear your thoughts.\nTeam: Foodies Hub`;
+    // Create the WhatsApp URL to send the message
+    const whatsappUrl = `https://wa.me/+91${customerPhoneNumber}?text=${encodeURIComponent(message)}`;
+  
+    // Open WhatsApp with the message
+    window.open(whatsappUrl, "_blank");
+  };  
+  
   return (
     <div>
       <div className="history-header fixed-top">
@@ -136,7 +146,9 @@ const History = () => {
               </h2>
               <p>
                 <strong>Amount Received: ₹{order.totalAmount}</strong>{" "}
-              </p>
+                {order.phone && (
+    <FaWhatsapp className="whatsapp" onClick={() => handleWhatsappClick(order)} />
+  )}              </p>
               </div>
              
               {expandedOrderId === order.id && ( // Render table only if this order is expanded

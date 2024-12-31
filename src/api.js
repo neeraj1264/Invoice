@@ -79,3 +79,32 @@ export const fetchOrders = async () => {
   }
   return response.json();
 };
+
+export const setdata = async (customerdata) => {
+  const response = await fetch(`${BASE_URL}/customerdata`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(customerdata),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to send customerdata to the server ${response.statusText}`);
+  }
+
+  return response.json(); // Return the saved product
+};
+
+export const fetchcustomerdata = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/customerdata`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json(); // Parse JSON only if the response is OK
+  } catch (error) {
+    console.error("Error fetching customer data:", error.message);
+    throw error; // Rethrow for further handling
+  }
+};

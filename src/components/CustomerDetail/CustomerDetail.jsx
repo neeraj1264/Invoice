@@ -6,8 +6,17 @@ import { handleScreenshot } from "../Utils/DownloadPng"; // Import the function
 import "./Customer.css";
 // import { handleScreenshotAsPDF } from "../Utils/DownloadPdf";
 import Header from "../header/Header";
-import { sendorder } from "../../api";
+import { sendorder, setdata } from "../../api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+const toastOptions = {
+  position: "bottom-right",
+  autoClose: 2000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+};
 const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -78,17 +87,6 @@ const CustomerDetail = () => {
   const handleSendClick = async () => {
     setShowPopup(true);
 
-    // try {
-    //   // Send the order to your backend to be saved in MongoDB
-    //   const data = await sendorder(customerData);
-    //   console.log("Order created:", data);
-
-    //   // Optionally clear localStorage or perform other actions after saving the order
-    //   // localStorage.removeItem("products"); // Example
-    // } catch (error) {
-    //   console.error("Error sending order:", error.message);
-    // }
-    // Generate a unique identifier for the order
     const orderId = `order_${Date.now()}`;
 
     // Create an order object
@@ -96,6 +94,14 @@ const CustomerDetail = () => {
       id: orderId,
       products: productsToSend,
       totalAmount: calculateTotalPrice(productsToSend),
+      name: customerName,
+      phone: customerPhone,
+      address: customerAddress,
+      timestamp: new Date().toISOString(),
+    };
+
+    const customerDataObject = {
+      id: orderId,
       name: customerName,
       phone: customerPhone,
       address: customerAddress,
@@ -121,12 +127,26 @@ const CustomerDetail = () => {
     } catch (error) {
       console.error("Error sending order:", error.message);
     }
+
+    try {
+      const customerDataResponse = await setdata(customerDataObject);
+      if (customerDataResponse.message === 'Customer already exists, no changes made.') {
+        console.log("Customer already exists in the database, no need to add again.");
+      } else {
+        console.log("Customer Data Added", customerDataResponse);
+      }
+    } catch (error) {
+      console.error("Error sending customer data:", error.message);
+    }
   };
 
   const handleClosePopup = () => {
     setShowPopup(false);
-    navigate('/invoice')
-    window.location.reload();
+  
+    localStorage.removeItem('productsToSend');
+  
+    // Navigate to the invoice page
+    navigate('/invoice');
   };
 
   const handlePngDownload = () => {
@@ -357,6 +377,21 @@ td:nth-child(4) {
     );
   };
 
+   // Handle customer phone input validation
+   const handlePhoneChange = (e) => {
+    const phoneValue = e.target.value;
+
+    // Only allow numeric input and ensure length is <= 10
+    if (/^\d*$/.test(phoneValue) && phoneValue.length <= 10) {
+      setCustomerPhone(phoneValue);
+    }
+
+    // Show error if the phone number is not 10 digits
+    if (phoneValue.length <= 10) {
+      toast.error("Phone number must be 10 digits!");
+    }
+  }
+
   return (
     <div>
       <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
@@ -373,7 +408,7 @@ td:nth-child(4) {
         <input
           type="text"
           value={customerPhone}
-          onChange={(e) => setCustomerPhone(e.target.value)}
+          onChange={handlePhoneChange}
           placeholder="Customer phone..."
         />
       </div>

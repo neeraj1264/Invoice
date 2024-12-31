@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './CustomerData.css'; // Import the CSS file
+import { fetchcustomerdata } from '../../api';
 
 export const CustomerData = () => {
   const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
-    const storedCustomers = JSON.parse(localStorage.getItem('customers')) || [];
-    setCustomers(storedCustomers);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const storedCustomers = await fetchcustomerdata(); // Fetch from API
+        setCustomers(storedCustomers);
+      } catch (error) {
+        console.error("Error fetching customer data:", error.message);
+      }
+    };
+  
+    fetchData();
+  
+    // Load localStorage customers as a fallback
+    const localStorageCustomers = JSON.parse(localStorage.getItem('customers')) || [];
+    if (localStorageCustomers.length > 0) {
+      setCustomers(localStorageCustomers);
+    }
+  }, []);  
 
   return (
     <div className="customer-data-container">
@@ -22,9 +37,6 @@ export const CustomerData = () => {
               <p><strong>Name:</strong> {customer.name}</p>
               <p><strong>Phone:</strong> {customer.phone}</p>
               <p><strong>Address:</strong> {customer.address}</p>
-              <p><strong>Products:</strong> {customer.products.join(', ')}</p>
-              <p><strong>Total Amount:</strong> ${customer.totalAmount}</p>
-              <p><strong>Timestamp:</strong> {customer.timestamp}</p>
             </li>
           ))}
         </ul>
