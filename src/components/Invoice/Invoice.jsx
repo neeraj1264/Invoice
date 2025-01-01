@@ -334,8 +334,7 @@ const Invoice = () => {
   
   return (
     <div>
-      {/* <Header headerName="Foodies Hub" setSearch={setSearch} /> */}
-      <Header setSearch={setSearch}/>
+      <Header headerName="Foodies Hub" setSearch={setSearch}/>
 
      {/* Fixed Category Bar */}
      {/* <div className="category-b">
@@ -353,7 +352,6 @@ const Invoice = () => {
     ))}
 </div>
 </div> */}
-      {/* Add a search input to filter products */}
 
       <div className="main">
       {loading ? (
