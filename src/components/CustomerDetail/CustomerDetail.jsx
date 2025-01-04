@@ -393,6 +393,40 @@ td:nth-child(4) {
     }
   }
 
+  const handleRawBTPrint = () => {
+    const invoiceText = `
+  Foodies Hub
+  Pehowa, Haryana, 136128
+  Phone: +91 70158-23645
+  
+  ----- Invoice Details -----
+  Bill No: #${Math.floor(1000 + Math.random() * 9000)}
+  Date: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString("en-GB")}
+  
+  Customer: ${customerName || "Guest Customer"}
+  Phone: ${customerPhone || "N/A"}
+  Address: ${customerAddress || "N/A"}
+  
+  ----- Items -----
+  ${productsToSend
+    .map((product, index) => `${index + 1}. ${product.name} - ₹${product.price} x ${product.quantity}`)
+    .join("\n")}
+  
+  Total: ₹${calculateTotalPrice(productsToSend)}
+  
+  ---------------------------
+  Thank you for your purchase!
+  `;
+  
+    // Send the content to RawBT (add more parameters if required)
+    const encodedText = encodeURIComponent(invoiceText);
+    const rawBTUrl = `intent:${encodedText}#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.text=${encodedText};end;`;
+  
+    // Trigger RawBT
+    window.location.href = rawBTUrl;
+  };
+  
+  
   return (
     <div>
       <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
@@ -697,8 +731,8 @@ td:nth-child(4) {
             <button onClick={handlePngDownload} style={styles.popupButton}>
               Download Invoice
             </button>
-            <button onClick={DesktopPrint} style={styles.popupButton}>
-              Desktop Print
+            <button onClick={handleRawBTPrint} style={styles.popupButton}>
+              print with rb
             </button>
             <button onClick={MobilePrint} style={styles.popupButton}>
               Mobile Print
