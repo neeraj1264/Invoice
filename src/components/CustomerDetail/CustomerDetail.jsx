@@ -395,11 +395,11 @@ td:nth-child(4) {
 
   const handleRawBTPrint = () => {
     const invoiceText = `
-  Foodies Hub
+    \x1B\x21\x30Foodies Hub\x1B\x21\x00  
   Pehowa, Haryana, 136128
   Phone: +91 70158-23645
   
-  ----- Invoice Details -----
+   \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
   Date: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString("en-GB")}
   
@@ -407,12 +407,12 @@ td:nth-child(4) {
   Phone: ${customerPhone || "N/A"}
   Address: ${customerAddress || "N/A"}
   
-  ----- Items -----
+  \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
   ${productsToSend
-    .map((product, index) => `${index + 1}. ${product.name} - ₹${product.price} x ${product.quantity}`)
-    .join("\n")}
+    .map((product, index) => `\n${index + 1}. ${product.name} - ₹${product.price} x ${product.quantity}`)
+    .join("")}
   
-  Total: ₹${calculateTotalPrice(productsToSend)}
+  \x1B\x21\x30Total: ₹${calculateTotalPrice(productsToSend)}\x1B\x21\x00
   
   ---------------------------
   Thank you for your purchase!
