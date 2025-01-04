@@ -420,8 +420,11 @@ td:nth-child(4) {
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
   ${productsToSend
-    .map((product, index) => `\n${index + 1}. ${product.name} - ₹${product.price} x ${product.quantity}`)
-    .join("")}
+  .map((product, index) => {
+    // Check if the size is available, if yes, include it, otherwise show "No"
+    const productSize = product.size ? `(${product.size})` : "";
+    return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
+  })    .join("")}
   
   \x1B\x21\x30Total: ₹${calculateTotalPrice(productsToSend)}\x1B\x21\x00
   
