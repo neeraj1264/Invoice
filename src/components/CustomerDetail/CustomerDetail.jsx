@@ -401,7 +401,18 @@ td:nth-child(4) {
   
    \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
-  Date: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString("en-GB")}
+  Date: ${new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }) +
+              " " +
+              new Date().toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true, // Enables 12-hour format
+              })}
   
   Customer: ${customerName || "Guest Customer"}
   Phone: ${customerPhone || "N/A"}
