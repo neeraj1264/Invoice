@@ -3,6 +3,7 @@ import "./History.css";
 import { FaArrowLeft , FaWhatsapp} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { fetchOrders } from "../../api";
+import Header from "../header/Header";
 
 const History = () => {
   const [orders, setOrders] = useState([]);
@@ -102,11 +103,8 @@ const History = () => {
   
   return (
     <div>
-      <div className="history-header fixed-top">
-        <FaArrowLeft className="back-arrow" onClick={handleBack} />
-        <h1 className="header">Order History</h1>
-         {/* Show loading spinner when fetching */}
-        <div className="filter-container">
+            <Header headerName="Order History"  />
+            <div className="filter-container">
           <select
             id="filter"
             value={filter}
@@ -122,7 +120,6 @@ const History = () => {
             ))}
           </select>
         </div>
-      </div>
       {loading ? (
         <div className="lds-ripple"><div></div><div></div></div>
         ) : (

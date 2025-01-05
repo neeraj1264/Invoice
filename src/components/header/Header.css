@@ -1,28 +1,33 @@
 .custom-navbar {
-  background: var(--bg); /* Custom blue background */
+  /* background: var(--bg);  */
   padding: 0;
-    border-radius: 0 0 1rem 1rem;
-    box-shadow: 2px 2px 2px 2px var(--bg);
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 2px 2px var(--bg);
+  background-color: #eee;
 }
 
 .custom-text {
-  color: #fff !important; /* Custom text color */
+  color: var(--bg) !important; /* Custom text color */
   /* font-weight: bold; */
 }
 
 .custom-navbar .navbar-toggler,
 .custom-navbar .navbar-toggler-icon {
-  border-color: white;
-  color: white;
+  border-color: var(--bg);
+  color: var(--bg);
   font-size: 1rem;
 }
 
 .custom-navbar .navbar-brand {
-  color: white !important; /* Custom brand color */
+  color: var(--bg) !important; /* Custom brand color */
   margin: 0;
   font-weight: bold;
   margin-right: 2rem;
-
+}
+.navbar-toggler:focus {
+  text-decoration: none;
+  outline: 0;
+  box-shadow: none;
 }
 .btn {
   background-color: var(--bg);
@@ -34,12 +39,8 @@
   font-size: 0.8rem;
 }
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23ED6629' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
-.navbar-toggler:hover .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(200, 200, 200, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
 
 .search-bar-container {
   display: flex;
@@ -48,7 +49,7 @@
   justify-content: space-between;
 }
 
-.search-icon-btn{
+.search-icon-btn {
   background: transparent;
   border: none;
   font-size: 1.5rem;
@@ -56,6 +57,18 @@
   color: white;
 }
 
+.form-control{
+  border: 2px solid var(--bg);
+  border-radius: 2rem;
+}
+input::placeholder {
+  color: var(--bg); /* Change this to your desired color */
+  opacity: 1; /* Ensure the placeholder is fully visible */
+}
+
+input:focus::placeholder {
+  color: var(--bg); /* Optional: Change color when input is focused */
+}
 .search-input {
   flex-grow: 1;
   margin-left: 1rem;
@@ -66,5 +79,3 @@
   align-items: center;
   justify-content: space-between;
 }
-
-

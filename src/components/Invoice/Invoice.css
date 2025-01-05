@@ -78,35 +78,31 @@
   right: 1.8rem;
 }
 .category {
-  text-align: center;
-  /* background: var(--bg); */
-  color: var(--bg);
-  border: 2px solid var(--bg);
-  box-shadow: 4px 4px 8px var(--bg);
-  width: fit-content;
-  margin: auto;
-  padding: 0.3rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 600;
+  margin-bottom: 0;
+  padding: 15px 15px 0;
+
 }
-.category-bar{
-    position: fixed;
-    top: 3.5rem;
-    /* border: 3px solid var(--bg); */
-    /* margin: 0 1rem; */
-    width: 100%;
-    /* border-radius: 1rem; */
-    overflow-x: auto;
-    white-space: nowrap;
-    scroll-behavior: smooth;
-    background: var(--bg);
-    scrollbar-width: none;
-    border-radius: 0 0 1rem 1rem;
-    box-shadow: 2px 2px 6px 2px black;
-    border: none;
+.category-bar {
+  position: fixed;
+  top: 3.5rem;
+  /* border: 3px solid var(--bg); */
+  /* margin: 0 1rem; */
+  width: 100%;
+  /* border-radius: 1rem; */
+  overflow-x: auto;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  background: var(--bg);
+  scrollbar-width: none;
+  border-radius: 0 0 1rem 1rem;
+  box-shadow: 2px 2px 6px 2px black;
+  border: none;
 }
-.category-bar button{
-  margin: 0 .5rem;
+.category-bar button {
+  margin: 0 0.5rem;
   background: transparent;
   border: none;
   color: white;
@@ -114,7 +110,15 @@
   font-weight: 600;
 }
 .main {
-  margin: 4rem 0;
+  background: #eee;
+  padding: 4rem 0;
+}
+.category-container {
+  border-radius: 15px;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  margin: 1rem;
 }
 .main-box {
   display: flex;
@@ -165,12 +169,13 @@
   font-size: 0.7rem;
 }
 .add-btn {
-  padding: 0.2rem 0.5rem;
-  background: white;
+  padding: 4px 20px;
+  margin-top: 10px;
+  font-weight: 600;
   color: var(--bg);
-  font-weight: 800;
-  border-color: beige;
-  font-family: "Noto Sans", "Roboto", "Arial";
+  border: 1px solid var(--bg);
+  box-sizing: border-box;
+  border-radius: 25px;
 }
 
 .quantity-btns {
@@ -370,7 +375,7 @@ h3 {
   background: #218838;
 }
 
-.no-data{
+.no-data {
   font-size: 2rem;
   text-align: center;
   font-weight: 700;

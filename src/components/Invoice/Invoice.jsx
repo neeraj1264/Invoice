@@ -65,10 +65,10 @@ const Invoice = () => {
       try {
         const products = await fetchProducts(); // Use the function from api.js
         setSelectedProducts(products);
-        setLoading(false); 
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error.message); // Logs the error message
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -77,8 +77,8 @@ const Invoice = () => {
     const storedProductsToSend =
       JSON.parse(localStorage.getItem("productsToSend")) || [];
     setProductsToSend(storedProductsToSend);
-    
-      // setSelectedVariety([]);
+
+    // setSelectedVariety([]);
   }, []);
 
   const handleOpenPopup = (product) => {
@@ -86,9 +86,12 @@ const Invoice = () => {
       setCurrentProduct(product);
       setShowPopup(true);
 
-      const savedSelectedVarieties = JSON.parse(localStorage.getItem('selectedVariety') || '[]');
-      setSelectedVariety(savedSelectedVarieties.filter(v => v.productId === product.id)); // Filter by productId
-
+      const savedSelectedVarieties = JSON.parse(
+        localStorage.getItem("selectedVariety") || "[]"
+      );
+      setSelectedVariety(
+        savedSelectedVarieties.filter((v) => v.productId === product.id)
+      ); // Filter by productId
     } else {
       handleAddToWhatsApp(product); // Directly add product if no varieties
     }
@@ -98,27 +101,27 @@ const Invoice = () => {
   //   // Reset selectedVariety on popup close or when a new product is selected
   //   setSelectedVariety([]);
   // }, [showPopup]);
-  
-   // Save selectedVariety to localStorage whenever it changes
-   useEffect(() => {
+
+  // Save selectedVariety to localStorage whenever it changes
+  useEffect(() => {
     if (selectedVariety.length > 0) {
-      localStorage.setItem('selectedVariety', JSON.stringify(selectedVariety));
+      localStorage.setItem("selectedVariety", JSON.stringify(selectedVariety));
     }
   }, [selectedVariety]);
 
-   // Clear selectedVariety from localStorage when page refreshes
-   useEffect(() => {
-    localStorage.removeItem('selectedVariety');
+  // Clear selectedVariety from localStorage when page refreshes
+  useEffect(() => {
+    localStorage.removeItem("selectedVariety");
   }, []);
 
   const handleVarietyQuantityChange = (variety, delta, productId) => {
     setSelectedVariety((prev) => {
       let updatedVarieties = prev.map((selected) =>
         selected.size === variety.size &&
-      selected.price === variety.price &&
-      selected.productId === productId
-      ? { ...selected, quantity: (selected.quantity || 0) + delta }
-      : selected
+        selected.price === variety.price &&
+        selected.productId === productId
+          ? { ...selected, quantity: (selected.quantity || 0) + delta }
+          : selected
       );
 
       // Remove variety if the quantity becomes less than 1
@@ -130,7 +133,6 @@ const Invoice = () => {
       localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
 
       // Update productsToSend based on the updated selectedVarieties
-   
 
       return updatedVarieties;
     });
@@ -147,12 +149,14 @@ const Invoice = () => {
       } else {
         updatedVarieties = prev.filter(
           (selected) =>
-            !(selected.size === variety.size &&
+            !(
+              selected.size === variety.size &&
               selected.price === variety.price &&
-              selected.productId === productId) // Match by productId too
+              selected.productId === productId
+            ) // Match by productId too
         );
       }
-  
+
       localStorage.setItem("selectedVariety", JSON.stringify(updatedVarieties));
       return updatedVarieties;
     });
@@ -322,7 +326,7 @@ const Invoice = () => {
       const offset = 7 * 16; // Convert rem to pixels (assuming 1rem = 16px)
       const elementPosition = categoryElement.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
-  
+
       // Smooth scroll to the position with the offset
       window.scrollTo({
         top: offsetPosition,
@@ -330,14 +334,13 @@ const Invoice = () => {
       });
     }
   };
-  
-  
+
   return (
     <div>
-      <Header headerName="Foodies Hub" setSearch={setSearch}/>
+      <Header headerName="Foodies Hub" setSearch={setSearch} />
 
-     {/* Fixed Category Bar */}
-     {/* <div className="category-b">
+      {/* Fixed Category Bar */}
+      {/* <div className="category-b">
    <div className="category-bar">
   {Object.keys(filteredProducts)
     .sort((a, b) => a.localeCompare(b))
@@ -354,128 +357,142 @@ const Invoice = () => {
 </div> */}
 
       <div className="main">
-      {loading ? (
-    // Display loading effect when fetching data
-    <div className="lds-ripple">
-      <div></div>
-      <div></div>
-    </div>
-  ) : Object.keys(filteredProducts).length > 0 ? (
+        {loading ? (
+          // Display loading effect when fetching data
+          <div className="lds-ripple">
+            <div></div>
+            <div></div>
+          </div>
+        ) : Object.keys(filteredProducts).length > 0 ? (
           Object.keys(filteredProducts)
             .sort((a, b) => a.localeCompare(b)) // Sort category names alphabetically
             .map((category, index) => (
-              <React.Fragment key={index}>
-                <h2 className="category" id={category}>{category}</h2>
+              <div key={index} className="category-container">
+                <h2 className="category" id={category}>
+                  {category}
+                </h2>
                 {filteredProducts[category].map((product, idx) => (
-                  <div key={idx} className="main-box">
-                    <div className="img-box">
-                      {product.image ? (
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          style={{ width: "3rem", height: "3rem" }}
-                        />
-                      ) : (
-                        <FaImage style={{ width: "3rem", height: "3rem" }} />
-                      )}
-                    </div>
+                  <>
+                  <hr />
+                    <div>
+                      <div key={idx} className="main-box">
+                        <div className="img-box">
+                          {product.image ? (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              style={{ width: "3rem", height: "3rem" }}
+                            />
+                          ) : (
+                            <FaImage
+                              style={{ width: "3rem", height: "3rem" }}
+                            />
+                          )}
+                        </div>
 
-                    <div
-                      className="sub-box"
-                      onMouseDown={handlePressStart}
-                      onMouseUp={handlePressEnd}
-                      onTouchStart={handlePressStart}
-                      onTouchEnd={handlePressEnd}
-                    >
-                      <h4 className="p-name">
-                        {product.name}
-                        {product.varieties &&
-                        Array.isArray(product.varieties) &&
-                        product.varieties[0]?.size
-                          ? ` (${product.varieties[0].size})`
-                          : ""}
-                      </h4>
-                      <p style={{ color: "grey", fontWeight: 700 }}>
-                        Price:{" "}
-                        <span
-                          style={{
-                            color: "black",
-                            fontWeight: 800,
-                            fontFamily: "Noto Sans Roboto Arial",
-                          }}
+                        <div
+                          className="sub-box"
+                          onMouseDown={handlePressStart}
+                          onMouseUp={handlePressEnd}
+                          onTouchStart={handlePressStart}
+                          onTouchEnd={handlePressEnd}
                         >
-                          ₹{" "}
-                          {product.price
-                            ? product.price // Use product price if it exists
-                            : product.varieties.length > 0
-                            ? product.varieties[0].price // Fallback to first variety price
-                            : "N/A"}{" "}
-                          {/* Handle case when neither price nor varieties are available */}
-                        </span>
-                        {showRemoveBtn && (
-                          <span
-                            className="remove-btn"
-                            onClick={() =>
-                              handleRemoveProduct(product.name, product.price)
-                            }
-                          >
-                            <FaTimesCircle />
-                          </span>
-                        )}
-                      </p>
-                    </div>
+                          <h4 className="p-name">
+                            {product.name}
+                            {product.varieties &&
+                            Array.isArray(product.varieties) &&
+                            product.varieties[0]?.size
+                              ? ` (${product.varieties[0].size})`
+                              : ""}
+                          </h4>
+                          <p style={{ color: "var(--bg)", fontWeight: 700 }}>
+                            Price:{" "}
+                            <span
+                              style={{
+                                fontWeight: 800,
+                                fontFamily: "Noto Sans Roboto Arial",
+                              }}
+                            >
+                              ₹{" "}
+                              {product.price
+                                ? product.price // Use product price if it exists
+                                : product.varieties.length > 0
+                                ? product.varieties[0].price // Fallback to first variety price
+                                : "N/A"}{" "}
+                              {/* Handle case when neither price nor varieties are available */}
+                            </span>
+                            {showRemoveBtn && (
+                              <span
+                                className="remove-btn"
+                                onClick={() =>
+                                  handleRemoveProduct(
+                                    product.name,
+                                    product.price
+                                  )
+                                }
+                              >
+                                <FaTimesCircle />
+                              </span>
+                            )}
+                          </p>
+                        </div>
 
-                    {productsToSend.some(
-                      (prod) =>
-                        prod.name === product.name &&
-                        prod.price === product.price
-                    ) ? (
-                      <div className="quantity-btns">
-                        <button
-                          className="icons"
-                          onClick={() =>
-                            handleQuantityChange(
-                              product.name,
-                              product.price,
-                              -1
-                            )
-                          }
-                        >
-                          <FaMinusCircle />
-                        </button>
-                        <span style={{ margin: "0 .4rem" }}>
-                          {productsToSend.find(
-                            (prod) =>
-                              prod.name === product.name &&
-                              prod.price === product.price
-                          )?.quantity || 1}
-                        </span>
-                        <button
-                          className="icons"
-                          onClick={() =>
-                            handleQuantityChange(product.name, product.price, 1)
-                          }
-                        >
-                          <FaPlusCircle />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="btn-box">
-                        <button
-                          onClick={() => handleOpenPopup(product)}
-                          className="add-btn"
-                        >
-                          Add
-                        </button>
-                        {product.varieties?.length > 0 && (
-                          <span className="customise-text">Customise</span>
+                        {productsToSend.some(
+                          (prod) =>
+                            prod.name === product.name &&
+                            prod.price === product.price
+                        ) ? (
+                          <div className="quantity-btns">
+                            <button
+                              className="icons"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.name,
+                                  product.price,
+                                  -1
+                                )
+                              }
+                            >
+                              <FaMinusCircle />
+                            </button>
+                            <span style={{ margin: "0 .4rem" }}>
+                              {productsToSend.find(
+                                (prod) =>
+                                  prod.name === product.name &&
+                                  prod.price === product.price
+                              )?.quantity || 1}
+                            </span>
+                            <button
+                              className="icons"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.name,
+                                  product.price,
+                                  1
+                                )
+                              }
+                            >
+                              <FaPlusCircle />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="btn-box">
+                            <button
+                              onClick={() => handleOpenPopup(product)}
+                              className="add-btn"
+                            >
+                              Add
+                            </button>
+                            {product.varieties?.length > 0 && (
+                              <span className="customise-text">Customise</span>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
-                  </div>
+                    </div>           
+                  </>
                 ))}
-                <hr />
-              </React.Fragment>
+              </div>
             ))
         ) : (
           <div className="no-data">No data available</div>
@@ -506,9 +523,18 @@ const Invoice = () => {
                     name="variety"
                     value={index}
                     checked={selectedVariety.some(
-                      (v) => v.size === variety.size && v.price === variety.price && v.productId === currentProduct.id
+                      (v) =>
+                        v.size === variety.size &&
+                        v.price === variety.price &&
+                        v.productId === currentProduct.id
                     )}
-                    onChange={(e) => handleVarietyChange(variety, e.target.checked, currentProduct.id)}
+                    onChange={(e) =>
+                      handleVarietyChange(
+                        variety,
+                        e.target.checked,
+                        currentProduct.id
+                      )
+                    }
                   />
                   <span>
                     {variety.size.charAt(0).toUpperCase()} ~ ₹ {variety.price}
@@ -520,7 +546,13 @@ const Invoice = () => {
                 ) && (
                   <div className="quantity-buttons">
                     <button
-                      onClick={() => handleVarietyQuantityChange(variety, -1, currentProduct.id)}
+                      onClick={() =>
+                        handleVarietyQuantityChange(
+                          variety,
+                          -1,
+                          currentProduct.id
+                        )
+                      }
                       disabled={variety.quantity <= 1}
                     >
                       <FaMinusCircle />
@@ -543,7 +575,13 @@ const Invoice = () => {
                       }}
                     />
                     <button
-                      onClick={() => handleVarietyQuantityChange(variety, 1, currentProduct.id)}
+                      onClick={() =>
+                        handleVarietyQuantityChange(
+                          variety,
+                          1,
+                          currentProduct.id
+                        )
+                      }
                     >
                       <FaPlusCircle />
                     </button>

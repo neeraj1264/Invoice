@@ -1,9 +1,15 @@
 :root {
   /* --bg: #143ade; */
   /* --bg: #693333f5 */
-  --bg: #85bb12f5;
+  /* --bg: #85bb12f5; */
+  /* --bg: #473a3af5 */
+  --bg: #ED6629
 }
 
+body{
+  font-family: 'Poppins', sans-serif;
+  background-color: #eee;
+}
 --------------------------------loading--------------------------------------
 
 

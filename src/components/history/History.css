@@ -1,5 +1,5 @@
 .history-container {
-  margin: 4rem .3rem;
+  margin: 1rem .3rem;
   font-family: Arial, sans-serif;
 }
 .back-arrow {
@@ -87,7 +87,6 @@ hr{
   color: inherit;
   border-top: var(--bs-border-width) solid;
   opacity: .25;
-  border: 2px dotted black;
 }
 .whatsapp {
   position: absolute;

@@ -163,123 +163,6 @@ const CustomerDetail = () => {
     }, 10);
   };
 
-  const DesktopPrint = () => {
-    const image = new Image();
-    image.src = "/logo.png"; // Use an absolute path
-
-    image.onload = () => {
-      // Proceed with printing after the image is fully loaded
-      const kotContent = document.getElementById("invoice").innerHTML; // Fetch KOT content
-      const newWindow = window.open("", "", "width=600,height=400"); // Open a new window
-      newWindow.document.write(`
-      <html>
-        <head>
-          <title>KOT</title>
-<style>
-
-body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  
-}
-table {
-  width: 100%;
-  border-collapse: collapse; /* Ensures borders collapse */
-  margin-top: 10px; /* Top margin similar to 'margin: [0, 10, 0, 0]' */
-}
-
-th,
-td {
-  border: 1px solid black; /* Add border to cells */
-  padding: 8px; /* Padding for table cells */
-  text-align: center; /* Center align for both headers and content */
-}
-
-td {
-  text-align: left;
-}
-th {
-  background-color: #f2f2f2; /* Optional: Add background color to header */
-}
-
-td:first-child {
-  width: 100%; /* Corresponds to '*' in widths */
-}
-
-td:nth-child(2),
-td:nth-child(3),
-td:nth-child(4) {
-  width: auto; /* Corresponds to 'auto' in widths */
-}
-
-.productname th {
-  text-align: left;
-  font-size: 15px;
-  padding: 0.2rem;
-}
-.productdetail td {
-  text-align: left;
-  font-size: 15px;
-  padding: 0.2rem;
-}
-.total {
-  margin-top: 1rem;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: left;
-}
-.total p {
-  margin: 0.5rem 0 0 0;
-  display: flex;
-  justify-content: space-between;
-  text-align: right;
-  font-size: 18px;
-}
-.total span {
-  width: 20%;
-}
-.totalAmount {
-  font-size: 22px;
-  background: black;
-  color: white;
-  width: fit-content;
-  margin: auto;
-  padding: 0.4rem 0.8rem;
-  border-radius: 1rem;
-  margin-top: 1rem;
-}
-
-.invoice-content {
-  padding: 1rem;
-}
-.invoice-content img {
-  height: 2rem;
-  width: 2rem;
-  display: flex;
-  margin: auto;
-}
-  .logo{
-   display: flex;
-  margin: auto;
-  }
-
-</style>
-        </head>
-        <body>
-          ${kotContent}
-        </body>
-      </html>
-    `);
-      newWindow.document.close();
-      newWindow.focus();
-      newWindow.print();
-      newWindow.close();
-    };
-    image.onerror = () => {
-      console.error("Image failed to load.");
-    };
-  };
-
   const convertImageToBase64 = (imagePath) => {
     return new Promise((resolve, reject) => {
       const image = new Image();
@@ -751,10 +634,10 @@ td:nth-child(4) {
               Download Invoice
             </button>
             <button onClick={handleRawBTPrint} style={styles.popupButton}>
-              print with rb
+              Mobile Print
             </button>
             <button onClick={MobilePrint} style={styles.popupButton}>
-              Mobile Print
+              Usb Print
             </button>
 
             <button onClick={handleClosePopup} style={styles.popupCloseButton}>
