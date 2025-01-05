@@ -130,8 +130,13 @@ const CustomerDetail = () => {
 
     try {
       const customerDataResponse = await setdata(customerDataObject);
-      if (customerDataResponse.message === 'Customer already exists, no changes made.') {
-        console.log("Customer already exists in the database, no need to add again.");
+      if (
+        customerDataResponse.message ===
+        "Customer already exists, no changes made."
+      ) {
+        console.log(
+          "Customer already exists in the database, no need to add again."
+        );
       } else {
         console.log("Customer Data Added", customerDataResponse);
       }
@@ -142,12 +147,11 @@ const CustomerDetail = () => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
-    
+
     // Navigate to the invoice page
-    navigate('/invoice');
+    navigate("/invoice");
 
     window.location.reload();
- 
   };
 
   const handlePngDownload = () => {
@@ -292,15 +296,15 @@ td:nth-child(4) {
       image.onerror = (error) => reject(error);
     });
   };
-  
+
   const MobilePrint = async () => {
     try {
       // Convert both logo and QR code to Base64
       const logoBase64 = await convertImageToBase64("/logo.png");
       const qrBase64 = await convertImageToBase64("/qr.png");
-  
+
       const kotContent = document.getElementById("mobileinvoice").innerHTML;
-  
+
       const newWindow = window.open("", "", "width=600,height=400");
       newWindow.document.write(`
         <html>
@@ -357,9 +361,9 @@ td:nth-child(4) {
           </body>
         </html>
       `);
-  
+
       newWindow.document.close();
-  
+
       newWindow.onload = () => {
         newWindow.focus();
         newWindow.print();
@@ -378,8 +382,8 @@ td:nth-child(4) {
     );
   };
 
-   // Handle customer phone input validation
-   const handlePhoneChange = (e) => {
+  // Handle customer phone input validation
+  const handlePhoneChange = (e) => {
     const phoneValue = e.target.value;
 
     // Only allow numeric input and ensure length is <= 10
@@ -391,7 +395,7 @@ td:nth-child(4) {
     if (phoneValue.length <= 10) {
       toast.error("Phone number must be 10 digits!");
     }
-  }
+  };
 
   const handleRawBTPrint = () => {
     const invoiceText = `
@@ -401,18 +405,20 @@ td:nth-child(4) {
   
    \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
-  Date: ${new Date().toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            }) +
-              " " +
-              new Date().toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true, // Enables 12-hour format
-              })}
+  Date: ${
+    new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }) +
+    " " +
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Enables 12-hour format
+    })
+  }
   
   Customer: ${customerName || "Guest Customer"}
   Phone: ${customerPhone || "N/A"}
@@ -420,27 +426,27 @@ td:nth-child(4) {
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
   ${productsToSend
-  .map((product, index) => {
-    // Check if the size is available, if yes, include it, otherwise show "No"
-    const productSize = product.size ? `(${product.size})` : "";
-    return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
-  })    .join("")}
+    .map((product, index) => {
+      // Check if the size is available, if yes, include it, otherwise show "No"
+      const productSize = product.size ? `(${product.size})` : "";
+      return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
+    })
+    .join("")}
   
   \x1B\x21\x30Total: ₹${calculateTotalPrice(productsToSend)}\x1B\x21\x00
   
   ---------------------------
   Thank you for your purchase!
   `;
-  
+
     // Send the content to RawBT (add more parameters if required)
     const encodedText = encodeURIComponent(invoiceText);
     const rawBTUrl = `intent:${encodedText}#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.text=${encodedText};end;`;
-  
+
     // Trigger RawBT
     window.location.href = rawBTUrl;
   };
-  
-  
+
   return (
     <div>
       <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
@@ -724,12 +730,11 @@ td:nth-child(4) {
           {" "}
           Order Online
         </div>
-          <img
-            src="/qr.png"
-            alt="QR Code"
-            style={{ width: "80%", display: "flex", margin: "2px auto" }}
-          />
-
+        <img
+          src="/qr.png"
+          alt="QR Code"
+          style={{ width: "80%", display: "flex", margin: "2px auto" }}
+        />
       </div>
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
