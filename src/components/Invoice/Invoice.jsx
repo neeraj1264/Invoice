@@ -506,7 +506,7 @@ const Invoice = () => {
               className="close-icon"
               onClick={() => setShowPopup(false)}
             />
-            <h3>Select Varieties for {currentProduct.name}</h3>
+            <h3>Select Size for {currentProduct.name}</h3>
             {currentProduct.varieties.map((variety, index) => (
               <div key={index} className="variety-option">
                 <label className="variety-label">
