@@ -8,11 +8,11 @@ const AddToHomeModal = ({ installPrompt, onInstallClick, onCloseClick }) => {
     installPrompt && (
       <div className="install-popup-overlay">
         <div className="install-popup">
-        <div className="x" onClick={onCloseClick}>
+        {/* <div className="x" onClick={onCloseClick}>
         <FontAwesomeIcon className="circle" icon={faCircleXmark} />
-                </div>
+                </div> */}
           <div className="installApp">
-          <img src="invoice.png" alt="logo"  className="install-img"/>
+          {/* <img src="invoice.png" alt="logo"  className="install-img"/> */}
             <p className="install-lable"> Install App in your device</p>
             {/* <p style={{ margin: "0 1rem", color: "white" }}>|</p> */}
             <span onClick={onInstallClick} className="install">

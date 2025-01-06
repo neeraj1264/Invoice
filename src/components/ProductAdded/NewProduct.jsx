@@ -238,7 +238,7 @@ const NewProduct = ({ setSelectedProducts }) => {
           onChange={handleImageChange}
         />
 
-        <div className="image-container">
+        {/* <div className="image-container">
           <div
             className="camera"
             onClick={() => document.getElementById("imageInput").click()}
@@ -258,7 +258,7 @@ const NewProduct = ({ setSelectedProducts }) => {
               <FaTimes className="remove-icon" onClick={removeImage} />
             </div>
           )}
-        </div>
+        </div> */}
 
         <input
           type="text"
