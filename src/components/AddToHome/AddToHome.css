@@ -24,7 +24,7 @@
   top: 3rem;
   animation: slideIn 0.5s ease-out;
   padding-bottom: 1rem;
-  box-shadow:2px 2px 8px 3px var(--bg);
+  box-shadow: 2px 2px 8px 3px var(--bg);
 }
 .x {
   width: 50px;
@@ -40,10 +40,10 @@
   align-items: center;
 }
 .install-lable {
-    color: black;
-    font-size: 1rem;
-    font-weight: 700;
-    margin: 0;
+  color: black;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
 }
 .circle {
   font-size: 2.4rem;
@@ -68,17 +68,18 @@
   bottom: 14px;
 }
 .installApp {
-display: flex;
-padding-top: 1rem;
+  display: flex;
+  padding-top: 1rem;
 }
 .install {
-     background: var(--bg);
-    font-weight: 700;
-    font-size: 1rem;
-    color: white;
-    border-radius: 1rem;
-    margin: 0;
-    padding: 0 .5rem;
+  background: var(--bg);
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  border-radius: 1rem;
+  margin: 0;
+  padding: 0 0.5rem;
+  margin-left: 0.5rem;
 }
 .install-img {
   width: 263px;
