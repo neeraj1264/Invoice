@@ -48,11 +48,6 @@ const Header = ({ headerName, setSearch }) => {
                 Customer Data
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link custom-text" to="/printer">
-                printer
-              </Link>
-            </li>
           </ul>
           <form className="d-flex" role="search">
             <input

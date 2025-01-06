@@ -1,5 +1,5 @@
 .history-container {
-  margin: 1rem .3rem;
+  margin: 2rem .3rem;
   font-family: Arial, sans-serif;
 }
 .back-arrow {
@@ -33,14 +33,23 @@ h2 {
   color: #333;
 }
 .total-sale {
-  background: #59d559;
+  /* background: var(--bg); */
   width: fit-content;
   margin: auto;
   padding: 0.4rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 2px 2px 2px 2px green;
+  /* box-shadow: 2px 2px 2px 2px var(--bg); */
   font-weight: 700;
+}
+.total-sale select {
+  text-align: center;
+  padding: 0.5rem;
+  background: var(--bg);
+  color: white;
+  font-weight: bold;
+  /* box-shadow: 2px 2px 2px 2px var(--bg); */
+  border: 3px solid;
 }
 
 .details-table,

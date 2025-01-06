@@ -126,7 +126,44 @@ const History = () => {
       <div className="history-container">
         <div className="grand-total">
           <h2 className="total-sale">
-            {filter} Sales: ₹{grandTotal}
+          <select
+  id="filter"
+  value={filter}
+  onChange={handleFilterChange}
+  style={{ borderRadius: "1rem" }}
+>
+  <option value="Today">
+    Today ₹
+    {orders
+      .filter(order => new Date(order.timestamp).toLocaleDateString() === new Date().toLocaleDateString())
+      .reduce((sum, order) => sum + order.totalAmount, 0)}
+  </option>
+  <option value="Yesterday">
+    Yesterday ₹
+    {orders
+      .filter(order => {
+        const orderDate = new Date(order.timestamp);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return orderDate.toLocaleDateString() === yesterday.toLocaleDateString();
+      })
+      .reduce((sum, order) => sum + order.totalAmount, 0)}
+  </option>
+  {[...Array(6)].map((_, i) => (
+    <option key={i} value={`${i + 2} days ago`}>
+      {i + 2} days ago ₹
+      {orders
+        .filter(order => {
+          const orderDate = new Date(order.timestamp);
+          const filterDate = new Date();
+          filterDate.setDate(filterDate.getDate() - (i + 2));
+          return orderDate.toLocaleDateString() === filterDate.toLocaleDateString();
+        })
+        .reduce((sum, order) => sum + order.totalAmount, 0)}
+    </option>
+  ))}
+</select>
+
           </h2>
         </div>
 

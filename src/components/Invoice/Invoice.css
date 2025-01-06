@@ -111,10 +111,10 @@
 }
 .main {
   background: #eee;
-  padding: 4rem 0;
+  padding: 3rem 0;
 }
 .category-container {
-  border-radius: 15px;
+  border-radius: 10px;
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
@@ -141,12 +141,22 @@
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+  padding-left: .7rem;
 }
 
 .p-name {
   color: #1a1a1a;
   font-family: "Noto Sans", "Roboto", "Arial";
   margin: 0;
+  font-size: 18px;
+  line-height: 30px;
+  font-weight: 600;
+}
+.p-name-price{
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 25.5px;
+  color: var(--bg)
 }
 .sub-box h3 {
   margin: 0;

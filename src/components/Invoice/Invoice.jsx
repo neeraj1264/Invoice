@@ -376,7 +376,7 @@ const Invoice = () => {
                   <hr />
                     <div>
                       <div key={idx} className="main-box">
-                        <div className="img-box">
+                        {/* <div className="img-box">
                           {product.image ? (
                             <img
                               src={product.image}
@@ -388,7 +388,7 @@ const Invoice = () => {
                               style={{ width: "3rem", height: "3rem" }}
                             />
                           )}
-                        </div>
+                        </div> */}
 
                         <div
                           className="sub-box"
@@ -405,22 +405,14 @@ const Invoice = () => {
                               ? ` (${product.varieties[0].size})`
                               : ""}
                           </h4>
-                          <p style={{ color: "var(--bg)", fontWeight: 700 }}>
-                            Price:{" "}
-                            <span
-                              style={{
-                                fontWeight: 800,
-                                fontFamily: "Noto Sans Roboto Arial",
-                              }}
-                            >
-                              ₹{" "}
+                          <p className="p-name-price">
+                            Rs.{" "}
                               {product.price
-                                ? product.price // Use product price if it exists
+                                ? product.price.toFixed(2) // Use product price if it exists
                                 : product.varieties.length > 0
-                                ? product.varieties[0].price // Fallback to first variety price
+                                ? product.varieties[0].price.toFixed(2) // Fallback to first variety price
                                 : "N/A"}{" "}
                               {/* Handle case when neither price nor varieties are available */}
-                            </span>
                             {showRemoveBtn && (
                               <span
                                 className="remove-btn"
