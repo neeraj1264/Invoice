@@ -22,7 +22,9 @@
   width: 90vw;
   margin: 0.5rem;
   padding: 0.5rem;
-  box-sizing: border-box; /* Ensure consistent sizing */
+  box-sizing: border-box; 
+  border: 1px solid var(--bg);
+  border-radius: 1rem
 }
 
 .done {

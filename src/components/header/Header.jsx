@@ -22,7 +22,7 @@ const Header = ({ headerName, setSearch, onClick }) => {
           className={({ isActive }) =>
             isActive ? "navbar-brand active" : "navbar-brand"
           }
-          // to="/invoice"
+          to="/invoice"
         >
           BillZo
         </NavLink>

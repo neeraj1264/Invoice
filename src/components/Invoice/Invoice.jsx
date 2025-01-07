@@ -14,7 +14,17 @@ import {
 import { IoMdCloseCircle } from "react-icons/io";
 import Header from "../header/Header";
 import { fetchProducts, removeProduct } from "../../api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+const toastOptions = {
+  position: "bottom-right",
+  autoClose: 2000,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+  width: "90%",
+};
 const Invoice = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [productsToSend, setProductsToSend] = useState([]);
@@ -307,7 +317,10 @@ const Invoice = () => {
   // Navigate to the customer details page
   const handleDone = () => {
     if (productsToSend.length === 0) {
-      alert("Please add at least one product before proceeding.");
+      toast.error(
+        "Please add at least one product before proceeding.",
+        toastOptions
+      );
       return; // Prevent navigation if no products are selected
     }
 
@@ -344,6 +357,7 @@ const Invoice = () => {
 
   return (
     <div>
+      <ToastContainer />
       <Header
         headerName="Foodies Hub"
         setSearch={setSearch}
