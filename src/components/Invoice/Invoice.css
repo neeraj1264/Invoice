@@ -85,9 +85,10 @@
   padding: 15px 15px 0;
 
 }
+
 .category-bar {
   position: fixed;
-  top: 3.5rem;
+  top: 1.5rem;
   /* border: 3px solid var(--bg); */
   /* margin: 0 1rem; */
   width: 100%;
@@ -108,6 +109,7 @@
   color: white;
   font-size: 1.3rem;
   font-weight: 600;
+  padding-top: 1rem;
 }
 .main {
   background: #eee;

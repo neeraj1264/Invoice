@@ -23,6 +23,7 @@ const Invoice = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [selectedVariety, setSelectedVariety] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCategoryVisible, setIsCategoryVisible] = useState(false);
 
   const navigate = useNavigate(); // For navigation
 
@@ -77,6 +78,8 @@ const Invoice = () => {
     const storedProductsToSend =
       JSON.parse(localStorage.getItem("productsToSend")) || [];
     setProductsToSend(storedProductsToSend);
+
+    localStorage.removeItem("deliveryCharge");
 
     // setSelectedVariety([]);
   }, []);
@@ -335,27 +338,34 @@ const Invoice = () => {
     }
   };
 
+  const toggleCategoryVisibility = () => {
+    setIsCategoryVisible((prev) => !prev); // Toggle visibility
+  };
+
   return (
     <div>
-      <Header headerName="Foodies Hub" setSearch={setSearch} />
-
-      {/* Fixed Category Bar */}
-      {/* <div className="category-b">
-   <div className="category-bar">
-  {Object.keys(filteredProducts)
-    .sort((a, b) => a.localeCompare(b))
-    .map((category, index) => (
-      <button
-        key={index}
-        className="category-btn"
-        onClick={() => handleCategoryClick(category)}  // Trigger scroll to category
-      >
-        {category}
-      </button>
-    ))}
-</div>
-</div> */}
-
+      <Header
+        headerName="Foodies Hub"
+        setSearch={setSearch}
+        onClick={toggleCategoryVisibility}
+      />
+      {isCategoryVisible && (
+        <div className="category-b">
+          <div className="category-bar">
+            {Object.keys(filteredProducts)
+              .sort((a, b) => a.localeCompare(b))
+              .map((category, index) => (
+                <button
+                  key={index}
+                  className="category-btn"
+                  onClick={() => handleCategoryClick(category)} // Trigger scroll to category
+                >
+                  {category}
+                </button>
+              ))}
+          </div>
+        </div>
+      )}
       <div className="main">
         {loading ? (
           // Display loading effect when fetching data
@@ -373,7 +383,7 @@ const Invoice = () => {
                 </h2>
                 {filteredProducts[category].map((product, idx) => (
                   <>
-                  <hr />
+                    <hr />
                     <div>
                       <div key={idx} className="main-box">
                         {/* <div className="img-box">
@@ -407,12 +417,12 @@ const Invoice = () => {
                           </h4>
                           <p className="p-name-price">
                             Rs.{" "}
-                              {product.price
-                                ? product.price.toFixed(2) // Use product price if it exists
-                                : product.varieties.length > 0
-                                ? product.varieties[0].price.toFixed(2) // Fallback to first variety price
-                                : "N/A"}{" "}
-                              {/* Handle case when neither price nor varieties are available */}
+                            {product.price
+                              ? product.price.toFixed(2) // Use product price if it exists
+                              : product.varieties.length > 0
+                              ? product.varieties[0].price.toFixed(2) // Fallback to first variety price
+                              : "N/A"}{" "}
+                            {/* Handle case when neither price nor varieties are available */}
                             {showRemoveBtn && (
                               <span
                                 className="remove-btn"
@@ -481,7 +491,7 @@ const Invoice = () => {
                           </div>
                         )}
                       </div>
-                    </div>           
+                    </div>
                   </>
                 ))}
               </div>

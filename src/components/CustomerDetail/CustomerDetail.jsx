@@ -21,10 +21,13 @@ const CustomerDetail = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
+  const [deliveryCharge, setDeliveryCharge] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [productsToSend, setproductsToSend] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [orders, setOrders] = useState([]);
+  const getdeliveryCharge = localStorage.getItem("deliveryCharge");
+    const deliveryChargeAmount = parseFloat(getdeliveryCharge) || 0;
 
   const invoiceRef = useRef(); // Reference to the hidden invoice content
   const navigate = useNavigate();
@@ -42,8 +45,9 @@ const CustomerDetail = () => {
   }, []);
 
   const handleSendToWhatsApp = () => {
+
     // Calculate the current total amount from productsToSend
-    const currentTotalAmount = calculateTotalPrice(productsToSend); // Add ₹20 service charge
+    const currentTotalAmount = calculateTotalPrice(productsToSend) + deliveryChargeAmount; 
 
     const productDetails = productsToSend.map((product) => {
       const quantity = product.quantity || 1;
@@ -53,6 +57,11 @@ const CustomerDetail = () => {
       }\n`;
     });
 
+      // Check if deliveryCharge exists in local storage
+  const serviceChargeText = deliveryCharge
+    ? `\nService Charge: ₹${deliveryChargeAmount}`
+    : "";
+
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const message = encodeURIComponent(
@@ -61,7 +70,8 @@ const CustomerDetail = () => {
         (customerName ? `\nName: *${customerName}*` : "") +
         (customerAddress ? `\nAddress: *${customerAddress}*` : "") +
         `\nAmount: *₹${currentTotalAmount}*` +
-        `\n\n----------item----------\n${productDetails}\n`
+        `\n\n----------item----------\n${productDetails}\n
+        ${serviceChargeText}`
     );
 
     const phoneNumber = customerPhone;
@@ -87,13 +97,17 @@ const CustomerDetail = () => {
   const handleSendClick = async () => {
     setShowPopup(true);
 
+    if (deliveryCharge) {
+      localStorage.setItem("deliveryCharge", deliveryCharge);
+    }
+
     const orderId = `order_${Date.now()}`;
 
     // Create an order object
     const order = {
       id: orderId,
       products: productsToSend,
-      totalAmount: calculateTotalPrice(productsToSend),
+      totalAmount: calculateTotalPrice(productsToSend) + deliveryChargeAmount,
       name: customerName,
       phone: customerPhone,
       address: customerAddress,
@@ -281,6 +295,8 @@ const CustomerDetail = () => {
   };
 
   const handleRawBTPrint = () => {
+    const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
+
     const invoiceText = `
     \x1B\x21\x30Foodies Hub\x1B\x21\x00  
   Pehowa, Haryana, 136128
@@ -308,15 +324,23 @@ const CustomerDetail = () => {
   Address: ${customerAddress || "N/A"}
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
-  ${productsToSend
-    .map((product, index) => {
-      // Check if the size is available, if yes, include it, otherwise show "No"
-      const productSize = product.size ? `(${product.size})` : "";
-      return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
-    })
-    .join("")}
-  
-  \x1B\x21\x30Total: ₹${calculateTotalPrice(productsToSend)}\x1B\x21\x00
+  ${productsToSend.map((product, index) => {
+    // Check if the size is available, if yes, include it, otherwise show "No"
+    const productSize = product.size ? `(${product.size})` : "";
+    return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
+  })}
+     ${
+       hasDeliveryCharge
+         ? `Item Total: ₹${calculateTotalPrice(productsToSend).toFixed(2)}`
+         : " "
+     }
+  ${
+    hasDeliveryCharge ? `Service Charge: ₹${getdeliverycharge.toFixed(2)}` : " "
+  }
+
+  \x1B\x21\x30Total: ₹${
+    calculateTotalPrice(productsToSend) + getdeliverycharge
+  }\x1B\x21\x00
   
   ---------------------------
   Thank you for your purchase!
@@ -330,11 +354,13 @@ const CustomerDetail = () => {
     window.location.href = rawBTUrl;
   };
 
+  const getdeliverycharge = localStorage.getItem("deliveryCharge")
+    ? parseFloat(localStorage.getItem("deliveryCharge"))
+    : 0; // Default to 0 if not set
   return (
     <div>
-      <FaArrowLeft className="back-arrow-c" onClick={handleBack} />
-      <h1 className="Customer-header">Customer Details</h1>
-      <div className="cust-inputs">
+      <Header />
+      <div className="cust-inputs" style={{marginTop: "4rem"}}>
         <input
           type="text"
           value={customerName}
@@ -356,6 +382,14 @@ const CustomerDetail = () => {
           value={customerAddress}
           onChange={(e) => setCustomerAddress(e.target.value)}
           placeholder="Customer address..."
+        />
+      </div>
+      <div className="cust-inputs">
+        <input
+          type="number"
+          value={deliveryCharge}
+          onChange={(e) => setDeliveryCharge(e.target.value)}
+          placeholder="Delivery charge..."
         />
       </div>
       {/* Hidden Invoice Content */}
@@ -564,34 +598,38 @@ const CustomerDetail = () => {
             ))}
           </tbody>
         </table>
-        <div className="total">
-          <p>
-            item total{" "}
-            <span>
-              ₹{" "}
-              {productsToSend
-                .reduce(
-                  (sum, product) =>
-                    sum + product.price * (product.quantity || 1),
-                  0
-                )
-                .toFixed(2)}
-            </span>
-          </p>
-        </div>
-        <div className="total">
-          <p>
-            Service Charge: <span>₹20.00</span>
-          </p>
-        </div>
+        {getdeliverycharge !== 0 && (
+          <>
+            <div className="total">
+              <p>
+                Item Total{" "}
+                <span>
+                  ₹{" "}
+                  {productsToSend
+                    .reduce(
+                      (sum, product) =>
+                        sum + product.price * (product.quantity || 1),
+                      0
+                    )
+                    .toFixed(2)}
+                </span>
+              </p>
+            </div>
+            <div className="total">
+              <p>
+                Service Charge: <span>₹{getdeliverycharge.toFixed(2)}</span>
+              </p>
+            </div>
+          </>
+        )}
         <p className="totalAmount">
-          NetTotal: ₹
-          {productsToSend
-            .reduce(
+          Net Total: ₹
+          {(
+            productsToSend.reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
-              20
-            )
-            .toFixed(2)}
+              0
+            ) + getdeliverycharge
+          ).toFixed(2)}
         </p>{" "}
         <div
           style={{

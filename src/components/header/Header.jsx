@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Header.css";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
-const Header = ({ headerName, setSearch }) => {
+const Header = ({ headerName, setSearch, onClick }) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false); // Track visibility of search input
   const navigate = useNavigate();
 
@@ -17,9 +17,15 @@ const Header = ({ headerName, setSearch }) => {
   return (
     <nav className="navbar navbar-expand-lg fixed-top custom-navbar">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          {headerName}
-        </Link>
+        <NavLink
+        onClick={onClick}
+          className={({ isActive }) =>
+            isActive ? "navbar-brand active" : "navbar-brand"
+          }
+          // to="/invoice"
+        >
+          Billzo
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -34,19 +40,52 @@ const Header = ({ headerName, setSearch }) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link custom-text" to="/invoice">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link custom-text active"
+                    : "nav-link custom-text"
+                }
+                to="/invoice"
+              >
                 Invoice
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link custom-text" to="/history">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link custom-text active"
+                    : "nav-link custom-text"
+                }
+                to="/history"
+              >
                 Order History
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link custom-text" to="/customer-data">
-                Customer Data
-              </Link>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link custom-text active"
+                    : "nav-link custom-text"
+                }
+                to="/customer-data"
+              >
+                 Data
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link custom-text active"
+                    : "nav-link custom-text"
+                }
+                to="/customer-detail"
+              >
+                Customer Detail
+              </NavLink>
             </li>
           </ul>
           <form className="d-flex" role="search">

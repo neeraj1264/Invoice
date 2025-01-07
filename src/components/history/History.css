@@ -43,13 +43,13 @@ h2 {
   font-weight: 700;
 }
 .total-sale select {
-  text-align: center;
-  padding: 0.5rem;
-  background: var(--bg);
-  color: white;
-  font-weight: bold;
-  /* box-shadow: 2px 2px 2px 2px var(--bg); */
-  border: 3px solid;
+     text-align: center;
+    padding: 0.5rem;
+    /* background: var(--bg); */
+    color: var(--bg);
+    font-weight: bold;
+    box-shadow: 2px 2px 8px var(--bg);
+    border: 3px solid var(--bg);
 }
 
 .details-table,

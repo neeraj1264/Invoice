@@ -11,7 +11,7 @@ export const handleScreenshot = (elementId) => {
     html2canvas(element).then((canvas) => {
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
-      link.download = "logo2.png";
+      link.download = "logo.png";
       link.click();
     }).catch(error => {
       console.error("Error capturing screenshot: ", error);
