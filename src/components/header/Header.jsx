@@ -58,6 +58,18 @@ const Header = ({ headerName, setSearch, onClick }) => {
                     ? "nav-link custom-text active"
                     : "nav-link custom-text"
                 }
+                to="/NewProduct"
+              >
+                Add Product
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link custom-text active"
+                    : "nav-link custom-text"
+                }
                 to="/history"
               >
                 Order History

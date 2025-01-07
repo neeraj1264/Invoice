@@ -85,6 +85,3 @@ input:focus::placeholder {
   text-decoration: underline;
 }
 
-.navbar-brand.active {
-  font-weight: 800;
-}

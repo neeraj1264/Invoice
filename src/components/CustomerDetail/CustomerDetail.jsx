@@ -27,7 +27,7 @@ const CustomerDetail = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [orders, setOrders] = useState([]);
   const getdeliveryCharge = localStorage.getItem("deliveryCharge");
-    const deliveryChargeAmount = parseFloat(getdeliveryCharge) || 0;
+  const deliveryChargeAmount = parseFloat(getdeliveryCharge) || 0;
 
   const invoiceRef = useRef(); // Reference to the hidden invoice content
   const navigate = useNavigate();
@@ -46,24 +46,27 @@ const CustomerDetail = () => {
 
   const handleSendToWhatsApp = () => {
     // Calculate the current total amount from productsToSend
-    const currentTotalAmount = calculateTotalPrice(productsToSend) + deliveryChargeAmount;
-  
+    const currentTotalAmount =
+      calculateTotalPrice(productsToSend) + deliveryChargeAmount;
+
     // Map product details into a formatted string
     const productDetails = productsToSend
       .map((product) => {
         const quantity = product.quantity || 1;
         const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
-        return `${quantity}.0 x ${product.name}${size} = ₹${product.price * quantity}`;
+        return `${quantity}.0 x ${product.name}${size} = ₹${
+          product.price * quantity
+        }`;
       })
       .join("\n"); // Join product details with a single newline
-  
+
     // Check if deliveryCharge exists
     const serviceChargeText = deliveryCharge
       ? `Service Charge: ₹${deliveryChargeAmount}` // No extra newline
       : "";
-  
+
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-  
+
     // Construct the WhatsApp message
     const message = encodeURIComponent(
       `Order: *${orderId}*` +
@@ -74,13 +77,13 @@ const CustomerDetail = () => {
         `\n\n----------item----------\n${productDetails}` + // No extra newline here
         (serviceChargeText ? `\n${serviceChargeText}` : "") // Add only if serviceChargeText exists
     );
-  
+
     const phoneNumber = customerPhone;
-  
+
     const formattedPhoneNumber = phoneNumber
       ? `+91${phoneNumber}` // Prepend +91 for India if the phone number is present
       : phoneNumber;
-  
+
     if (phoneNumber) {
       window.open(
         `https://wa.me/${formattedPhoneNumber}?text=${message}`,
@@ -90,12 +93,21 @@ const CustomerDetail = () => {
       window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     }
   };
-    
+
   const handleBack = () => {
     navigate(-1);
   };
 
   const handleSendClick = async () => {
+    const productsToSend = JSON.parse(localStorage.getItem("productsToSend"));
+    if (!productsToSend || productsToSend.length === 0) {
+      toast.error(
+        "Please add product before proceed",
+        toastOptions
+      );
+      return; // Exit the function early
+    }
+
     setShowPopup(true);
 
     if (deliveryCharge) {
@@ -289,22 +301,19 @@ const CustomerDetail = () => {
       setCustomerPhone(phoneValue);
     }
 
-    // Show error if the phone number is not 10 digits
-    if (phoneValue.length <= 10) {
-      toast.error("Phone number must be 10 digits!");
-    }
+   
   };
 
   const handleRawBTPrint = () => {
     const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
 
-     // Map product details into a formatted string
-  const productDetails = productsToSend
-  .map((product) => {
-    const productSize = product.size ? `(${product.size})` : ""; // Include size if available
-    return `${product.name} ${productSize} - ₹${product.price} x ${product.quantity}`;
-  })
-  .join("\n"); // Join product details with a single newline
+    // Map product details into a formatted string
+    const productDetails = productsToSend
+      .map((product) => {
+        const productSize = product.size ? `(${product.size})` : ""; // Include size if available
+        return `${product.name} ${productSize} - ₹${product.price} x ${product.quantity}`;
+      })
+      .join("\n"); // Join product details with a single newline
 
     const invoiceText = `
     \x1B\x21\x30Foodies Hub\x1B\x21\x00  
@@ -365,8 +374,9 @@ const CustomerDetail = () => {
     : 0; // Default to 0 if not set
   return (
     <div>
+      <ToastContainer />
       <Header />
-      <div className="cust-inputs" style={{marginTop: "4rem"}}>
+      <div className="cust-inputs" style={{ marginTop: "4rem" }}>
         <input
           type="text"
           value={customerName}

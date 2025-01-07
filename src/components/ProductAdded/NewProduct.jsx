@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./NewProduct.css";
 import { fetchCategories, addCategory, addProduct } from "../../api";
+import Header from "../header/Header";
 
 const toastOptions = {
   position: "bottom-right",
@@ -228,7 +229,10 @@ const NewProduct = ({ setSelectedProducts }) => {
   return (
     <div>
       <ToastContainer />
-      <h1 className="catologue-header">New Product</h1>
+      <Header
+        headerName="Foodies Hub"
+      />
+      {/* <h1 className="catologue-header">New Product</h1> */}
       <div className="catologue-input-fields">
         <input
           type="file"
@@ -266,13 +270,14 @@ const NewProduct = ({ setSelectedProducts }) => {
           placeholder="Name*"
           value={product.name}
           onChange={handleInputChange}
+          style={{marginTop: "3rem"}}
         />
 
         {!isWithVariety && (
           <input
             type="number"
             name="price"
-            placeholder="₹ price"
+            placeholder="Price (₹)"
             value={product.price}
             onChange={handleInputChange}
           />
@@ -305,7 +310,7 @@ const NewProduct = ({ setSelectedProducts }) => {
           <div className="varieties-container">
             <input
               type="text"
-              placeholder="Size (e.g., 1L, 2L)"
+              placeholder="Size"
               value={productVariety.size}
               onChange={(e) =>
                 setProductVariety((prev) => ({ ...prev, size: e.target.value }))
