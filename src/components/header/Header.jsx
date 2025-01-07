@@ -24,7 +24,7 @@ const Header = ({ headerName, setSearch, onClick }) => {
           }
           // to="/invoice"
         >
-          Billzo
+          BillZo
         </NavLink>
         <button
           className="navbar-toggler"

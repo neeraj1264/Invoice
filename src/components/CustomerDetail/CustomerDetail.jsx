@@ -45,41 +45,42 @@ const CustomerDetail = () => {
   }, []);
 
   const handleSendToWhatsApp = () => {
-
     // Calculate the current total amount from productsToSend
-    const currentTotalAmount = calculateTotalPrice(productsToSend) + deliveryChargeAmount; 
-
-    const productDetails = productsToSend.map((product) => {
-      const quantity = product.quantity || 1;
-      const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
-      return `${quantity}.0 x ${product.name}${size} = ₹${
-        product.price * quantity
-      }\n`;
-    });
-
-      // Check if deliveryCharge exists in local storage
-  const serviceChargeText = deliveryCharge
-    ? `\nService Charge: ₹${deliveryChargeAmount}`
-    : "";
-
+    const currentTotalAmount = calculateTotalPrice(productsToSend) + deliveryChargeAmount;
+  
+    // Map product details into a formatted string
+    const productDetails = productsToSend
+      .map((product) => {
+        const quantity = product.quantity || 1;
+        const size = product.size ? ` ${product.size}` : ""; // Include size only if it exists
+        return `${quantity}.0 x ${product.name}${size} = ₹${product.price * quantity}`;
+      })
+      .join("\n"); // Join product details with a single newline
+  
+    // Check if deliveryCharge exists
+    const serviceChargeText = deliveryCharge
+      ? `Service Charge: ₹${deliveryChargeAmount}` // No extra newline
+      : "";
+  
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-
+  
+    // Construct the WhatsApp message
     const message = encodeURIComponent(
       `Order: *${orderId}*` +
         (customerPhone ? `\nPhone: *${customerPhone}*` : "") +
         (customerName ? `\nName: *${customerName}*` : "") +
         (customerAddress ? `\nAddress: *${customerAddress}*` : "") +
         `\nAmount: *₹${currentTotalAmount}*` +
-        `\n\n----------item----------\n${productDetails}\n
-        ${serviceChargeText}`
+        `\n\n----------item----------\n${productDetails}` + // No extra newline here
+        (serviceChargeText ? `\n${serviceChargeText}` : "") // Add only if serviceChargeText exists
     );
-
+  
     const phoneNumber = customerPhone;
-
+  
     const formattedPhoneNumber = phoneNumber
       ? `+91${phoneNumber}` // Prepend +91 for India if the phone number is present
       : phoneNumber;
-
+  
     if (phoneNumber) {
       window.open(
         `https://wa.me/${formattedPhoneNumber}?text=${message}`,
@@ -89,7 +90,7 @@ const CustomerDetail = () => {
       window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     }
   };
-
+    
   const handleBack = () => {
     navigate(-1);
   };
@@ -172,7 +173,7 @@ const CustomerDetail = () => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
     setTimeout(() => {
-      handleScreenshot("mobileinvoice");
+      handleScreenshot("invoice");
       invoiceRef.current.style.display = "none";
     }, 10);
   };
@@ -297,6 +298,14 @@ const CustomerDetail = () => {
   const handleRawBTPrint = () => {
     const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
 
+     // Map product details into a formatted string
+  const productDetails = productsToSend
+  .map((product) => {
+    const productSize = product.size ? `(${product.size})` : ""; // Include size if available
+    return `${product.name} ${productSize} - ₹${product.price} x ${product.quantity}`;
+  })
+  .join("\n"); // Join product details with a single newline
+
     const invoiceText = `
     \x1B\x21\x30Foodies Hub\x1B\x21\x00  
   Pehowa, Haryana, 136128
@@ -324,11 +333,7 @@ const CustomerDetail = () => {
   Address: ${customerAddress || "N/A"}
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
-  ${productsToSend.map((product, index) => {
-    // Check if the size is available, if yes, include it, otherwise show "No"
-    const productSize = product.size ? `(${product.size})` : "";
-    return `\n${product.name} ${productSize} - ₹${product.price} x ${product.quantity}\n`;
-  })}
+ ${productDetails}
      ${
        hasDeliveryCharge
          ? `Item Total: ₹${calculateTotalPrice(productsToSend).toFixed(2)}`
@@ -343,7 +348,8 @@ const CustomerDetail = () => {
   }\x1B\x21\x00
   
   ---------------------------
-  Thank you for your purchase!
+  \x1B\x21\x10Thank You Visit Again!\x1B\x21\x00
+    Powered by BillZo
   `;
 
     // Send the content to RawBT (add more parameters if required)
@@ -510,7 +516,7 @@ const CustomerDetail = () => {
       <div
         className="invoice-content"
         id="mobileinvoice"
-        ref={invoiceRef}
+        // ref={invoiceRef}
         style={{ display: "none" }}
       >
         <img src="/logo.png" alt="Logo" width={100} className="logo" />
@@ -660,7 +666,7 @@ const CustomerDetail = () => {
       <button onClick={handleSendClick} className="done">
         Send <FaArrowRight className="Invoice-arrow" />
       </button>
-      ;{/* Modal Popup */}
+      {/* Modal Popup */}
       {showPopup && (
         <div style={styles.popupOverlay}>
           <div style={styles.popupContent}>
