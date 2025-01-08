@@ -319,7 +319,6 @@ const CustomerDetail = () => {
   Pehowa, Haryana, 136128
   Phone: +91 81689-01827
   
-  Lal Dawara Mandir Wali Gali, Near Body Fine Gym Ambala Road Pehowa.
    \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
   Date: ${
