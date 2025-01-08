@@ -316,9 +316,8 @@ const CustomerDetail = () => {
       .join("\n"); // Join product details with a single newline
 
     const invoiceText = `
-    \x1B\x21\x30Foodies Hub\x1B\x21\x00  
   Pehowa, Haryana, 136128
-  Phone: +91 70158-23645
+  Phone: +91 81689-01827
   
    \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
@@ -355,10 +354,10 @@ const CustomerDetail = () => {
   \x1B\x21\x30Total: ₹${
     calculateTotalPrice(productsToSend) + getdeliverycharge
   }\x1B\x21\x00
-  
-  ---------------------------
-  \x1B\x21\x10Thank You Visit Again!\x1B\x21\x00
-    Powered by BillZo
+    \x1B\x21\x10Thank You Visit Again!\x1B\x21\x00
+
+ ---------------------------
+      Powered by BillZo
   `;
 
     // Send the content to RawBT (add more parameters if required)
@@ -417,13 +416,13 @@ const CustomerDetail = () => {
       >
         <img src="/logo.png" alt="Logo" width={100} className="logo" />
         <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
-          Foodies Hub
+          Urban Pizzeria
         </h1>
         <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
           Pehowa, Haryana, 136128
         </p>
         <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
-          Phone Number - +91 70158-23645
+          Phone Number - +91 81689-01827
         </p>
         <hr />
         <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
@@ -531,7 +530,7 @@ const CustomerDetail = () => {
       >
         <img src="/logo.png" alt="Logo" width={100} className="logo" />
         <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
-          Foodies Hub
+          Urban Pizzeria
         </h1>
         <p
           style={{
@@ -544,7 +543,7 @@ const CustomerDetail = () => {
           Pehowa, Haryana, 136128
         </p>
         <p style={{ textAlign: "center", margin: 0, fontSize: "14px" }}>
-          +91 70158-23645
+          +91 81689-01827
         </p>
         <hr />
         <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
