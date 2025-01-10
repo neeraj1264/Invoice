@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import "./Header.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 
 const Header = ({ headerName, setSearch, onClick }) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false); // Track visibility of search input
   const toggleButtonRef = useRef(null); // Ref for the toggle button
   const navigate = useNavigate();
+  const location = useLocation(); 
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value); // Update search state
@@ -39,6 +40,19 @@ const Header = ({ headerName, setSearch, onClick }) => {
         >
           BillZo
         </NavLink>
+          {/* Show search input only on the /invoice page */}
+          {location.pathname === "/invoice" && (
+          <form className="search" role="search">
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Search..."
+              aria-label="Search"
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+            />
+          </form>
+        )}
         <button
          ref={toggleButtonRef}
           className="navbar-toggler"

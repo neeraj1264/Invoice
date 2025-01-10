@@ -21,7 +21,9 @@
   color: var(--bg) !important; /* Custom brand color */
   margin: 0;
   font-weight: bold;
-  margin-right: 2rem;
+}
+.search{
+  width: 50%;
 }
 .navbar-toggler:focus {
   text-decoration: none;
