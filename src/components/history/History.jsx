@@ -28,22 +28,31 @@ const handlePressEnd = () => {
 
 const handleRemoveOrder = async (orderId) => {
   try {
-    // Call the API function
-    await removeOrder(orderId);
-
-    // Remove the order from the state
-    const updatedOrders = orders.filter((order) => order.id !== orderId);
-    setOrders(updatedOrders);
-
-    setFilteredOrders((prevFilteredOrders) =>
-      prevFilteredOrders.filter((order) => order.id !== orderId)
-    );
+    // Check if 'advancefeatured' is true in localStorage
+    const advanceFeatured = localStorage.getItem("advancedFeature") === "true";
     
-    console.log('Order removed successfully from both MongoDB and state');
+    if (advanceFeatured) {
+      // Proceed with the removal if advancefeatured is true
+      await removeOrder(orderId);
+
+      // Remove the order from the state
+      const updatedOrders = orders.filter((order) => order.id !== orderId);
+      setOrders(updatedOrders);
+
+      setFilteredOrders((prevFilteredOrders) =>
+        prevFilteredOrders.filter((order) => order.id !== orderId)
+      );
+
+      console.log("Order removed successfully from both MongoDB and state");
+    } else {
+      alert("Advance feature not granted.")
+      navigate("/advance")
+    }
   } catch (error) {
-    console.error('Error removing order:', error.message);
+    console.error("Error removing order:", error.message);
   }
 };
+
 
  useEffect(() => {
   const getOrders = async () => {

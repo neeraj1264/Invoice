@@ -534,7 +534,7 @@ const CustomerDetail = () => {
       >
         <img src="/logo.png" alt="Logo" width={100} className="logo" />
         <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
-          Urban Pizzeria
+          Foodies Hub
         </h1>
         <p
           style={{
@@ -547,7 +547,7 @@ const CustomerDetail = () => {
           Pehowa, Haryana, 136128
         </p>
         <p style={{ textAlign: "center", margin: 0, fontSize: "14px" }}>
-          +91 81689-01827
+          +91 70158-23645
         </p>
         <hr />
         <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>

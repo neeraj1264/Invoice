@@ -8,6 +8,7 @@ import NewProduct from "./components/ProductAdded/NewProduct";
 import History from "./components/history/History";
 import { CustomerData } from "./components/data/CustomerData";
 import AddToHomeModal from "./components/AddToHome/AddToHome";
+import Advance from "./components/advance/Advance";
 
 
 const App = () => {
@@ -131,7 +132,7 @@ const App = () => {
         <Route path="/customer-detail" element={<CustomerDetail />} />
         <Route path="/customer-data" element={<CustomerData />} />
         <Route path="/history" element={<History />} />
-
+        <Route path="/advance" element={<Advance />} />
 
       </Routes>
     </Router>
