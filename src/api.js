@@ -1,5 +1,5 @@
-// const BASE_URL = 'https://backend-alpha-tawny.vercel.app/api'; 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = 'https://backend-alpha-tawny.vercel.app/api'; 
+// const BASE_URL = "http://localhost:5000/api";
 
 export const fetchCategories = async () => {
   const response = await fetch(`${BASE_URL}/categories`);
