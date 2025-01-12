@@ -308,22 +308,58 @@ const CustomerDetail = () => {
   };
 
   const handleRawBTPrint = () => {
-    const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
+  const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
 
-    // Map product details into a formatted string
-    const productDetails = productsToSend
-      .map((product) => {
-        const productSize = product.size ? `(${product.size})` : ""; // Include size if available
-        return `${product.name} ${productSize} - ₹${product.price} x ${product.quantity}`;
-      })
-      .join("\n"); // Join product details with a single newline
+  const nameWidth = 18; // Set a fixed width for product name
+  const priceWidth = 3; // Set a fixed width for price
+  const quantityWidth = 1; // Set a fixed width for quantity
+
+  const breakProductName = (name, maxLength) => {
+    const lines = [];
+    while (name.length > maxLength) {
+      lines.push(name.substring(0, maxLength)); // Add a line of the name
+      name = name.substring(maxLength); // Remove the part that has been used
+    }
+    lines.push(name); // Add the last remaining part of the name
+    return lines;
+  };
+
+  // Map product details into a formatted string
+  const productDetails = productsToSend
+    .map((product) => {
+      const productSize = product.size ? `(${product.size})` : "";
+
+      // Break the product name into multiple lines if it exceeds the fixed width
+      const nameLines = breakProductName(product.name, nameWidth);
+
+      // Format the price and quantity with proper padding
+      const paddedPrice = `₹${product.price}`.padStart(priceWidth, " "); // Pad price to the left
+      const paddedQuantity = `${product.quantity}`.padStart(quantityWidth, " "); // Pad quantity to the left
+
+      // Combine name lines with the proper padding for price and quantity
+      const productText = nameLines
+        .map((line, index) => {
+          // If it's not the first line, pad price and quantity to align
+          if (index === 0) {
+            return `${line.padEnd(nameWidth, " ")}${productSize} - ${paddedPrice} x ${paddedQuantity}`;
+          } else {
+            return `${line.padEnd(nameWidth, " ")}`; // Align subsequent lines
+          }
+        })
+        .join("\n"); // Join the product name lines with a newline
+
+      return productText;
+    })
+    .join("\n");
 
     const invoiceText = `
-  Pehowa, Haryana, 136128
-  Phone: +91 81689-01827
+ \x1B\x61\x01    Pehowa, Haryana, 136128\x1B\x61\x00
+  \x1B\x61\x01   Phone: +91 81689-01827\x1B\x61\x00
   
-  Lal Dawara Mandir Wali Gali, Near Body Fine Gym Ambala Road Pehowa.
+\x1B\x61\x01Lal Dawara Mandir Wali Gali,\x0ANear Body Fine Gym Ambala \x0A   Road Pehowa.\x1B\x61\x00
+
    \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00 
+
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
   Date: ${
     new Date().toLocaleDateString("en-GB", {
@@ -339,13 +375,12 @@ const CustomerDetail = () => {
       hour12: true, // Enables 12-hour format
     })
   }
-  
   Customer: ${customerName || "Guest Customer"}
   Phone: ${customerPhone || "N/A"}
   Address: ${customerAddress || "N/A"}
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
- ${productDetails}
+${productDetails}
      ${
        hasDeliveryCharge
          ? `Item Total: ₹${calculateTotalPrice(productsToSend).toFixed(2)}`
@@ -361,6 +396,7 @@ const CustomerDetail = () => {
     \x1B\x21\x10Thank You Visit Again!\x1B\x21\x00
 
  ---------------------------
+
       Powered by BillZo
   `;
 
