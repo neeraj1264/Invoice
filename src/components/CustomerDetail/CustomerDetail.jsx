@@ -333,7 +333,7 @@ const CustomerDetail = () => {
         const productSize = product.size ? `(${product.size})` : "";
   
         // Break the product name into multiple lines if it exceeds the fixed width
-        const nameLines = breakProductName(product.name, nameWidth);
+        const nameLines = breakProductName(product.name + " " + productSize, nameWidth);
   
         // Format the price and quantity with proper padding
         const paddedPrice = `₹${product.price}`.padStart(priceWidth, " "); // Pad price to the left
