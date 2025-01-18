@@ -362,12 +362,12 @@ const CustomerDetail = () => {
     const detailedItems = `\n${productDetails}`;
   
     const invoiceText = `
-  \x1B\x61\x01    Pehowa, Haryana, 136128\x1B\x61\x00
-  \x1B\x61\x01    Phone: +91 81689-01827\x1B\x61\x00
+  \x1B\x61\x01 Pehowa, Haryana, 136128\x1B\x61\x00
+  \x1B\x61\x01 Phone: +91 81689-01827\x1B\x61\x00
   
   \x1B\x61\x01Lal Dawara Mandir Wali Gali,\x0ANear Body Fine Gym Ambala \x0A   Road Pehowa.\x1B\x61\x00
   
-  \x1B\x21\x10-----Invoice Details-----\x1B\x21\x00
+  \x1B\x21\x10  -----Invoice Details-----\x1B\x21\x00
   
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
   Date: ${
@@ -390,21 +390,19 @@ const CustomerDetail = () => {
   
   \x1B\x21\x10     -----Items-----     \x1B\x21\x00 
   ${detailedItems}
-  
   ${
       hasDeliveryCharge
-        ? `Item Total: ₹${calculateTotalPrice(productsToSend).toFixed(2)}`
+        ? `Item Total:    ₹${calculateTotalPrice(productsToSend).toFixed(2)}`
         : " "
     }
   ${
       hasDeliveryCharge ? `Service Charge: ₹${getdeliverycharge.toFixed(2)}` : " "
     }
-  
   \x1B\x21\x30 Total: ₹${
       calculateTotalPrice(productsToSend) + getdeliverycharge
-    }\x1B\x21\x00
+    }/-\x1B\x21\x00
+
      Thank You Visit Again!
-  
   ---------------------------
   
        Powered by BillZo
