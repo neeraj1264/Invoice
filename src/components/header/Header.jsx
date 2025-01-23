@@ -6,8 +6,7 @@ const Header = ({ headerName, setSearch, onClick }) => {
   const [isSearchVisible, setIsSearchVisible] = useState(false); // Track visibility of search input
   const toggleButtonRef = useRef(null); // Ref for the toggle button
   const navigate = useNavigate();
-  const location = useLocation(); 
-
+  const location = useLocation();
   const handleSearchChange = (event) => {
     setSearch(event.target.value); // Update search state
   };
@@ -40,13 +39,13 @@ const Header = ({ headerName, setSearch, onClick }) => {
         >
           BillZo
         </NavLink>
-          {/* Show search input only on the /invoice page */}
-          {location.pathname === "/invoice" && (
+        {/* Show search input only on the /invoice page */}
+        {location.pathname === "/invoice" && (
           <form className="search" role="search">
             <input
               className="form-control me-2"
               type="search"
-              placeholder="Search..."
+              placeholder="Search products..."
               aria-label="Search"
               onChange={handleSearchChange}
               onKeyDown={handleKeyDown}
@@ -140,7 +139,7 @@ const Header = ({ headerName, setSearch, onClick }) => {
               </NavLink>
             </li>
           </ul>
-          <form className="d-flex" role="search">
+          <form className="d-flex-search" role="search">
             <input
               className="form-control me-2"
               type="search"
