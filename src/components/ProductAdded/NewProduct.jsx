@@ -230,10 +230,11 @@ const NewProduct = ({ setSelectedProducts }) => {
     <div>
       <ToastContainer />
       <Header
-        headerName="Urban Pizzeria"
+        headerName="Foodies Hub"
       />
       {/* <h1 className="catologue-header">New Product</h1> */}
       <div className="catologue-input-fields">
+        <h1>Product Management</h1>
         <input
           type="file"
           accept="image/*"
@@ -283,8 +284,34 @@ const NewProduct = ({ setSelectedProducts }) => {
           />
         )}
 
-        {/* Toggle to enable or disable varieties */}
-        <div className="toggle-variety">
+        <div>
+          <select
+            name="category"
+            className="dropdownn"
+            value={product.category}
+            onChange={handleInputChange}
+          >
+            <option value="">Select Category*</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            placeholder="Add new category"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            onKeyUp={handleAddCategory}
+            onBlur={() => setNewCategory("")} 
+            className="add-category-input"
+          />
+        </div>
+
+          {/* Toggle to enable or disable varieties */}
+          <div className="toggle-variety">
           <label>
             <input
               type="checkbox"
@@ -327,7 +354,7 @@ const NewProduct = ({ setSelectedProducts }) => {
                 }))
               }
             />
-            <button onClick={handleAddVariety}>Add Variety</button>
+            <button onClick={handleAddVariety} className="variety-btn">Add Variety</button>
           </div>
         )}
 
@@ -338,36 +365,21 @@ const NewProduct = ({ setSelectedProducts }) => {
             </li>
           ))}
         </ul>
-
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <select
-            name="category"
-            className="dropdownn"
-            value={product.category}
-            onChange={handleInputChange}
-          >
-            <option value="">Select Category*</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="text"
-            placeholder="Add new category"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            onKeyUp={handleAddCategory}
-            onBlur={() => setNewCategory("")} 
-            className="add-category-input"
-          />
-        </div>
-      </div>
-      <button className="save-button" onClick={handleAddProduct}>
-        Save
+        <button className="save-button" onClick={handleAddProduct}>
+        Add Product
       </button>
+      </div>
+
+      <div className="create-invoice-btn"  onClick={()=>{navigate("/invoice")}}>
+
+        <button className="invoice-next-btn">
+          <h2>
+            {" "}
+            CREATE INVOICE
+          </h2>
+          {/* <FaArrowRight className="Invoice-arrow" /> */}
+        </button>
+      </div>
 
       {showPopup && (
         <div className="popup-overlay">
@@ -379,10 +391,10 @@ const NewProduct = ({ setSelectedProducts }) => {
         </div>
       )}
 
-      <button onClick={handleNavigateToInvoice} className="Invoice-btn">
+      {/* <button onClick={handleNavigateToInvoice} className="Invoice-btn">
         Invoice
         <FaArrowRight className="Invoice-arrow" />
-      </button>
+      </button> */}
     </div>
   );
 };

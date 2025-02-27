@@ -1,9 +1,8 @@
 :root {
-  /* --bg: #143ade; */
-  /* --bg: #693333f5 */
-  /* --bg: #85bb12f5; */
-  /* --bg: #473a3af5 */
-  --bg: #ED6629
+  --bg: #ED6629;
+  --in: #2d3748;
+  --out: #1a202c;
+  --light: #edf2f7;
 }
 
 body{
@@ -59,7 +58,6 @@ body{
 
 --------------------------------loading--------------------------------------
 
-
 .lds-ripple,
 .lds-ripple div {
   box-sizing: border-box;
@@ -111,7 +109,6 @@ body{
     opacity: 0;
   }
 }
-
 
 .data-show{
   text-align: left;

@@ -349,6 +349,7 @@ const Invoice = () => {
         behavior: "smooth",
       });
     }
+    setIsCategoryVisible((prev) => !prev);
   };
 
   const toggleCategoryVisibility = () => {
@@ -520,11 +521,16 @@ const Invoice = () => {
       </div>
 
       <div className="invoice-btn">
-        <button onClick={() => navigate("/NewProduct")}>+ Product</button>
+        <button onClick={()=>{navigate("/NewProduct")}} className="invoice-kot-btn">
+          <h2> + PRODUCT </h2>
+        </button>
 
-        <button onClick={handleDone}>
-          Next
-          <FaArrowRight className="Invoice-arrow" />
+        <button onClick={handleDone} className="invoice-next-btn">
+          <h2 >
+            {" "}
+            NEXT ₹{calculateTotalPrice(productsToSend).toFixed(2)}
+          </h2>
+          {/* <FaArrowRight className="Invoice-arrow" /> */}
         </button>
       </div>
       {showPopup && currentProduct && currentProduct.varieties?.length > 0 && (

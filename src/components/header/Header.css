@@ -62,6 +62,7 @@
   border: 2px solid var(--bg);
   border-radius: 2rem;
   background: #eee;
+  padding: .3rem .5rem !important;
 }
 
 input:focus::placeholder {
