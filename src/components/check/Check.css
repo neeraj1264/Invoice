@@ -1,0 +1,33 @@
+.check-container {
+    margin-top: 4rem;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #f8b400; /* Highlighted color */
+  }
+  
+  .product-list {
+    list-style: none;
+    padding: 0;
+    border-radius: 1rem;
+    background: white;
+    margin: 1rem 1rem 5rem;
+  }
+  
+  .product-item {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+    display: flex;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .no-products {
+    text-align: center;
+    color: #ccc;
+  }  

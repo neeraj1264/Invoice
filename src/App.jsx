@@ -10,6 +10,7 @@ import { CustomerData } from "./components/data/CustomerData";
 import AddToHomeModal from "./components/AddToHome/AddToHome";
 import Advance from "./components/advance/Advance";
 import OrderReport from "./OrderReport";
+import Check from "./components/check/Check";
 
 
 const App = () => {
@@ -135,6 +136,7 @@ const App = () => {
         <Route path="/history" element={<History />} />
         <Route path="/advance" element={<Advance />} />
         <Route path="/report" element={<OrderReport />} />
+        <Route path="/check" element={<Check />} />
 
       </Routes>
     </Router>

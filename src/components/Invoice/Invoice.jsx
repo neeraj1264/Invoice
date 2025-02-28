@@ -324,7 +324,7 @@ const Invoice = () => {
       return; // Prevent navigation if no products are selected
     }
 
-    navigate("/customer-detail"); // Navigate to customer detail page
+    navigate("/check"); // Navigate to customer detail page
   };
 
   // Helper function to calculate total price

@@ -799,9 +799,19 @@ const handleSuggestionClick = (customer) => {
           style={{ width: "80%", display: "flex", margin: "2px auto" }}
         />
       </div>
-      <button onClick={handleSendClick} className="done">
-        Send <FaArrowRight className="Invoice-arrow" />
-      </button>
+      <div className="invoice-btn">
+        <button onClick={()=>{navigate("/check")}} className="invoice-kot-btn">
+          <h2> BACK </h2>
+        </button>
+
+        <button onClick={handleSendClick} className="invoice-next-btn">
+          <h2 >
+            {" "}
+            NEXT 
+          </h2>
+          {/* <FaArrowRight className="Invoice-arrow" /> */}
+        </button>
+      </div>
       {/* Modal Popup */}
       {showPopup && (
         <div style={styles.popupOverlay}>
