@@ -14,19 +14,19 @@ function Check() {
     }
   }, []);
 
-    const handleDone = () => {
-      if (products.length === 0) {
-        toast.error(
-          "Please add at least one product before proceeding.",
-          toastOptions
-        );
-        return; // Prevent navigation if no products are selected
-      }
-  
-      navigate("/customer-detail"); // Navigate to customer detail page
-    };
+  const handleDone = () => {
+    if (products.length === 0) {
+      toast.error(
+        "Please add at least one product before proceeding.",
+        toastOptions
+      );
+      return; // Prevent navigation if no products are selected
+    }
 
-      // Helper function to calculate total price
+    navigate("/customer-detail"); // Navigate to customer detail page
+  };
+
+  // Helper function to calculate total price
   const calculateTotalPrice = (products = []) => {
     return products.reduce(
       (total, product) => total + product.price * product.quantity,
@@ -34,59 +34,84 @@ function Check() {
     );
   };
 
+  const dash = `- - - - - - - - - - - - - - - - - - - - - - - - - - -`;
 
   return (
     <>
       <Header />
       <div className="check-container">
         {products.length > 0 ? (
-            <>
-          <ul className="product-list">
-            <li className="product-item">
-              <div style={{ width: "60%" }}>
-                <span>Name</span>
-              </div>
-              <div style={{ width: "10%" , textAlign: "center" }}>
-                <span>Qty</span>
-              </div>
-              <div style={{ width: "10%" , textAlign: "center" }}>
-                <span>x</span>
-              </div>
-              <div style={{ width: "19%" , textAlign: "center" }}>
-                <span>Price</span>
-              </div>
-            </li>
-            {products.map((product, index) => (
-              <li key={index} className="product-item">
-                <div style={{ width: "60%" }}>
-                  <span>{product.name}</span>
+          <>
+            <ul className="product-list">
+              <div style={{ textAlign: "center" }}>{dash}</div>
+              <li className="product-item">
+                <div style={{ width: "10%" }}>
+                  <span>No</span>
                 </div>
-                <div style={{ width: "10%" , textAlign: "center" }}>
-                  <span>{product.quantity}</span>
-                </div>{" "}
-                <div style={{ width: "10%" , textAlign: "center" }}>
+                <div style={{ width: "50%", textAlign: "center" }}>
+                  <span>Name</span>
+                </div>
+                <div style={{ width: "10%", textAlign: "center" }}>
+                  <span>Qty</span>
+                </div>
+                <div style={{ width: "7%", textAlign: "center" }}>
                   <span>x</span>
-                </div>{" "}
-                <div style={{ width: "19%" , textAlign: "center" }}>
-                  <span>{product.price}</span>
+                </div>
+                <div style={{ width: "15%", textAlign: "right" }}>
+                  <span>Price</span>
                 </div>
               </li>
-            ))}
-          </ul>
-          <div className="invoice-btn">
-        <button onClick={()=>{navigate("/invoice")}} className="invoice-kot-btn">
-          <h2> BACK </h2>
-        </button>
+              <div style={{ textAlign: "center" }}>{dash}</div>
+              {products.map((product, index) => (
+                <li key={index} className="product-item">
+                  <div style={{ width: "10%" }}>
+                    <span>{index + 1}.</span>
+                  </div>
+                  <div style={{ width: "50%" }}>
+                    <span>{product.name}</span>
+                  </div>
+                  <div style={{ width: "10%", textAlign: "center" }}>
+                    <span>{product.quantity}</span>
+                  </div>{" "}
+                  <div style={{ width: "7%", textAlign: "center" }}>
+                    <span>x</span>
+                  </div>{" "}
+                  <div style={{ width: "15%", textAlign: "right" }}>
+                    <span>{product.price}</span>
+                  </div>
+                </li>
+              ))}
+              <div style={{ textAlign: "center" }}>{dash}</div>
+              <li className="product-item">
+                <div
+                  style={{ width: "77%", textAlign: "center", fontWeight: 800 }}
+                >
+                  <span>Total</span>
+                </div>
+                <div
+                  style={{ width: "15%", textAlign: "right", fontWeight: 800 }}
+                >
+                  <span>{calculateTotalPrice(products)}</span>
+                </div>
+              </li>
+              <div style={{ textAlign: "center" }}>{dash}</div>
+            </ul>
+            <div className="invoice-btn">
+              <button
+                onClick={() => {
+                  navigate("/invoice");
+                }}
+                className="invoice-kot-btn"
+              >
+                <h2> BACK </h2>
+              </button>
 
-        <button onClick={handleDone} className="invoice-next-btn">
-          <h2 >
-            {" "}
-            NEXT ₹{calculateTotalPrice(products).toFixed(2)}
-          </h2>
-          {/* <FaArrowRight className="Invoice-arrow" /> */}
-        </button>
-      </div>
-         </>
+              <button onClick={handleDone} className="invoice-next-btn">
+                <h2> NEXT ₹{calculateTotalPrice(products).toFixed(2)}</h2>
+                {/* <FaArrowRight className="Invoice-arrow" /> */}
+              </button>
+            </div>
+          </>
         ) : (
           <p className="no-products">No products found </p>
         )}
