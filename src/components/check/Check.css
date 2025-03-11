@@ -11,7 +11,7 @@
   
   .product-list {
     list-style: none;
-    padding: 0;
+    padding: 1px 0;
     border-radius: 1rem;
     background: white;
     margin: 1rem 1rem 5rem;
@@ -31,3 +31,9 @@
     text-align: center;
     color: black;
   }  
+  .hr {
+    border: none;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, black, black 10px, transparent 10px, transparent 20px);
+    margin: 10px 0;
+  }

@@ -265,7 +265,7 @@ const History = () => {
                     <thead>
                       <tr>
                         <th>No.</th>
-                        <th style={{padding: "0 2rem"}}>Items</th>
+                        <th>Items</th>
                         <th>Price</th>
                         <th>Qty</th>
                         <th>Total</th>

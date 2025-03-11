@@ -43,10 +43,11 @@ function Check() {
         {products.length > 0 ? (
           <>
             <ul className="product-list">
-              <div style={{ textAlign: "center" }}>{dash}</div>
+              {/* <div style={{ textAlign: "center" }}>{dash}</div> */}
+              <hr className="hr"/>
               <li className="product-item">
                 <div style={{ width: "10%" }}>
-                  <span>No</span>
+                  <span>No.</span>
                 </div>
                 <div style={{ width: "50%", textAlign: "center" }}>
                   <span>Name</span>
@@ -61,7 +62,8 @@ function Check() {
                   <span>Price</span>
                 </div>
               </li>
-              <div style={{ textAlign: "center" }}>{dash}</div>
+              {/* <div style={{ textAlign: "center" }}>{dash}</div> */}
+              <hr className="hr"/>
               {products.map((product, index) => (
                 <li key={index} className="product-item">
                   <div style={{ width: "10%" }}>
@@ -81,7 +83,8 @@ function Check() {
                   </div>
                 </li>
               ))}
-              <div style={{ textAlign: "center" }}>{dash}</div>
+              {/* <div style={{ textAlign: "center" }}>{dash}</div> */}
+              <hr className="hr"/>
               <li className="product-item">
                 <div
                   style={{ width: "77%", textAlign: "center", fontWeight: 800 }}
@@ -89,12 +92,18 @@ function Check() {
                   <span>Total</span>
                 </div>
                 <div
-                  style={{ width: "15%", textAlign: "right", fontWeight: 800 }}
+                  style={{ width: "15%", textAlign: "right", fontWeight: 900 }}
                 >
                   <span>{calculateTotalPrice(products)}</span>
                 </div>
+                <div
+                  style={{ width: "5%", textAlign: "left", fontWeight: 900 }}
+                >
+                  <span>/-</span>
+                </div>
               </li>
-              <div style={{ textAlign: "center" }}>{dash}</div>
+              {/* <div style={{ textAlign: "center" }}>{dash}</div> */}
+              <hr className="hr"/>
             </ul>
             <div className="invoice-btn">
               <button
