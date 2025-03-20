@@ -235,7 +235,7 @@ const handleSuggestionClick = (customer) => {
     // Show the hidden invoice, take the screenshot, and then hide it again
     invoiceRef.current.style.display = "block";
     setTimeout(() => {
-      handleScreenshot("invoice");
+      handleScreenshot("mobileinvoice");
       invoiceRef.current.style.display = "none";
     }, 10);
   };
@@ -412,7 +412,7 @@ const handleSuggestionClick = (customer) => {
   
     const invoiceText = `
   \x1B\x61\x01  Pehowa, Haryana, 136128\x1B\x61\x00
-  \x1B\x61\x01  Phone: +91 70158-23645\x1B\x61\x00
+  \x1B\x61\x01  Phone: +91 81689-01827\x1B\x61\x00
 
   \x1B\x61\x01Lal Dawara Mandir Wali Gali,\x0ANear Body Fine Gym Ambala \x0A   Road Pehowa.\x1B\x61\x00
 
@@ -534,131 +534,17 @@ const handleSuggestionClick = (customer) => {
           placeholder="Delivery charge..."
         />
       </div>
-      {/* Hidden Invoice Content */}
-      <div
-        className="invoice-content"
-        id="invoice"
-        ref={invoiceRef}
-        style={{ display: "none" }}
-      >
-        <img src="/logo.png" alt="Logo" width={100} className="logo" />
-        <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
-          Urban Pizzeria
-        </h1>
-        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
-          Pehowa, Haryana, 136128
-        </p>
-        <p style={{ textAlign: "center", margin: 0, fontSize: "15px" }}>
-          Phone Number - +91 81689-01827
-        </p>
-        <hr />
-        <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
-          Invoice Details
-        </h2>
-        <div className="customer-info">
-          {/* Bill No and Date */}
-          <p style={{ fontSize: "15px" }}>
-            Bill
-            No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {`#${Math.floor(1000 + Math.random() * 9000)}`}{" "}
-            {/* Random 6-digit bill number */}
-          </p>
-          <p style={{ fontSize: "15px" }}>
-            Created
-            On&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {new Date().toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            }) +
-              " " +
-              new Date().toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true, // Enables 12-hour format
-              })}
-          </p>
-
-          <p style={{ fontSize: "15px" }}>
-            Customer Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {customerName ? customerName : "Guest Customer"}
-          </p>
-          <p style={{ fontSize: "15px" }}>
-            Phone Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
-            &nbsp;&nbsp;&nbsp;&nbsp;{customerPhone ? customerPhone : "...."}
-          </p>
-          <p style={{ fontSize: "15px" }}>
-            Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {customerAddress ? customerAddress : "...."}
-          </p>
-        </div>
-        <table>
-          <thead>
-            <tr className="productname">
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productsToSend.map((product, index) => (
-              <tr key={index} className="productdetail">
-                <td>
-                  {product.size
-                    ? `${product.name} (${product.size})`
-                    : product.name}
-                </td>
-                <td style={{ textAlign: "Center" }}>{product.quantity || 1}</td>
-                <td style={{ textAlign: "Center" }}>₹{product.price}</td>
-                <td style={{ textAlign: "Center" }}>
-                  ₹{product.price * (product.quantity || 1)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="total">
-          {/* <p>
-            Item Total:{" "}
-            <span>
-              ₹
-              {productsToSend
-                .reduce(
-                  (sum, product) =>
-                    sum + product.price * (product.quantity || 1),
-                  0
-                )
-                .toFixed(2)}
-            </span>
-          </p> */}
-          {/* <p>
-            Service Charge: <span>₹20.00</span>
-          </p> */}
-        </div>
-        <p className="totalAmount">
-          NetTotal: ₹
-          {productsToSend
-            .reduce(
-              (sum, product) => sum + product.price * (product.quantity || 1),
-              0
-            )
-            .toFixed(2)}
-        </p>{" "}
-      </div>
       {/* mobile print content */}
       <div
         className="invoice-content"
         id="mobileinvoice"
-        // ref={invoiceRef}
+        ref={invoiceRef}
         style={{ display: "none" }}
       >
-        <img src="/logo.png" alt="Logo" width={100} className="logo" />
-        <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
-          Foodies Hub
-        </h1>
+        <img src="/logo.png" alt="Logo" width={150} className="logo" />
+        {/* <h1 style={{ textAlign: "center", margin: 0, fontSize: "25px" }}>
+          Urban Pizzeria
+        </h1> */}
         <p
           style={{
             textAlign: "center",
@@ -667,23 +553,23 @@ const handleSuggestionClick = (customer) => {
             padding: "0 2px",
           }}
         >
-          Pehowa, Haryana, 136128
+          Lal Dawara Mandir Wali Gali, Near Body Fine Gym Ambala Road Pehowa.
         </p>
         <p style={{ textAlign: "center", margin: 0, fontSize: "14px" }}>
-          +91 70158-23645
+          +91 81689-01827
         </p>
         <hr />
         <h2 style={{ textAlign: "center", margin: 0, fontSize: "20px" }}>
           Invoice Details
         </h2>
         <div className="customer-info">
-          <p style={{ fontSize: "15px" }}>
-            Bill No&nbsp;&nbsp;-&nbsp;&nbsp;
+          <p style={{ fontSize: "12px", margin: "0" }}>
+            Bill No:&nbsp;&nbsp;
             {`#${Math.floor(1000 + Math.random() * 9000)}`}{" "}
             {/* Random 6-digit bill number */}
           </p>
-          <p style={{ fontSize: "13px" }}>
-            Created On:&nbsp;
+          <p style={{ fontSize: "12px", margin: "0" }}>
+            Date:&nbsp;&nbsp;&nbsp;&nbsp;
             {new Date().toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "2-digit",
@@ -699,18 +585,18 @@ const handleSuggestionClick = (customer) => {
           </p>
 
           {customerName && (
-            <p style={{ fontSize: "12px" }}>
-              Customer Name &nbsp;- &nbsp;{customerName}
+            <p style={{ fontSize: "12px", margin: "0" }}>
+              Customer:&nbsp;{customerName}
             </p>
           )}
           {customerPhone && (
-            <p style={{ fontSize: "12px" }}>
-              Phone Number &nbsp;- &nbsp;{customerPhone}
+            <p style={{ fontSize: "12px", margin: "0" }}>
+              Phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{customerPhone}
             </p>
           )}
           {customerAddress && (
-            <p style={{ fontSize: "13px" }}>
-              Address&nbsp;-&nbsp;{customerAddress}
+            <p style={{ fontSize: "12px", margin: "0 0 1rem 0" }}>
+              Address:&nbsp;&nbsp;&nbsp;&nbsp;{customerAddress}
             </p>
           )}
         </div>
@@ -743,7 +629,7 @@ const handleSuggestionClick = (customer) => {
         {getdeliverycharge !== 0 && (
           <>
             <div className="total">
-              <p>
+              <p style={{ margin: "1rem 0 0 0" }}>
                 Item Total{" "}
                 <span>
                   ₹{" "}
@@ -758,7 +644,7 @@ const handleSuggestionClick = (customer) => {
               </p>
             </div>
             <div className="total">
-              <p>
+              <p style={{ margin: "0" }}>
                 Service Charge: <span>₹{getdeliverycharge.toFixed(2)}</span>
               </p>
             </div>
@@ -780,7 +666,7 @@ const handleSuggestionClick = (customer) => {
             paddingBottom: "2rem",
           }}
         >
-          Thank You!
+          Thank You Visit Again!
         </div>
         <hr />
         <div
@@ -796,7 +682,7 @@ const handleSuggestionClick = (customer) => {
         <img
           src="/qr.png"
           alt="QR Code"
-          style={{ width: "80%", display: "flex", margin: "2px auto" }}
+          style={{ display: "flex", margin: "2px auto" }}
         />
       </div>
       <div className="invoice-btn">
