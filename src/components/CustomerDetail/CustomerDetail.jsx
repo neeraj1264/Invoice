@@ -22,12 +22,18 @@ const CustomerDetail = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [deliveryCharge, setDeliveryCharge] = useState("");
+  const [disposal, setdisposal] = useState("");
+  const [other, setother] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [productsToSend, setproductsToSend] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [orders, setOrders] = useState([]);
   const getdeliveryCharge = localStorage.getItem("deliveryCharge");
   const deliveryChargeAmount = parseFloat(getdeliveryCharge) || 0;
+  const getdisposal = localStorage.getItem("disposal");
+  const disposalAmount = parseFloat(getdisposal) || 0;
+  const getother = localStorage.getItem("other");
+  const otherAmount = parseFloat(getother) || 0;
   // State to hold all saved customers for auto-fill
   const [savedCustomers, setSavedCustomers] = useState([]);
   // State to hold suggestions based on current phone input
@@ -59,7 +65,8 @@ const CustomerDetail = () => {
         setSavedCustomers(customersArray);
       } catch (error) {
         console.error("Error fetching customer data:", error.message);
-        const localStorageCustomers = JSON.parse(localStorage.getItem("customers")) || [];
+        const localStorageCustomers =
+          JSON.parse(localStorage.getItem("customers")) || [];
         if (localStorageCustomers.length > 0) {
           setSavedCustomers(localStorageCustomers);
         }
@@ -67,36 +74,37 @@ const CustomerDetail = () => {
     };
     fetchData();
   }, []);
-  
 
- // Update suggestions based on current phone input (prefix match)
- useEffect(() => {
-  if (customerPhone.trim().length === 10) {
-    setPhoneSuggestions([]);
-  } else if (customerPhone.trim() !== "") {
-    const suggestions = savedCustomers.filter((customer) =>
-      String(customer.phone).trim().startsWith(customerPhone.trim())
-    );
-    setPhoneSuggestions(suggestions);
-  } else {
-    setPhoneSuggestions([]);
-  }
-}, [customerPhone, savedCustomers]);
+  // Update suggestions based on current phone input (prefix match)
+  useEffect(() => {
+    if (customerPhone.trim().length === 10) {
+      setPhoneSuggestions([]);
+    } else if (customerPhone.trim() !== "") {
+      const suggestions = savedCustomers.filter((customer) =>
+        String(customer.phone).trim().startsWith(customerPhone.trim())
+      );
+      setPhoneSuggestions(suggestions);
+    } else {
+      setPhoneSuggestions([]);
+    }
+  }, [customerPhone, savedCustomers]);
 
-// When a suggestion is clicked, fill the fields and clear suggestions.
-const handleSuggestionClick = (customer) => {
-  setCustomerPhone(String(customer.phone));
-  setCustomerName(customer.name);
-  setCustomerAddress(customer.address);
-  setPhoneSuggestions([]);
-};
-  
+  // When a suggestion is clicked, fill the fields and clear suggestions.
+  const handleSuggestionClick = (customer) => {
+    setCustomerPhone(String(customer.phone));
+    setCustomerName(customer.name);
+    setCustomerAddress(customer.address);
+    setPhoneSuggestions([]);
+  };
+
   const handleSendToWhatsApp = () => {
-
-    const restaurantName = "Urban Pizzeria"; 
+    const restaurantName = "Urban Pizzeria";
 
     const currentTotalAmount =
-      calculateTotalPrice(productsToSend) + deliveryChargeAmount;
+      calculateTotalPrice(productsToSend) +
+      deliveryChargeAmount +
+      disposalAmount +
+      otherAmount;
 
     // Map product details into a formatted string
     const productDetails = productsToSend
@@ -113,19 +121,27 @@ const handleSuggestionClick = (customer) => {
     const serviceChargeText = deliveryCharge
       ? `Service Charge: ₹${deliveryChargeAmount}` // No extra newline
       : "";
+    const disposalcharge = disposal
+      ? `Disposal: ₹${disposal}` // No extra newline
+      : "";
+    const othercharge = other
+      ? `Other charges: ₹${other}` // No extra newline
+      : "";
 
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
     // Construct the WhatsApp message
     const message = encodeURIComponent(
       `*🍔🍟🍕 ${restaurantName} 🍕🍟🍔*\n\n` +
-      `Order: *${orderId}*` +
+        `Order: *${orderId}*` +
         (customerPhone ? `\nPhone: *${customerPhone}*` : "") +
         (customerName ? `\nName: *${customerName}*` : "") +
         (customerAddress ? `\nAddress: *${customerAddress}*` : "") +
         `\nAmount: *₹${currentTotalAmount}*` +
         `\n\n----------item----------\n${productDetails}` + // No extra newline here
-        (serviceChargeText ? `\n${serviceChargeText}` : "") // Add only if serviceChargeText exists
+        (serviceChargeText ? `\n${serviceChargeText}` : "") + // Add only if serviceChargeText exists
+        (disposalcharge ? `\n${disposalcharge}` : "") + // Add only if serviceChargeText exists
+        (othercharge ? `\n${othercharge}` : "") // Add only if serviceChargeText exists
     );
 
     const phoneNumber = customerPhone;
@@ -151,10 +167,7 @@ const handleSuggestionClick = (customer) => {
   const handleSendClick = async () => {
     const productsToSend = JSON.parse(localStorage.getItem("productsToSend"));
     if (!productsToSend || productsToSend.length === 0) {
-      toast.error(
-        "Please add product before proceed",
-        toastOptions
-      );
+      toast.error("Please add product before proceed", toastOptions);
       return; // Exit the function early
     }
 
@@ -162,6 +175,12 @@ const handleSuggestionClick = (customer) => {
 
     if (deliveryCharge) {
       localStorage.setItem("deliveryCharge", deliveryCharge);
+    }
+    if (disposal) {
+      localStorage.setItem("disposal", disposal);
+    }
+    if (other) {
+      localStorage.setItem("other", other);
     }
 
     const orderId = `order_${Date.now()}`;
@@ -350,18 +369,16 @@ const handleSuggestionClick = (customer) => {
     if (/^\d*$/.test(phoneValue) && phoneValue.length <= 10) {
       setCustomerPhone(phoneValue);
     }
-
-   
   };
 
   const handleRawBTPrint = () => {
     const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
-  
+
     const orderWidth = 2;
     const nameWidth = 16; // Set a fixed width for product name
     const priceWidth = 4; // Set a fixed width for price
     const quantityWidth = 2; // Set a fixed width for quantity
-  
+
     // Helper function to break a product name into multiple lines if needed
     const breakProductName = (name, maxLength) => {
       const lines = [];
@@ -372,44 +389,61 @@ const handleSuggestionClick = (customer) => {
       lines.push(name); // Add the last remaining part of the name
       return lines;
     };
-  
+
     // Map product details into a formatted string with borders
     const productDetails = productsToSend
       .map((product, index) => {
         const orderNumber = `${index + 1}`.padStart(orderWidth, " "); // Format the order number
         const productSize = product.size ? `(${product.size})` : "";
-  
+
         // Break the product name into multiple lines if it exceeds the fixed width
-        const nameLines = breakProductName(product.name + " " + productSize, nameWidth);
-  
+        const nameLines = breakProductName(
+          product.name + " " + productSize,
+          nameWidth
+        );
+
         // Format the price and quantity with proper padding
         const paddedPrice = `${product.price}`.padStart(priceWidth, " "); // Pad price to the left
-        const paddedQuantity = `${product.quantity}`.padStart(quantityWidth, " "); // Pad quantity to the left
-  
+        const paddedQuantity = `${product.quantity}`.padStart(
+          quantityWidth,
+          " "
+        ); // Pad quantity to the left
+
         // Combine name lines with the proper padding for price and quantity
         const productText = nameLines
           .map((line, index) => {
             if (index === 0) {
-              return `${orderNumber}. ${line.padEnd(nameWidth, " ")} ${paddedQuantity} x ${paddedPrice} `;
+              return `${orderNumber}. ${line.padEnd(
+                nameWidth,
+                " "
+              )} ${paddedQuantity} x ${paddedPrice} `;
             } else {
-              return `    ${line.padEnd(nameWidth, " ")} ${"".padEnd(priceWidth, " ")} ${"".padEnd(quantityWidth, " ")} `;
+              return `    ${line.padEnd(nameWidth, " ")} ${"".padEnd(
+                priceWidth,
+                " "
+              )} ${"".padEnd(quantityWidth, " ")} `;
             }
           })
           .join(""); // Join the product name lines with a newline
-  
+
         return productText;
       })
       .join("\n");
-  
+
     // Add a border for the header
     const header = ` No    Item Name     Qty  price `;
-    const separator = `+${"-".repeat(nameWidth + 2)}+${"-".repeat(priceWidth + 2)}+${"-".repeat(quantityWidth + 2)}+`;
+    const separator = `+${"-".repeat(nameWidth + 2)}+${"-".repeat(
+      priceWidth + 2
+    )}+${"-".repeat(quantityWidth + 2)}+`;
     const dash = `--------------------------------`;
-    const totalprice = `${calculateTotalPrice(productsToSend)}`.padStart(priceWidth, " ")
-    const delivery = `${getdeliverycharge}`.padStart(priceWidth, " ")
+    const totalprice = `${calculateTotalPrice(productsToSend)}`.padStart(
+      priceWidth,
+      " "
+    );
+    const delivery = `${getdeliverycharge}`.padStart(priceWidth, " ");
     // Combine header, separator, and product details
     const detailedItems = `\n${dash}\n${header}\n${dash}\n${productDetails}\n${dash}`;
-  
+
     const invoiceText = `
   \x1B\x61\x01  Pehowa, Haryana, 136128\x1B\x61\x00
   \x1B\x61\x01  Phone: +91 81689-01827\x1B\x61\x00
@@ -420,31 +454,25 @@ const handleSuggestionClick = (customer) => {
   
   Bill No: #${Math.floor(1000 + Math.random() * 9000)}
   Date: ${
-      new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }) +
-      " " +
-      new Date().toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true, // Enables 12-hour format
-      })
-    }
+    new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }) +
+    " " +
+    new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Enables 12-hour format
+    })
+  }
   Customer: ${customerName || "Guest Customer"}
   Phone: ${customerPhone || "N/A"}
   Address: ${customerAddress || "N/A"}  
   ${detailedItems}
-  ${
-      hasDeliveryCharge
-        ? `           Item Total:  ${totalprice} `
-        : " "
-    }
-  ${
-      hasDeliveryCharge ? `       Service Charge:  ${delivery}\n${dash}` : " "
-    }
+  ${hasDeliveryCharge ? `           Item Total:  ${totalprice} ` : " "}
+  ${hasDeliveryCharge ? `       Service Charge:  ${delivery}\n${dash}` : " "}
 \x1B\x21\x30\x1B\x34Total: Rs ${
       calculateTotalPrice(productsToSend) + getdeliverycharge
     }/-\x1B\x21\x00\x1B\x35
@@ -455,15 +483,15 @@ const handleSuggestionClick = (customer) => {
        Powered by BillZo
        
   `;
-  
+
     // Send the content to RawBT (add more parameters if required)
     const encodedText = encodeURIComponent(invoiceText);
     const rawBTUrl = `intent:${encodedText}#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;`;
-  
+
     // Trigger RawBT
     window.location.href = rawBTUrl;
   };
-  
+
   const getdeliverycharge = localStorage.getItem("deliveryCharge")
     ? parseFloat(localStorage.getItem("deliveryCharge"))
     : 0; // Default to 0 if not set
@@ -488,9 +516,11 @@ const handleSuggestionClick = (customer) => {
         />
       </div>
 
-        {/* Suggestions Dropdown */}
-        {phoneSuggestions.length > 0 && (
-          <ul className="suggestions" style={{
+      {/* Suggestions Dropdown */}
+      {phoneSuggestions.length > 0 && (
+        <ul
+          className="suggestions"
+          style={{
             background: "#fff",
             border: "2px solid black",
             zIndex: 10,
@@ -500,24 +530,25 @@ const handleSuggestionClick = (customer) => {
             width: "90%",
             maxHeight: "150px",
             overflowY: "auto",
-            borderRadius: "1rem"
-          }}>
-            {phoneSuggestions.map((suggestion) => (
-              <li
-                key={suggestion.phone}
-                onClick={() => handleSuggestionClick(suggestion)}
-                style={{
-                  padding: "0.5rem",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #eee"
-                }}
-              >
-                {suggestion.phone} - {suggestion.name}
-              </li>
-            ))}
-          </ul>
-        )}
-        
+            borderRadius: "1rem",
+          }}
+        >
+          {phoneSuggestions.map((suggestion) => (
+            <li
+              key={suggestion.phone}
+              onClick={() => handleSuggestionClick(suggestion)}
+              style={{
+                padding: "0.5rem",
+                cursor: "pointer",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              {suggestion.phone} - {suggestion.name}
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div className="cust-inputs">
         <input
           type="text"
@@ -532,6 +563,22 @@ const handleSuggestionClick = (customer) => {
           value={deliveryCharge}
           onChange={(e) => setDeliveryCharge(e.target.value)}
           placeholder="Delivery charge..."
+        />
+      </div>
+      <div className="cust-inputs">
+        <input
+          type="number"
+          value={disposal}
+          onChange={(e) => setdisposal(e.target.value)}
+          placeholder="Disposal"
+        />
+      </div>
+      <div className="cust-inputs">
+        <input
+          type="number"
+          value={other}
+          onChange={(e) => setother(e.target.value)}
+          placeholder="other charges"
         />
       </div>
       {/* mobile print content */}
@@ -626,7 +673,9 @@ const handleSuggestionClick = (customer) => {
             ))}
           </tbody>
         </table>
-        {getdeliverycharge !== 0 && (
+        {(getdeliverycharge !== 0 ||
+          disposalAmount !== 0 ||
+          otherAmount !== 0) && (
           <>
             <div className="total">
               <p style={{ margin: "1rem 0 0 0" }}>
@@ -643,11 +692,27 @@ const handleSuggestionClick = (customer) => {
                 </span>
               </p>
             </div>
-            <div className="total">
-              <p style={{ margin: "0" }}>
-                Service Charge: <span>₹{getdeliverycharge.toFixed(2)}</span>
-              </p>
-            </div>
+            {getdeliverycharge !== 0 && (
+              <div className="total">
+                <p style={{ margin: "0" }}>
+                  Service Charge: <span>₹{getdeliverycharge.toFixed(2)}</span>
+                </p>
+              </div>
+            )}
+            {disposalAmount !== 0 && (
+              <div className="total">
+                <p style={{ margin: "0" }}>
+                  Disposal: <span>₹{disposalAmount.toFixed(2)}</span>
+                </p>
+              </div>
+            )}
+            {otherAmount !== 0 && (
+              <div className="total">
+                <p style={{ margin: "0" }}>
+                  Other charges: <span>₹{otherAmount.toFixed(2)}</span>
+                </p>
+              </div>
+            )}
           </>
         )}
         <p className="totalAmount">
@@ -656,7 +721,10 @@ const handleSuggestionClick = (customer) => {
             productsToSend.reduce(
               (sum, product) => sum + product.price * (product.quantity || 1),
               0
-            ) + getdeliverycharge
+            ) +
+            getdeliverycharge +
+            disposalAmount +
+            otherAmount
           ).toFixed(2)}
         </p>{" "}
         <div
@@ -686,15 +754,17 @@ const handleSuggestionClick = (customer) => {
         />
       </div>
       <div className="invoice-btn">
-        <button onClick={()=>{navigate("/check")}} className="invoice-kot-btn">
+        <button
+          onClick={() => {
+            navigate("/check");
+          }}
+          className="invoice-kot-btn"
+        >
           <h2> BACK </h2>
         </button>
 
         <button onClick={handleSendClick} className="invoice-next-btn">
-          <h2 >
-            {" "}
-            NEXT 
-          </h2>
+          <h2> NEXT</h2>
           {/* <FaArrowRight className="Invoice-arrow" /> */}
         </button>
       </div>

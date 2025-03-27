@@ -90,6 +90,8 @@ const Invoice = () => {
     setProductsToSend(storedProductsToSend);
 
     localStorage.removeItem("deliveryCharge");
+    localStorage.removeItem("disposal");
+    localStorage.removeItem("other");
 
     // setSelectedVariety([]);
   }, []);
