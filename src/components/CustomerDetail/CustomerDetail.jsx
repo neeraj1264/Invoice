@@ -372,7 +372,9 @@ const CustomerDetail = () => {
   };
 
   const handleRawBTPrint = () => {
-    const hasDeliveryCharge = getdeliverycharge !== 0; // Check if delivery charge exists
+    // Check if any additional charge exists
+    const hasAdditionalCharge =
+      getdeliverycharge !== 0 || disposalAmount !== 0 || otherAmount !== 0;
 
     const orderWidth = 2;
     const nameWidth = 16; // Set a fixed width for product name
@@ -441,8 +443,31 @@ const CustomerDetail = () => {
       " "
     );
     const delivery = `${getdeliverycharge}`.padStart(priceWidth, " ");
+    const formattedDisposal = `${disposalAmount}`.padStart(priceWidth, " ");
+    const formattedOther = `${otherAmount}`.padStart(priceWidth, " ");
+    
     // Combine header, separator, and product details
     const detailedItems = `\n${dash}\n${header}\n${dash}\n${productDetails}\n${dash}`;
+    const itemtotal = totalprice;
+
+     // Build additional charges details if any charge is non-zero
+  let additionalChargesText = "";
+  if (hasAdditionalCharge) {
+    additionalChargesText += `           Item Total:    ${itemtotal}\n`;
+    if (getdeliverycharge !== 0) {
+      additionalChargesText += `       Service Charge:    ${delivery}\n`;
+    }
+    if (disposalAmount !== 0) {
+      additionalChargesText += `             Disposal:    ${formattedDisposal}\n`;
+    }
+    if (otherAmount !== 0) {
+      additionalChargesText += `                Other:    ${formattedOther}\n`;
+    }
+    additionalChargesText += `${dash}`;
+  }
+
+    // Calculate the net total including all charges
+    const netTotal = calculateTotalPrice(productsToSend) + getdeliverycharge + disposalAmount + otherAmount;
 
     const invoiceText = `
   \x1B\x61\x01  Pehowa, Haryana, 136128\x1B\x61\x00
@@ -471,11 +496,8 @@ const CustomerDetail = () => {
   Phone: ${customerPhone || "N/A"}
   Address: ${customerAddress || "N/A"}  
   ${detailedItems}
-  ${hasDeliveryCharge ? `           Item Total:  ${totalprice} ` : " "}
-  ${hasDeliveryCharge ? `       Service Charge:  ${delivery}\n${dash}` : " "}
-\x1B\x21\x30\x1B\x34Total: Rs ${
-      calculateTotalPrice(productsToSend) + getdeliverycharge
-    }/-\x1B\x21\x00\x1B\x35
+${additionalChargesText}
+\x1B\x21\x30\x1B\x34Total: Rs ${netTotal}/-\x1B\x21\x00\x1B\x35
 
     Thank You Visit Again!
   ---------------------------
