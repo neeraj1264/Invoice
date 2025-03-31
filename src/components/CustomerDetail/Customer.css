@@ -84,7 +84,7 @@ p{
 }
 .invoice-content {
   padding: 1rem;
-  width: 30%;
+  /* width: 30%; */
   margin: auto;
 }
 .invoice-content img {
