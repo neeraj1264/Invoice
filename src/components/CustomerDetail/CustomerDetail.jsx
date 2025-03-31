@@ -363,7 +363,7 @@ const CustomerDetail = () => {
 
   // Handle customer phone input validation
   const handlePhoneChange = (e) => {
-    const phoneValue = e.target.value;
+    const phoneValue = e.target.value.replace(/\s+/g, ""); // Remove spaces
 
     // Only allow numeric input and ensure length is <= 10
       setCustomerPhone(phoneValue);
