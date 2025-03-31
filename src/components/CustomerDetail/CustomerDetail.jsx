@@ -366,9 +366,7 @@ const CustomerDetail = () => {
     const phoneValue = e.target.value;
 
     // Only allow numeric input and ensure length is <= 10
-    if (/^\d*$/.test(phoneValue) && phoneValue.length <= 10) {
       setCustomerPhone(phoneValue);
-    }
   };
 
   const handleRawBTPrint = () => {
